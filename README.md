@@ -14,6 +14,7 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
     1.  [nasm](nasm/)
 1.  [BIOS](bios.md)
 1.  [Multiboot](multiboot.md)
+1.  [TODO](TODO.md)
 
 ## Getting started
 
@@ -71,11 +72,20 @@ Showdown and restart can be managed with either:
 
     Newer and better.
 
+    Now managed by the same group that manages UEFI.
+
+    Spec:
+
+    - current: <http://uefi.org/specifications>
+    - old: <http://www.uefi.org/acpi/specs>
+
 -   APM <https://en.wikipedia.org/wiki/Advanced_Power_Management>
 
     <http://wiki.osdev.org/APM>
 
     Older and simpler.
+
+    By Microsoft in 1995. Spec seems to be in RTF format...
 
 See also: <http://wiki.osdev.org/Shutdown>
 

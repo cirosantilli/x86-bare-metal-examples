@@ -3,13 +3,14 @@
 Hello world examples of programs without an OS. A.K.A. bare bones.
 
 1.  Examples
-    1.  [min-printf](min-printf/)
+    1.  [printf](printf/)
     1.  [min](min.S)
     1.  [bios_one_char](bios_one_char.S)
     1.  [bios_hello_world](bios_hello_world.S)
     1.  TODO not working
-        1. [hello-world-multiboot-c/](hello-world-multiboot-c/)
-        1. [hajji-hello-world/](hajji-hello-world/)
+        1. [multiboot-c/](multiboot-c/)
+        1. [hajji](hajji)
+    1.  [nasm](nasm/)
 1.  [BIOS](bios.md)
 1.  [Multiboot](multiboot.md)
 
@@ -34,7 +35,7 @@ When we create a regular Linux program, we generate an ELF file, which is read b
 
 Without an OS, we can use the following formats:
 
--   boot sector. TODO where is it specified, if at all?
+-   boot sector. TODO where is it specified, if at all? Wiki page describes MBR well enough: <https://en.wikipedia.org/wiki/Master_boot_record>
 -   multiboot. Defined by GRUB. More boilerplate, but much more convenient.
 
 ## Gotchas
@@ -59,7 +60,7 @@ Without an OS, we can use the following formats:
 
 You cannot use any libraries, so how to do IO? Some ways that this can be done:
 
-- BIOS functions: <http://wiki.osdev.org/BIOS>. Not well standardized like it's successor UEFI.
+- BIOS functions: <http://wiki.osdev.org/BIOS>. Not well standardized like it's successor UEFI. Called through interrupts.
 - <https://en.wikipedia.org/wiki/VGA-compatible_text_mode>
 - VBE <https://en.wikipedia.org/wiki/VESA_BIOS_Extensions>
 

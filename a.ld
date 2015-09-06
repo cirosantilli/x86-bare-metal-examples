@@ -4,6 +4,17 @@ SECTIONS
     . = 0x7c00;
     bootsec :
     {
-        *(.text)
+        *(.*)
+        /*
+        Magic bytes. 0x1FE == 510.
+
+        We could add this on each Gas file.
+
+        TODO make them work here. Mentioned at: http://stackoverflow.com/a/9604338/895245
+        */
+        /*
+        . = 0x1FE;
+        SHORT(0xAA55);
+        */
     }
 }

@@ -18,7 +18,7 @@ OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(INS))
 
 all: $(OUTS)
 
-%$(OUT_EXT): %$(OBJ_EXT)
+%$(OUT_EXT): %$(OBJ_EXT) a.ld
 	$(LD) --oformat binary -o '$@' '$<' -T a.ld #-Ttext 0x7C00
 
 %$(OBJ_EXT): %$(IN_EXT)

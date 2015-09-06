@@ -1,4 +1,5 @@
-.code16
+#include "common.h"
+BEGIN
     cli
     mov $msg, %si
     mov $0x0e, %ah
@@ -12,5 +13,4 @@ halt:
     hlt
 msg:
     .asciz "hello world"
-.org 510
-.word 0xaa55
+END

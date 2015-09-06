@@ -5,7 +5,8 @@
 BITS ?= 32
 IN_EXT ?= .S
 LD ?= ld
-MYAS ?= as
+# Use gcc so that the preprocessor will run first.
+MYAS ?= gcc
 OBJ_EXT ?= .o
 OUT_EXT ?= .img
 RUN ?= bios_hello_world
@@ -22,7 +23,7 @@ all: $(OUTS)
 	$(LD) --oformat binary -o '$@' '$<' -T a.ld #-Ttext 0x7C00
 
 %$(OBJ_EXT): %$(IN_EXT)
-	$(MYAS) -o '$@' '$<'
+	$(MYAS) -c -o '$@' '$<'
 
 clean:
 	rm -f *$(OBJ_EXT) *$(OUT_EXT)

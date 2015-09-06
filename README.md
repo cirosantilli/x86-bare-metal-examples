@@ -7,6 +7,7 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
     1.  [min](min.S)
     1.  [bios_one_char](bios_one_char.S)
     1.  [bios_hello_world](bios_hello_world.S)
+    1.  [shutdown_apm](shutdown_apm.S)
     1.  TODO not working
         1. [multiboot-c/](multiboot-c/)
         1. [hajji](hajji)

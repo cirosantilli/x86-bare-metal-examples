@@ -8,7 +8,3 @@ cli
 
 /* Stop the processor. */
 hlt
-
-/* Mandatory magic bytes 511 and 512. */
-.org 510
-.word 0xaa55

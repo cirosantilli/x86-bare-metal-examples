@@ -1,6 +1,5 @@
 # TODO
 
--   make work on real hardware
 -   ACPI
 -   get multiboot working
 -   reboot computer. Would put QEMU into an infinite reboot loop. Awesome.

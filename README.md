@@ -20,16 +20,29 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
 
 ## Getting started
 
-    sudo apt-get install build-essential qemu
+    sudo apt-get install build-essential gnu-efi qemu
     make run
     make run RUN=min
     make run RUN=bios_one_char
 
-Tested on Ubuntu 14.04. TODO: get working on real hardware:
+Tested on Ubuntu 14.04.
+
+Run on real hardware: insert as USB, determine its device (`/dev/sdX`) with:
+
+    sudo lsblk
+    sudo fdisk -l
+
+then run:
 
     sudo dd if=bios_hello_world.img of=/dev/sdX
 
-into an USB did not work.
+Then:
+
+- insert the USB in a computer
+- during boot, hit some special key, usually F12
+- choose to boot from the USB
+
+Tested on: ThinkPad T400.
 
 More assembly info at: <https://github.com/cirosantilli/assembly-cheat>
 

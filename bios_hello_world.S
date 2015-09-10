@@ -1,6 +1,5 @@
 #include "common.h"
 BEGIN
-    cli
     mov $msg, %si
     mov $0x0e, %ah
 loop:

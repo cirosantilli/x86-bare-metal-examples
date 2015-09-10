@@ -1,4 +1,6 @@
 *.bin
+*.efi
 *.img
 *.iso
 *.o
+*.so

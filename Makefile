@@ -1,8 +1,5 @@
 .POSIX:
 
--include params.makefile
-
-BITS ?= 32
 IN_EXT ?= .S
 LD ?= ld
 # Use gcc so that the preprocessor will run first.

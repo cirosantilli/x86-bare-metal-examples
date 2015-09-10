@@ -2,6 +2,8 @@
 .global _start
 _start:
     cli
+    mov $0x0000, %ax
+    mov %ax, %ds
     mov $msg, %si
     mov $0x0e, %ah
 loop:

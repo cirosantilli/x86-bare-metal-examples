@@ -2,8 +2,6 @@
 
 Originally from: <http://wiki.osdev.org/Bare_Bones>, should be a reasonable way to start a serious OS.
 
-## TODO get working
-
     sudo aptitude install -y build-essential gcc-multilib qemu xorriso
     make run
 

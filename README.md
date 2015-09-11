@@ -9,8 +9,8 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
     1.  [bios_one_char](bios_one_char.S)
     1.  [bios_hello_world](bios_hello_world.S)
     1.  [shutdown_apm](shutdown_apm.S)
+    1.  [multiboot/](multiboot/)
     1.  TODO not working
-        1. [multiboot-c/](multiboot-c/)
         1. [UEFI](uefi/)
         1. [hajji](hajji)
     1.  [nasm](nasm/)
@@ -21,13 +21,17 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
 ## Getting started
 
     sudo apt-get install build-essential gnu-efi qemu
+
+    # Run the default program on QEMU.
     make run
+
+    # Run a given program.
     make run RUN=min
     make run RUN=bios_one_char
 
 Tested on Ubuntu 14.04.
 
-Run on real hardware: insert as USB, determine its device (`/dev/sdX`) with:
+Run on real hardware: for insert as USB, determine its device (`/dev/sdX`) with:
 
     sudo lsblk
     sudo fdisk -l

@@ -2,6 +2,7 @@
 
 IN_EXT ?= .S
 LD ?= ld
+LINKER_SCRIPT ?= linker.ld
 # Use gcc so that the preprocessor will run first.
 MYAS ?= gcc
 OBJ_EXT ?= .o
@@ -16,8 +17,8 @@ OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(INS))
 
 all: $(OUTS)
 
-%$(OUT_EXT): %$(OBJ_EXT) a.ld
-	$(LD) --oformat binary -o '$@' '$<' -T a.ld #-Ttext 0x7C00
+%$(OUT_EXT): %$(OBJ_EXT) $(LINKER_SCRIPT)
+	$(LD) --oformat binary -o '$@' '$<' -T '$(LINKER_SCRIPT)' #-Ttext 0x7C00
 
 %$(OBJ_EXT): %$(IN_EXT)
 	$(MYAS) -c -o '$@' '$<'

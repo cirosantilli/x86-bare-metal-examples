@@ -17,6 +17,6 @@ Disadvantages:
 
 GRUB leaves the application into a well defined starting state.
 
-Implemented by Linux and many NIXes, but not Windows or Mac.
+It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: <http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2>
 
 Use `grub-mkrescue` to make a multiboot file into a bootable disk.

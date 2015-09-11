@@ -2,7 +2,7 @@
 .global _start
 _start:
     cli
-    mov $0x0000, %ax
+    xor %ax, %ax
     mov %ax, %ds
     mov $msg, %si
     mov $0x0e, %ah

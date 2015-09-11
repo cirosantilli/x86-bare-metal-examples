@@ -14,6 +14,7 @@ QEMU opens the boot menu, but if I select `main` it fails with: "no multiboot he
 
 Related questions:
 
+- <http://stackoverflow.com/questions/14311761/simple-kernel-wont-boot-in-grub>
 - <http://stackoverflow.com/questions/17539464/grub-2-not-detecting-multiboot-header-in-kernel>
 - <http://stackoverflow.com/questions/25517545/error-no-multiboot-header-found>
 

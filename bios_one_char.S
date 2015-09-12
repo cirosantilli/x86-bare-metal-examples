@@ -1,5 +1,8 @@
-# Print a single `@` character with the BIOS.
-# More minimal than the hello world.
+/*
+Print a single `@` character with the BIOS.
+More minimal than the hello world.
+*/
+
 #include "common.h"
 BEGIN
 mov $0x40, %al

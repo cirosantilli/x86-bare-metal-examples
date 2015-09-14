@@ -7,9 +7,10 @@ Hello world programs that run without an operating system.
     1.  [min](min.S)
     1.  [No ld script](no-ld-script/)
     1.  [NASM](nasm/)
-    1.  [bios_one_char](bios_one_char.S)
-    1.  [bios_hello_world](bios_hello_world.S)
-    1.  [shutdown_apm](shutdown_apm.S)
+    1.  [BIOS one char](bios_one_char.S)
+    1.  [BIOS hello world](bios_hello_world.S)
+    1.  [APM shutdown](apm_shutdown.S)
+    1.  [APM shutdown 2](apm_shutdown2.S)
     1.  [Multiboot](multiboot/)
     1.  TODO not working
         1. [UEFI](uefi/)
@@ -38,7 +39,7 @@ To run on real hardware, insert an USB, determine its device (`/dev/sdX`) with:
     sudo lsblk
     sudo fdisk -l
 
-Run:
+Pick the `.img` file that you wan to run and:
 
     sudo dd if=bios_hello_world.img of=/dev/sdX
 

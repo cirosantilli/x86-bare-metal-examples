@@ -2,7 +2,7 @@
 
 BASENAME ?= bios_hello_world
 IN_EXT ?= .asm
-OUT_EXT ?= .bin
+OUT_EXT ?= .img
 
 OUT := $(BASENAME)$(OUT_EXT)
 

@@ -1,55 +1,54 @@
 # x86 Bare Metal Examples
 
-Hello world examples of programs without an OS. A.K.A. bare bones.
+Hello world programs that run without an operating system.
 
 1.  Examples
     1.  [printf](printf/)
     1.  [min](min.S)
-    1.  [no-ld-script](no-ld-script/)
+    1.  [No ld script](no-ld-script/)
+    1.  [NASM](nasm/)
     1.  [bios_one_char](bios_one_char.S)
     1.  [bios_hello_world](bios_hello_world.S)
     1.  [shutdown_apm](shutdown_apm.S)
-    1.  [multiboot/](multiboot/)
+    1.  [Multiboot](multiboot/)
     1.  TODO not working
         1. [UEFI](uefi/)
-    1.  [nasm](nasm/)
 1.  [BIOS](bios.md)
-1.  [Multiboot](multiboot.md)
 1.  Misc
     1.  [hajji](hajji/)
 1.  [TODO](TODO.md)
 
 ## Getting started
 
-    sudo apt-get install build-essential gnu-efi qemu xorriso
+    sudo apt-get install build-essential gnu-efi qemu nasm xorriso
 
-    # Run the default program on QEMU.
+Run the default program on QEMU:
+
     make run
 
-    # Run a given program.
+Run a given program:
+
     make run RUN=min
     make run RUN=bios_one_char
 
-Tested on Ubuntu 14.04.
+Tested on Ubuntu 14.04 AMD64.
 
-Run on real hardware: for insert as USB, determine its device (`/dev/sdX`) with:
+To run on real hardware, insert an USB, determine its device (`/dev/sdX`) with:
 
     sudo lsblk
     sudo fdisk -l
 
-then run:
+Run:
 
     sudo dd if=bios_hello_world.img of=/dev/sdX
 
 Then:
 
 - insert the USB in a computer
-- during boot, hit some special key, usually F12
+- during boot, hit some special hardware dependant key, usually F12, Esc
 - choose to boot from the USB
 
 Tested on: ThinkPad T400.
-
-More assembly info at: <https://github.com/cirosantilli/assembly-cheat>
 
 ## Formats
 
@@ -110,6 +109,8 @@ Showdown and restart can be managed with either:
 See also: <http://wiki.osdev.org/Shutdown>
 
 ## Bibliography
+
+-   <https://github.com/cirosantilli/assembly-cheat> Information about assembly in general.
 
 -   <http://stackoverflow.com/questions/22054578/run-a-program-without-an-operating-system>
 

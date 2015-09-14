@@ -12,10 +12,11 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
     1.  [multiboot/](multiboot/)
     1.  TODO not working
         1. [UEFI](uefi/)
-        1. [hajji](hajji)
     1.  [nasm](nasm/)
 1.  [BIOS](bios.md)
 1.  [Multiboot](multiboot.md)
+1.  Misc
+    1.  [hajji](hajji/)
 1.  [TODO](TODO.md)
 
 ## Getting started

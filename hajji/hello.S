@@ -67,7 +67,6 @@ start:
         callw clrscr                  # clear screen
         callw curshome                # move cursor home - top:left
         callw greeting                # display a greeting string
-		cli
 
         /*
          * That's all, folks!

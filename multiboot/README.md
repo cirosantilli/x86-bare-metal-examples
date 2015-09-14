@@ -1,8 +1,7 @@
 # Multiboot
 
 1.  [hello-world](hello-world/)
-1.  TODO not working
-    1.  [osdev](osdev/)
+1.  [osdev](osdev/)
 
 ## Introduction
 

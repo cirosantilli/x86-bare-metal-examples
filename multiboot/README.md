@@ -25,4 +25,4 @@ GRUB leaves the application into a well defined starting state.
 
 It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: <http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2>
 
-Use `grub-mkrescue` and `grub-mkdisk` to make a multiboot file into a bootable ISO or disk.
+Use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk.

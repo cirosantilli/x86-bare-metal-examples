@@ -20,7 +20,7 @@ Hello world examples of programs without an OS. A.K.A. bare bones.
 
 ## Getting started
 
-    sudo apt-get install build-essential gnu-efi qemu
+    sudo apt-get install build-essential gnu-efi qemu xorriso
 
     # Run the default program on QEMU.
     make run

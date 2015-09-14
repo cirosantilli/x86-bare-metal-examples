@@ -2,9 +2,6 @@
 
 Originally from: <http://wiki.osdev.org/Bare_Bones>, should be a reasonable way to start a serious OS.
 
-    sudo aptitude install -y build-essential gcc-multilib qemu xorriso
-    make run
-
 QEMU opens the boot menu, but if I select `main` it fails with: "no multiboot header found". Things which might be wrong:
 
 - not using cross compiler

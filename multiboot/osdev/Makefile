@@ -17,4 +17,5 @@ clean:
 run: $(MAIN)
 	qemu-system-i386 -cdrom '$(MAIN)'
 	# Would also work.
+	#qemu-system-i386 -hda '$(MAIN)'
 	#qemu-system-i386 -kernel myos.bin

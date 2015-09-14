@@ -40,7 +40,6 @@ start:
         xorw %ax, %ax
         movw %ax, %es
         movw %ax, %ds
-        movw %ax, %ss
 
         /*
          * Initialize the stack.
@@ -49,8 +48,15 @@ start:
          * we anchor it at $LOAD.  Note that we don't collide with
          * the code because the stack will always remain below
          * (i.e. less than) $LOAD and grows downwards from there.
+         * disable intterupts when setting up the stack. If an
+         * interrupt occurs between the two MOVs then the stack
+         * may point at the wrong memory location and the interrupt
+         * may crash the system
          */
+        cli
+        movw %ax, %ss
         movw $LOAD, %sp
+        sti
 
         /*
          * This is the "main" program:
@@ -61,6 +67,7 @@ start:
         callw clrscr                  # clear screen
         callw curshome                # move cursor home - top:left
         callw greeting                # display a greeting string
+		cli
 
         /*
          * That's all, folks!
@@ -69,8 +76,12 @@ start:
          * the processor.  When run on bare metal, a halted processor
          * consumes less power (especially useful if ran on battery).
          * When run under an emulator, the emulator doesn't consume
-         * further CPU cycles.
+         * further CPU cycles. Turn off interrupts before caling HLT
+         * because execution will only HLT until the next intterupt
+         * occurs. Once an interrupt occurs execution continues at
+         * the next instruction after HLT
          */
+        cli
         hlt
 
 /* greeting() -- display a little message. */

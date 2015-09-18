@@ -10,6 +10,9 @@ Hello world programs that run without an operating system.
     1.  BIOS
         1.  [BIOS one char](bios_one_char.S)
         1.  [BIOS hello world](bios_hello_world.S)
+        1.  [BIOS newline](bios_newline.S)
+        1.  [BIOS carriage return](bios_carriage_return.S)
+        1.  [BIOS clear screen](bios_clear_screen.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)
@@ -31,6 +34,8 @@ Hello world programs that run without an operating system.
 
     sudo apt-get install build-essential gnu-efi qemu nasm xorriso
 
+### Emulator
+
 Run the default program on QEMU:
 
     make run
@@ -42,7 +47,9 @@ Run a given program:
 
 Tested on Ubuntu 14.04 AMD64.
 
-To run on real hardware, insert an USB, determine its device (`/dev/sdX`) with:
+### Real hardware
+
+Insert an USB, determine its device (`/dev/sdX`) with:
 
     sudo lsblk
     sudo fdisk -l
@@ -58,3 +65,15 @@ Then:
 - choose to boot from the USB
 
 Tested on: ThinkPad T400.
+
+#### Big image
+
+Create a `big.img` that contains all examples that can be booted from GRUB:
+
+    make big-img
+
+Now if you do:
+
+    sudo dd if=big.img of=/dev/sdX
+
+you can test several examples with a single USB burn, which is much faster.

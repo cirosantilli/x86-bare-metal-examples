@@ -1,5 +1,5 @@
 .POSIX:
-.PHONY: clean run rub-img
+.PHONY: clean run run-img
 
 main.img: main.elf
 	cp '$<' iso/boot

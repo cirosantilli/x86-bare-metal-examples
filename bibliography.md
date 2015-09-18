@@ -16,6 +16,10 @@
     - <http://wiki.osdev.org/Text_UI>
     - <http://wiki.osdev.org/GUI>
 
+-   <https://sourceforge.net/p/oszur11/code/ci/master/tree/>
+
+    Several examples of increasing complexity. Found at: <http://stackoverflow.com/questions/7130726/writing-a-hello-world-kernel>
+
 -   <https://github.com/scanlime/metalkit> A more automated / general bare metal compilation system. Untested, but looks promising.
 
 The following did not work on my machine out of the box:

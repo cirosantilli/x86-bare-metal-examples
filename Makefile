@@ -18,7 +18,7 @@ OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(INS))
 all: $(OUTS)
 
 %$(OUT_EXT): %$(OBJ_EXT) $(LINKER_SCRIPT)
-	$(LD) --oformat binary -o '$@' '$<' -T '$(LINKER_SCRIPT)' #-Ttext 0x7C00
+	$(LD) --oformat binary -o '$@' -T '$(LINKER_SCRIPT)' '$<'
 
 %$(OBJ_EXT): %$(IN_EXT)
 	$(MYAS) -c -o '$@' '$<'

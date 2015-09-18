@@ -7,11 +7,14 @@ Hello world programs that run without an operating system.
     1.  [min](min.S)
     1.  [No ld script](no-ld-script/)
     1.  [NASM](nasm/)
-    1.  [BIOS one char](bios_one_char.S)
-    1.  [BIOS hello world](bios_hello_world.S)
-    1.  [APM shutdown](apm_shutdown.S)
-    1.  [APM shutdown 2](apm_shutdown2.S)
+    1.  BIOS
+        1.  [BIOS one char](bios_one_char.S)
+        1.  [BIOS hello world](bios_hello_world.S)
+    1.  APM
+        1.  [APM shutdown](apm_shutdown.S)
+        1.  [APM shutdown 2](apm_shutdown2.S)
     1.  [Multiboot](multiboot/)
+    1.  [GRUB](grub/)
     1.  TODO not working
         1. [UEFI](uefi/)
     1.  Misc

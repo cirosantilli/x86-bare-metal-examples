@@ -43,6 +43,12 @@ Taken from: <https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-i
 
 A larger list: <http://www.columbia.edu/~em36/wpdos/videomodes.txt>
 
+### VESA
+
+<https://en.wikipedia.org/wiki/VESA_BIOS_Extensions>
+
+TODO use it.
+
 ## Colors
 
 ## Text properties

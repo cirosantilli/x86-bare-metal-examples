@@ -1,3 +1,11 @@
+/*
+Using macros for everything to make linking simpler.
+
+The big ones do bloat the executable.
+*/
+
+.altmacro
+
 #define BEGIN \
     .code16;\
     cli;\
@@ -22,10 +30,42 @@
     CURSOR_POSITION(0, 0)
 
 /*
-Print a single character.
+Print a single immediate byte or 8 bit register.
 
 `c` is it's value in hex.
+
+Usage: character 'A' (ASCII 61):
+
+    PUTS(61)
 */
 #define PUTC(c) \
-    mov $0x0E ## c, %ax;\
+    mov $0x0E, %ah;\
+    mov c, %al;\
     int $0x10
+
+/*
+Print a null terminated string.
+
+Use as:
+
+        PRINT($s)
+        hlt
+    s:
+        .asciz "string"
+
+We use this `cpp` macro to allow writing `PRINT(S)` with parenthesis.
+*/
+#define PRINT(s) GAS_PRINT s
+/* We need a Gas macro for the LOCAL labels. */
+.macro GAS_PRINT s
+    LOCAL halt, loop
+    mov s, %si
+    mov $0x0e, %ah
+loop:
+    lodsb
+    or %al, %al
+    jz halt
+    int $0x10
+    jmp loop
+halt:
+.endm

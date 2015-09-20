@@ -3,8 +3,8 @@ BEGIN
 CLEAR
 
 /* Print "ab" */
-PUTC(61)
-PUTC(62)
+PUTC($0x61)
+PUTC($0x62)
 
 /* Move back to 0, 0.*/
 mov $0x02, %ah
@@ -15,7 +15,7 @@ mov $0x0, %dx
 int $0x10
 
 /* Overwrite 'a' with c'. */
-PUTC(63)
+PUTC($0x63)
 
 hlt
 END

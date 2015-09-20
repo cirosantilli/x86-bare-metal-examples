@@ -38,13 +38,13 @@ BEGIN
 
 /* Print staircase. */
 CLEAR
-PUTC(61)
-PUTC(0A)
-PUTC(62)
-PUTC(0A)
-PUTC(63)
-PUTC(0A)
-PUTC(64)
+PUTC($0x61)
+PUTC($0x0A)
+PUTC($0x62)
+PUTC($0x0A)
+PUTC($0x63)
+PUTC($0x0A)
+PUTC($0x64)
 
 /* Function ID. */
 mov $0x06, %ah

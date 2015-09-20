@@ -25,8 +25,8 @@ The new color is reused only for character that overwrite the writen region.
 
 Cursor is not moved by the previous interrupt, so this produces a colored 'A'.
 */
-PUTC(62)
-PUTC(63)
+PUTC($0x62)
+PUTC($0x63)
 
 hlt
 END

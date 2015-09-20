@@ -17,6 +17,8 @@
 
     - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
     - http://stackoverflow.com/questions/10810203/what-is-the-fs-gs-register-intended-for
+    - http://stackoverflow.com/questions/12760109/data-segment-in-x86-programs
+    - http://stackoverflow.com/questions/14480579/when-does-segment-registers-change
     - http://stackoverflow.com/questions/15335003/x86-protected-mode-segment-registers-purpose
     - http://stackoverflow.com/questions/17210620/assembler-calculating-a-memory-address-with-register-base?lq=1
     - http://stackoverflow.com/questions/20717890/how-to-interpret-gs0x14?lq=1
@@ -29,7 +31,6 @@
     - http://stackoverflow.com/questions/6611346/amd64-fs-gs-registers-in-linux
     - http://stackoverflow.com/questions/7844963/how-to-interpret-segment-register-accesses-on-x86-64?lq=1
     - http://stackoverflow.com/questions/928082/why-does-the-mov-instruction-have-to-be-used-this-way?lq=1
-    - http://stackoverflow.com/questions/14480579/when-does-segment-registers-change
 
     64-bit:
 

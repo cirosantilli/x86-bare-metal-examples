@@ -8,9 +8,16 @@ The big ones do bloat the executable.
 
 #define BEGIN \
     .code16;\
-    cli;\
-    xor %ax, %ax;\
-    mov %ax, %ds
+    cli ;\
+    xor %ax, %ax ;\
+    /* We must zero %ds for any data access.. */ \
+    mov %ax, %ds ;\
+    /* TODO What to move into BP and SP? http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process */ \
+    mov 0x0000, %bp ;\
+    /* Disables interrupts until the end of the next instruction. */ \
+    mov %ax, %ss ;\
+    /* We should set SP because BIOS calls may depend on that. TODO confirm. */ \
+    mov %bp, %sp
 
 #define END
 

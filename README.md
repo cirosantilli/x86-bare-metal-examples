@@ -19,6 +19,7 @@ Hello world programs that run without an operating system.
             1.  [clear screen](bios_clear_screen.S)
         1.  [pixel](bios_pixel.S)
             1.  [pixel line](bios_pixel_line.S)
+        1.  [keyboard](bios_keyboard.S)
     1.  [Not testable in userland](not-testable-in-userland.md)
         1.  [Segment registers real mode](segment_registers_real_mode.S)
     1.  APM
@@ -35,6 +36,7 @@ Hello world programs that run without an operating system.
         1.  [MBR](mbr.md)
     1.  [IO](io.md)
         1.  [BIOS](bios.md)
+        1.  [APM](apm.md)
     1.  [Bibliography](bibliography.md)
 1.  [TODO](TODO.md)
 

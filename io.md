@@ -8,6 +8,8 @@ You cannot use any libraries, so how to do IO? Some ways that this can be done:
 
 Showdown and restart can be managed with either:
 
+-   APM
+
 -   ACPI <https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface>
 
     Newer and better.
@@ -18,13 +20,5 @@ Showdown and restart can be managed with either:
 
     - current: <http://uefi.org/specifications>
     - old: <http://www.uefi.org/acpi/specs>
-
--   APM <https://en.wikipedia.org/wiki/Advanced_Power_Management>
-
-    <http://wiki.osdev.org/APM>
-
-    Older and simpler.
-
-    By Microsoft in 1995. Spec seems to be in RTF format...
 
 See also: <http://wiki.osdev.org/Shutdown>

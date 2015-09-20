@@ -18,6 +18,31 @@ Does any documentation or portability exist??
 
 <http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf> says little about interrupts, I don't understand it's scope.
 
+## Video mode
+
+There are several video modes.
+
+Modes determine what interrupt functions can be used.
+
+There are 2 main types of modes:
+
+- text, where we operate character-wise
+- video, operate byte-wise
+
+Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
+
+The most common modes seem to be:
+
+- 0x01: 40x25 Text, 16 colors, 8 pages
+- 0x03: 80x25 Text, 16 colors, 8 pages
+- 0x13: 320x200 Graphics, 256 colors, 1 page
+
+You can add 128 to the modes to avoid clearing the screen.
+
+Taken from: <https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html>
+
+A larger list: <http://www.columbia.edu/~em36/wpdos/videomodes.txt>
+
 ## Colors
 
 ## Text properties

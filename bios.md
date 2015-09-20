@@ -8,6 +8,22 @@
 
 Can only be used in real mode.
 
+## Documentation
+
+Does any documentation or portability exist??
+
+<http://www.ctyme.com/intr/int.htm> Ralf Brown's Interrupt List. Everyone says that this is the ultimate unofficial compilation.
+
+<https://en.wikipedia.org/wiki/INT_10H> good quick summary
+
+<http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf> says little about interrupts, I don't understand it's scope.
+
+## Colors
+
+## Text properties
+
+<https://en.wikipedia.org/wiki/BIOS_color_attributes>
+
 ## Get BIOS information
 
 ## SMBIOS

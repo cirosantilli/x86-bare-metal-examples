@@ -6,13 +6,17 @@ Hello world programs that run without an operating system.
     1.  [printf](printf/)
     1.  [min](min.S)
     1.  [No ld script](no-ld-script/)
-    1.  [NASM](nasm/)
     1.  BIOS
-        1.  [BIOS one char](bios_one_char.S)
-        1.  [BIOS hello world](bios_hello_world.S)
-        1.  [BIOS newline](bios_newline.S)
-        1.  [BIOS carriage return](bios_carriage_return.S)
-        1.  [BIOS clear screen](bios_clear_screen.S)
+        1.  [one char](bios_one_char.S)
+        1.  [hello world](bios_hello_world.S)
+            1.  [NASM](nasm/)
+        1.  [newline](bios_newline.S)
+        1.  [carriage return](bios_carriage_return.S)
+        1.  [cursor position](bios_cursor_position.S)
+        1.  [color](bios_color.S)
+        1.  [background](bios_background.S)
+        1.  [scroll](bios_scroll.S)
+        1.  [clear screen](bios_clear_screen.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)
@@ -64,6 +68,8 @@ Then:
 - during boot, hit some special hardware dependant key, usually F12, Esc
 - choose to boot from the USB
 
+When you are done, just hit the power button to shutdown.
+
 Tested on: ThinkPad T400.
 
 #### Big image
@@ -77,3 +83,5 @@ Now if you do:
     sudo dd if=big.img of=/dev/sdX
 
 you can test several examples with a single USB burn, which is much faster.
+
+You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.

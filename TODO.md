@@ -9,8 +9,12 @@
 
     - wbinvd
     - outb inb
-    - lgdtl, paging http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table
-    - lidtl, interrupts
+    - lgdtl, paging http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table http://stackoverflow.com/questions/7415515/problem-accessing-control-registers-cr0-cr2-cr3
+    - lidtl, interrupts, IDTR
+        - https://en.wikipedia.org/wiki/Double_fault
+        - https://en.wikipedia.org/wiki/Triple_fault
+        - http://stackoverflow.com/questions/1817577/what-does-int-0x80-mean-in-assembly-code
+        - http://stackoverflow.com/questions/12464329/is-it-possible-to-make-a-custom-interrupt-in-assembly
     - WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
 
 -   Segment registers on protected mode. Then try to answer all of:
@@ -60,6 +64,7 @@
 -   play with hardware
 
     -   keyboard through interrupt (high level int 16 bios done)
+        - keyboard protected mode: http://stackoverflow.com/questions/219120/x86-assembly-protected-mode-keyboard-access
     -   set a pixel on screen in protected mode http://stackoverflow.com/questions/14419088/assembly-draw-a-pixel-on-the-screen-in-protected-mode
     -   USB
     -   networking

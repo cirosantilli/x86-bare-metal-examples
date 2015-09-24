@@ -7,7 +7,7 @@
 
 -   instructions
 
-    - wbinvd
+    - cache: wbinvd
     - outb inb
     - lgdtl, paging http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table http://stackoverflow.com/questions/7415515/problem-accessing-control-registers-cr0-cr2-cr3
     - lidtl, interrupts, IDTR
@@ -25,6 +25,7 @@
     - http://stackoverflow.com/questions/14480579/when-does-segment-registers-change
     - http://stackoverflow.com/questions/15335003/x86-protected-mode-segment-registers-purpose
     - http://stackoverflow.com/questions/17210620/assembler-calculating-a-memory-address-with-register-base?lq=1
+      http://stackoverflow.com/questions/18736663/what-does-the-colon-mean-in-x86-assembly-gas-syntax-as-in-dsbx
     - http://stackoverflow.com/questions/20717890/how-to-interpret-gs0x14?lq=1
     - http://stackoverflow.com/questions/22446104/do-the-x86-segment-registers-have-special-meaning-usage-on-modern-cpus-and-oses?lq=1
     - http://stackoverflow.com/questions/26058665/fs-register-in-assembly-code?lq=1
@@ -56,8 +57,6 @@
     - pages
 
 -   ACPI
-
-    -   reboot computer. Would put QEMU into an infinite reboot loop! Awesome. http://stackoverflow.com/questions/32682152/how-to-reboot-in-x86-assembly-from-16-bit-real-mode
 
 -   multithreading: http://stackoverflow.com/questions/7308391/how-is-concurrency-done-in-intel-x86-assembly || http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like || http://stackoverflow.com/questions/714905/threads-in-x86-assembler-using-the-gnu-assember-as || https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
 

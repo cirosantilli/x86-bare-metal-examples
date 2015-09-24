@@ -13,6 +13,6 @@ Carriage returns are needed just like in old days.
 BEGIN
     PRINT($msg)
     hlt
+END
 msg:
     .asciz "hello\nworld"
-END

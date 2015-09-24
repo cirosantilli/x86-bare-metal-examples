@@ -12,6 +12,8 @@ TODO where is it specified, if at all?
 
 -   BIOS loads the program into memory at the address `0x7C00`.
 
+    Note that this is not the first address that the RIP is set to run: I think all jobs up to now are done by the CPU: the first address seems to be `FFFF:0000` instead: <http://stackoverflow.com/a/32686533/895245>
+
     We must tell that magic number to the linker somehow, either with a linker script, `-tText=-Ttext 0x7C00` or NASM `org 0x7c00`.
 
     This will only matter when you access a memory address, because of relocation.

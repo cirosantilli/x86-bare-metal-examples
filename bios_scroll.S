@@ -36,15 +36,8 @@ which gets filled with the background color in bh.
 #include "common.h"
 BEGIN
 
-/* Print staircase. */
 CLEAR
-PUTC($0x61)
-PUTC($0x0A)
-PUTC($0x62)
-PUTC($0x0A)
-PUTC($0x63)
-PUTC($0x0A)
-PUTC($0x64)
+PRINT($stair)
 
 /* Function ID. */
 mov $0x06, %ah
@@ -70,3 +63,5 @@ int $0x10
 
 hlt
 END
+stair:
+    .asciz "a\nb\nc\nd"

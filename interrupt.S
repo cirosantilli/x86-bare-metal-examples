@@ -1,12 +1,11 @@
 /*
 Minimal interrupt example.
 
-Upon division by zero, the interrupt handler is run,
-and it prints the character 'A' to screen.
+Should print the characters 'ab' to screen.
 
 TODO: is STI not needed because this interrupt is not maskable?
 
-TODO: use IDTR. Is initial value guaranteed?
+TODO: use IDTR as a base. Is the initial value 0 guaranteed?
 */
 
 #include "common.h"
@@ -14,11 +13,13 @@ BEGIN
     CLEAR
     movw $handler, 0x00
     movw $0x00, 0x02
-    mov $0x00, %ax
-    div %ax
-    jmp fail
+    int $0
+    PUTC($0x62)
+    jmp end
 handler:
     PUTC($0x61)
-fail:
+    /* Returns to the int instruction. */
+    iret
+end:
     hlt
 END

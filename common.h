@@ -84,6 +84,15 @@ letter:
 end:
 .endm
 
+#define PRINT_HEX(reg) \
+    HEX(<reg>);\
+    PUTC(%al);\
+    PUTC(%bl)
+
+#define PRINT_NEWLINE \
+    PUTC($0x0A);\
+    PUTC($0x0D)
+
 /*
 Print a null terminated string.
 

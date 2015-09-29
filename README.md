@@ -29,6 +29,9 @@ Hello world programs that run without an operating system.
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
         1.  in
             1.  [in keyboard](in_keyboard.S)
+            1.  [in PIT (TODO)](in_pit.S)
+            1.  [in RTC](in_rtc.S)
+            1.  [in mouse (TODO)](in_mouse.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)

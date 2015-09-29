@@ -9,9 +9,14 @@ Scancode tables: TODO: official specs?
 - http://flint.cs.yale.edu/cs422/doc/art-of-asm/pdf/APNDXC.PDF
 - https://en.wikipedia.org/wiki/Scancode
 
-TODO Where does the 0x60 come from? http://wiki.osdev.org/I/O_Ports has a small list.
+TODO Where does the 0x60 come from?
+
+- http://wiki.osdev.org/I/O_Ports
+- http://stackoverflow.com/questions/14194798/is-there-a-specification-of-x86-i-o-port-assignment
 
 TODO Possible to do this with the interrupt table instead of `in`?
+
+TODO understand http://wiki.osdev.org/PS2_Keyboard
 */
 
 #include "common.h"
@@ -20,14 +25,12 @@ BEGIN
     /* TODO why CLI makes no difference? We are not using interrupts? */
     /*cli*/
 loop:
+    /* Store the scancode to al. */
     in $0x60, %al
     cmp %al, %cl
     jz loop
     mov %al, %cl
-    HEX(<%al>)
-    PUTC(%al)
-    PUTC(%bl)
-    PUTC($0x0A)
-    PUTC($0x0D)
+    PRINT_HEX(%al)
+    PRINT_NEWLINE
     jmp loop
 END

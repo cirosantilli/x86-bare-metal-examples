@@ -29,8 +29,11 @@ Hello world programs that run without an operating system.
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
         1.  in
             1.  [in keyboard](in_keyboard.S)
-            1.  [in PIT (TODO)](in_pit.S)
             1.  [in RTC](in_rtc.S)
+            1.  [in PIT (TODO)](in_pit.S)
+            1.  [in beep (TODO)](in_beep.S)
+            1.  [in beep_kernel (TODO)](in_beep_kernel.S)
+            1.  [in beep_illinois (TODO)](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
@@ -52,7 +55,7 @@ Hello world programs that run without an operating system.
 
 ## Getting started
 
-    sudo apt-get install build-essential gnu-efi qemu nasm xorriso
+    sudo apt-get install bochs bochs-sdl build-essential gnu-efi qemu nasm xorriso
 
 ### Emulator
 
@@ -64,6 +67,10 @@ Run a given program:
 
     make run RUN=min
     make run RUN=bios_one_char
+
+Use Bochs instead of QEMU:
+
+    make bochs RUN=min
 
 Tested on Ubuntu 14.04 AMD64.
 

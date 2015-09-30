@@ -44,6 +44,8 @@ Print a single immediate byte or 8 bit register.
 Usage: character 'A' (ASCII 61):
 
     PUTS(61)
+
+Clobbers: ax
 */
 #define PUTC(c) \
     mov $0x0E, %ah;\
@@ -54,21 +56,23 @@ Usage: character 'A' (ASCII 61):
 Convert a byte to hex ASCII value.
 c: r/m8 byte to be converted
 Output: two ASCII characters, is stored in `al:bl`
+Clobbers: ax
 http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
 */
 #define HEX(c) GAS_HEX c
 .macro GAS_HEX c
     mov \c, %al
-    mov \c, %bl
+    mov \c, %ah
     shr $4, %al
     GAS_HEX_NIBBLE al
-    and $0x0F, %bl
-    GAS_HEX_NIBBLE bl
+    and $0x0F, %ah
+    GAS_HEX_NIBBLE ah
 .endm
 
 /*
 Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
 reg: r8 to be converted
+Clobbered registers: none
 Output: stored in reg itself. Letters are uppercase.
 */
 .macro GAS_HEX_NIBBLE reg
@@ -84,10 +88,16 @@ letter:
 end:
 .endm
 
+/*
+Print a byte as two hexadecimal digits.
+
+Clobbers: ax, dl
+*/
 #define PRINT_HEX(reg) \
     HEX(<reg>);\
+    mov %ah, %dl;\
     PUTC(%al);\
-    PUTC(%bl)
+    PUTC(%dl)
 
 #define PRINT_NEWLINE \
     PUTC($0x0A);\

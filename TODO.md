@@ -8,7 +8,20 @@
 -   instructions
 
     - cache: wbinvd
-    - outb inb
+
+    -   inb outb
+
+        Answer with bare metal Tetris
+
+        - http://stackoverflow.com/questions/8365746/what-does-outb-in-att-asm-mean
+        - http://stackoverflow.com/questions/3215878/what-are-in-out-instructions-in-x86-used-for
+        - http://wiki.osdev.org/Text_UI
+
+        Port 0x80 on Linux kenrnel: https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/boot.h#L78 http://stackoverflow.com/questions/6793899/what-does-the-0x80-port-address-connects
+
+        Port 0x61 speaker https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
+
+    - http://wiki.osdev.org/GUI
     - lgdtl, paging http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table http://stackoverflow.com/questions/7415515/problem-accessing-control-registers-cr0-cr2-cr3
     - lidtl, interrupts, IDTR
         - https://en.wikipedia.org/wiki/Double_fault
@@ -62,7 +75,7 @@
 
 -   play with hardware
 
-    -   keyboard through interrupt (high level int 16 bios done)
+    -   keyboard through interrupt (high level BIOS int 16 that waits for input done)
         - keyboard protected mode: http://stackoverflow.com/questions/219120/x86-assembly-protected-mode-keyboard-access
     -   set a pixel on screen in protected mode http://stackoverflow.com/questions/14419088/assembly-draw-a-pixel-on-the-screen-in-protected-mode
     -   USB

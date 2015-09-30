@@ -30,6 +30,13 @@ clean:
 run: all
 	qemu-system-i386 '$(RUN)$(OUT_EXT)'
 
+bochs: all
+	bochs -qf /dev/null \
+		'ata0-master: type=disk, path="$(RUN)$(OUT_EXT)", mode=flat, cylinders=1, heads=1, spt=1' \
+		'boot: disk' \
+		'display_library: sdl' \
+		'megs: 128'
+
 BIG_IMG_DIR := big_img$(TMP_EXT)
 BOOT_DIR := $(BIG_IMG_DIR)/boot
 GRUB_DIR := $(BOOT_DIR)/grub

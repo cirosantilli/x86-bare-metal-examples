@@ -22,6 +22,8 @@
 
 -   <https://github.com/scanlime/metalkit> A more automated / general bare metal compilation system. Untested, but looks promising.
 
+-   <https://courses.engr.illinois.edu/ece390/books/labmanual/index.html> Illinois course from 2004
+
 The following did not work on my machine out of the box:
 
 - <https://github.com/apparentlymart/ToyOS>

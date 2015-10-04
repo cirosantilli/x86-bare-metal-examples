@@ -283,6 +283,16 @@ You can then check that they've appeared under `cat /proc/cmdline`.
 - `syslinux`: Linux specific. Used by default by the kernel, e.g. on 4.2 `make isoimage`.
 - LILO: old popular bootloader, largely replaced by GRUB now.
 
+## Legacy
+
+Documentation: <http://www.gnu.org/software/grub/manual/legacy/grub.html>
+
+### kernel
+
+Directive used to boot *both* multiboot and Linux.
+
+Got split up more or less into `multiboot` and `linux` directives.
+
 ## Bibliography
 
 -   <https://www.gnu.org/software/grub/grub-documentation.html>

@@ -1,7 +1,7 @@
 /*
-https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
+Originally from: https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
 
-TODO not working on QEMU
+Same as the kernel version.
 */
 
 #include "common.h"
@@ -9,29 +9,40 @@ BEGIN
 start:
     PUTC($0x61)
 
-    movb    $182,%al        # Prepare the speaker for the
-    outb    %al, $0x43       #  note.
-    movw    $4560,%ax       # Frequency number (in decimal)
-                            #  for middle C.
-    outb    %al, $0x42       # Output low byte.
-    movb    %ah,%al         # Output high byte.
-    outb    %al, $0x42
-    inb     $0x61,%al       # Turn on note (get value from
-                            #  port 61h).
-    orb     $0b00000011,%al # Set bits 1 and 0.
-    outb    %al, $0x61       # Send new value.
-    movw    $25,%bx         # Pause for duration of note.
+    mov $0xb6, %al
+    out %al, $0x43
+
+    mov $4560, %ax
+    out %al, $0x42
+
+    mov %ah, %al
+    out %al, $0x42
+
+    in $0x61, %al
+
+    /* TODO why or, while Linux kernel sets it to 3? */
+    or $0b00000011, %al
+    out %al, $0x61
+
+    /*
+    Pause for duration of note.
+
+    Busy loop of `25 * 2 ^ 16 - 1`
+    */
+    mov $25, %bx
 .pause1:
-    movw    $65535,%cx
+    mov $65535, %cx
 .pause2:
-    decw    %cx
-    jne     .pause2
-    decw    %bx
-    jne     .pause1
-    inb     $0x61,%al       # Turn off note (get value from
-                            #  port 61h).
-    andb    $0b11111100,%al # Reset bits 1 and 0.
-    outb    %al, $0x61       # Send new value.
+    dec %cx
+    jne .pause2
+    dec %bx
+    jne .pause1
+
+    in $0x61, %al
+
+    /* TODO why Reset bits 1 and 0. */
+    and $0b11111100, %al
+    out %al, $0x61
 
     jmp start
 END

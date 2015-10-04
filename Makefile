@@ -7,11 +7,12 @@ LINKER_SCRIPT ?= linker.ld
 MYAS ?= gcc
 OBJ_EXT ?= .o
 OUT_EXT ?= .img
+QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
 TMP_EXT ?= .tmp
 
-INS := $(wildcard *$(IN_EXT))
-OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(INS))
+OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT)))
+RUN_FILE := $(RUN)$(OUT_EXT)
 
 .PRECIOUS: %$(OBJ_EXT)
 .PHONY: all clean run
@@ -28,11 +29,18 @@ clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: all
-	qemu-system-i386 '$(RUN)$(OUT_EXT)'
+	$(QEMU) '$(RUN_FILE)'
+
+debug: all
+	$(QEMU) -hda '$(RUN_FILE)' -S -s &
+	gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
 
 bochs: all
+	# Supposes size is already multiples of 512.
+	# `grub-mkrescue` seems to respect that.
+	CYLINDERS="$$(($$(stat -c '%s' '$(RUN_FILE)') / 512))" && \
 	bochs -qf /dev/null \
-		'ata0-master: type=disk, path="$(RUN)$(OUT_EXT)", mode=flat, cylinders=1, heads=1, spt=1' \
+		'ata0-master: type=disk, path="$(RUN_FILE)", mode=flat, cylinders='"$$CYLINDERS"', heads=1, spt=1' \
 		'boot: disk' \
 		'display_library: sdl' \
 		'megs: 128'

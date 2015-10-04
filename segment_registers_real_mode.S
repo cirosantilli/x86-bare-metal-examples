@@ -9,14 +9,18 @@ On failure, trash is shows.
 
 I think their goal was to implement process virtualization in the past.
 
-In protected mode, they do very different things:
+FS and GS are general purpose: they don't generate or are affected implicitly by instructions.
+
+The special semantics of other registers will be covered in other files.
+
+## Vs protected mode
+
+In protected mode, the segment registers point to entries on the GDT:
 
 - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
 - http://wiki.osdev.org/Segmentation
 
-FS and GS are general purpose: they don't generate or are affected implicitly by instructions.
-
-The special semantics of other registers will be covered in other files.
+Those entries still contain an analogous offset to the real mode offset, but also much more data, like segment width and permission.
 
 ## How they work
 

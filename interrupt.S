@@ -13,13 +13,24 @@ TODO: interrupt priority: order looks like: 0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 1
 
 Returns to the next instruction to be executed
 before the interrupt came in.
+
+TODO I think this is mandatory, e.g. a `jmp` wouldn't be enough.
+Otherwise what?
+
+## ISR
+
+## Interrupt service routines
+
+Fancy name for the handler.
+
+http://wiki.osdev.org/Interrupt_Service_Routines
 */
 
 #include "common.h"
 BEGIN
     CLEAR
     movw $handler, 0x00
-    movw %cs, 0x02
+    mov %cs, 0x02
     int $0
     PUTC($0x62)
     jmp end

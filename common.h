@@ -7,7 +7,7 @@ The big ones do bloat the executable.
 .altmacro
 
 #define BEGIN \
-    .code16;\
+    .code16 ;\
     cli ;\
     xor %ax, %ax ;\
     /* We must zero %ds for any data access.. */ \

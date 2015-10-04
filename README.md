@@ -21,20 +21,22 @@ Hello world programs that run without an operating system.
             1.  [pixel line](bios_pixel_line.S)
         1.  [keyboard](bios_keyboard.S)
             1.  [keyboard loop](bios_keyboard_loop.S)
+        1.  [disk load](bios_disk_load.S)
     1.  [reboot](reboot.S)
     1.  [Not testable in userland](not-testable-in-userland.md)
         1.  [Segment registers real mode](segment_registers_real_mode.S)
             1.  [SS (TODO)](ss.S)
         1.  [Interrupt](interrupt.S)
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
+            1.  [Interrupt loop](interrupt_loop.S)
         1.  in
             1.  [in keyboard](in_keyboard.S)
             1.  [in RTC](in_rtc.S)
             1.  [in PIT (TODO)](in_pit.S)
-            1.  [in beep (TODO)](in_beep.S)
-            1.  [in beep_kernel (TODO)](in_beep_kernel.S)
-            1.  [in beep_illinois (TODO)](in_beep_illinois.S)
+            1.  [in beep](in_beep.S)
+            1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
+        1.  [Protected mode](protected-mode.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)
@@ -45,6 +47,7 @@ Hello world programs that run without an operating system.
     1.  Misc
         1.  [hajji](hajji/)
 1.  Theory
+    1.  [Modes of operation](modes-of-operation.md)
     1.  [Formats](formats.md)
         1.  [MBR](mbr.md)
     1.  [IO](io.md)

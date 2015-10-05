@@ -33,4 +33,3 @@ loop:
     PRINT_HEX(%al)
     PRINT_NEWLINE
     jmp loop
-END

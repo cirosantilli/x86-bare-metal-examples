@@ -10,4 +10,3 @@ BEGIN
 handler:
     PUTC($0x61)
     int $0
-END

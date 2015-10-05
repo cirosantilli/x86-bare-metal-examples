@@ -89,4 +89,3 @@ update_in_progress:
     PRINT_NEWLINE
 
     jmp update_in_progress
-END

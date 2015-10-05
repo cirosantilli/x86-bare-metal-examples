@@ -1,6 +1,8 @@
 ; Adapted from: http://blog.ackx.net/asm-hello-world-bootloader.html
     org 0x7c00
     bits 16
+    xor ax, ax
+    mov ds, ax
 start:
     cli
     mov si, msg

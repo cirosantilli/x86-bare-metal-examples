@@ -5,9 +5,9 @@ TODO get working.
 
 - http://wiki.osdev.org/Journey_To_The_Protected_Land
 - http://wiki.osdev.org/Protected_Mode
-- http://stackoverflow.com/questions/28645439/how-do-i-enter-32-bit-protected-mode-in-nasm-assembly
 - https://github.com/chrisdew/xv6/blob/master/bootasm.S
 - https://thiscouldbebetter.wordpress.com/2011/03/17/entering-protected-mode-from-assembly/ FASM based. Did not word on first try, but looks real clean.
+- http://stackoverflow.com/questions/28645439/how-do-i-enter-32-bit-protected-mode-in-nasm-assembly
 
 ## GDT
 
@@ -61,4 +61,3 @@ cli
     gdt:
     .word 0x1234
     .long 0x12345678
-END

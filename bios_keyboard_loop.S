@@ -11,4 +11,3 @@ start:
     int $0x16
     PUTC(%al)
     jmp start
-END

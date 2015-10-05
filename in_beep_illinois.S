@@ -45,4 +45,3 @@ start:
     out %al, $0x61
 
     jmp start
-END

@@ -8,4 +8,3 @@ It likely wastes more energy? But is less prone to being interrupted than `hlt`.
 BEGIN
 loop:
 jmp loop
-END

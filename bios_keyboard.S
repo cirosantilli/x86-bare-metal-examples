@@ -8,4 +8,3 @@ mov $0x00, %ah
 int $0x16
 PUTC(%al)
 hlt
-END

@@ -15,15 +15,12 @@ Bibliography:
 
 - http://wiki.osdev.org/ATA_in_x86_RealMode_%28BIOS%29
 - https://en.wikipedia.org/wiki/INT_13H
+- https://thiscouldbebetter.wordpress.com/2011/03/15/creating-a-bootable-program-in-assembly-language/
 
 TODO answer:
 
-- https://thiscouldbebetter.wordpress.com/2011/03/15/creating-a-bootable-program-in-assembly-language/
-- http://stackoverflow.com/questions/7716427/loading-2nd-stage-of-bootloader-and-starting-it
-- http://stackoverflow.com/questions/2065370/how-to-load-second-stage-boot-loader-from-first-stage
 - http://stackoverflow.com/questions/19381434/cannot-read-disk-sectors-in-assembly-language
 - http://stackoverflow.com/questions/15497842/read-a-sector-from-hard-drive-with-int-13h
-- http://stackoverflow.com/questions/9899577/example-for-int-13-ah-03h-interupt-assembly
 */
 
 #include "common.h"
@@ -44,7 +41,13 @@ BEGIN
     mov $2, %ah
     /* Number of sectors to read. */
     mov $1, %al
-    /* Drive number. Starts at 0x80, second one is 0x81. TODO why not from 0? */
+    /*
+    Drive number. Starts at 0x80, second one is 0x81. TODO why not from 0?
+
+    The BIOS stores the right number on dl as an initial state,
+    but we may be destroying it before, and are lazy to properly store it somewhere.
+    http://stackoverflow.com/a/19387093/895245
+    */
     mov $0x80, %dl
     /* cylinder number */
     mov $0, %ch
@@ -73,5 +76,4 @@ stage2:
     but let's just put it here to keep our other images smaller.
     */
     .org 512
-END
 

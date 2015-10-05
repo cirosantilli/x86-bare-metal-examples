@@ -13,4 +13,3 @@ BEGIN
 mov $0x0E40, %ax
 int $0x10
 hlt
-END

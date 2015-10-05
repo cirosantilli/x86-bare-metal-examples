@@ -8,4 +8,3 @@ SS register. I think the major effect of it is that anything that uses
 #include "common.h"
 BEGIN
 hlt
-END

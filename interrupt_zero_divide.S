@@ -14,4 +14,3 @@ handler:
     PUTC($0x61)
 fail:
     hlt
-END

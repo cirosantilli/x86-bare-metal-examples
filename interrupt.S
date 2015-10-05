@@ -39,4 +39,3 @@ handler:
     iret
 end:
     hlt
-END

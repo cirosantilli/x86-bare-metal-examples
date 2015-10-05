@@ -66,5 +66,3 @@ jc APM_error            #if the carry flag is set there was an error
 
 APM_error:
 hlt
-
-END

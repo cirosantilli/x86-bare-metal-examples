@@ -33,4 +33,3 @@ CURSOR_POSITION(0, 0)
 PUTC($0x62)
 
 hlt
-END

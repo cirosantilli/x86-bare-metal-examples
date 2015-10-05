@@ -19,8 +19,6 @@ The big ones do bloat the executable.
     /* We should set SP because BIOS calls may depend on that. TODO confirm. */ \
     mov %bp, %sp
 
-#define END
-
 #define CURSOR_POSITION(x, y) \
     mov $0x02, %ah;\
     mov $0x00, %bh;\

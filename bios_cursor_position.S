@@ -18,4 +18,3 @@ int $0x10
 PUTC($0x63)
 
 hlt
-END

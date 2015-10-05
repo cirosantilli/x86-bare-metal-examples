@@ -62,6 +62,5 @@ mov $0x0202, %dx
 int $0x10
 
 hlt
-END
 stair:
     .asciz "a\nb\nc\nd"

@@ -110,4 +110,3 @@ msg:
     /* We push the correct A forward 16 bytes in memory to compensate for the segments. */
     .fill 0x10
     .byte 'A'
-END

@@ -62,4 +62,3 @@ loop:
 	in $0x61, %al
     mov $0x00, %al
     out %al, $0x61
-END

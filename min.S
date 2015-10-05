@@ -21,4 +21,4 @@ xor %ax, %ax
 mov %ax, %ds
 
 /* Stop the processor. */
-hlt
+ret

@@ -19,4 +19,3 @@ start:
     jmp start
 end:
     hlt
-END

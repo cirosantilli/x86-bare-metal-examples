@@ -29,4 +29,3 @@ PUTC($0x62)
 PUTC($0x63)
 
 hlt
-END

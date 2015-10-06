@@ -1,6 +1,16 @@
 /*
 # Protected mode
 
+Major changes:
+
+-   BIOS cannot be used anymore
+
+-   GDT takes effect immediately so we *have* to deal with it now,
+    and we will later turn on paging
+
+-   we have to encode instructions differently.
+    Note that in 16-bit 32-bit instructions were encodable, but with a prefix.
+
 TODO get working.
 
 - http://wiki.osdev.org/Journey_To_The_Protected_Land

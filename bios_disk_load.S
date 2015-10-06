@@ -1,8 +1,10 @@
 /*
 Load one more sector from the disk
-besides the first 512 bytes and do something with it..
+besides the first 512 bytes and do something with it.
 
 Expected outcome: `@` gets printed to the screen.
+
+Grub 2.0 makes several calls to it under `grub-core/boot/i386/pc`
 
 TODO: not working on:
 
@@ -11,14 +13,15 @@ TODO: not working on:
 
 Does work on QEMU and Thinkpad T400.
 
-Bibliography:
+## int 13
+
+BIOS call used for disk operations.
+
+## Bibliography
 
 - http://wiki.osdev.org/ATA_in_x86_RealMode_%28BIOS%29
-- https://en.wikipedia.org/wiki/INT_13H
 - https://thiscouldbebetter.wordpress.com/2011/03/15/creating-a-bootable-program-in-assembly-language/
-
-TODO answer:
-
+- https://en.wikipedia.org/wiki/INT_13H
 - http://stackoverflow.com/questions/19381434/cannot-read-disk-sectors-in-assembly-language
 - http://stackoverflow.com/questions/15497842/read-a-sector-from-hard-drive-with-int-13h
 */
@@ -67,13 +70,12 @@ just after the magic bytes.
 */
 .section .stage2
 stage2:
-    PUTC($0x0E40)
+    PUTC($0x40)
     hlt
+
     /*
-    Fill up the second sector to 512 byte.
-
-    This should be on the linker script as well in decent programs,
-    but let's just put it here to keep our other images smaller.
+    We could use `.org` here to fill up the second sector to a multiple of 512 bytes.
+    But the linker does that beautifully with `. = ALIGN(512)` for any size of stage2,
+    so we use that instead.
     */
-    .org 512
-
+    /*.org 512*/

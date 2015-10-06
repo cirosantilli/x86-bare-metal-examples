@@ -9,9 +9,17 @@ On failure, trash is shows.
 
 I think their goal was to implement process virtualization in the past.
 
-FS and GS are general purpose: they don't generate or are affected implicitly by instructions.
-
 The special semantics of other registers will be covered in other files.
+
+## ES
+
+TODO: this does seem to have special properties as used by string instructions.
+
+## FS
+
+## GS
+
+FS and GS are general purpose: they don't generate or are affected implicitly by instructions.
 
 ## Vs protected mode
 
@@ -20,7 +28,8 @@ In protected mode, the segment registers point to entries on the GDT:
 - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
 - http://wiki.osdev.org/Segmentation
 
-Those entries still contain an analogous offset to the real mode offset, but also much more data, like segment width and permission.
+Those entries still contain an analogous offset to the real mode offset,
+but also much more data, like segment width and permission.
 
 ## How they work
 
@@ -43,7 +52,6 @@ The command:
 Shows that non ds encodings are achieved through a prefix, except for `ds`:
 
     20:   a0 63 7c                mov    0x7c63,%al
-    29:   a0 63 7c                mov    0x7c63,%al
     34:   26 a0 63 7c             mov    %es:0x7c63,%al
     40:   64 a0 63 7c             mov    %fs:0x7c63,%al
     4c:   65 a0 63 7c             mov    %gs:0x7c63,%al
@@ -67,7 +75,10 @@ BEGIN
     mov %ds:msg, %al
     PUTC(%al)
 
-    /* %ds is the default segment for GAS if we don't write it. */
+    /*
+    %ds is the default segment for GAS memory operations
+    if we don't write it explicitly.
+    */
     mov msg, %al
     PUTC(%al)
 

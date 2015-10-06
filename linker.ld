@@ -29,6 +29,20 @@ SECTIONS
         e.g. by reading more disk than the default 512 bytes with BIOS `int 0x13`.
          */
         *(.stage2)
+
+        /*
+        Number of sectors in stage 2. Used by the `int 13`.
+
+        The value gets put into memory as the very last thing
+        in the `.stage` section if it exists.
+
+        We must put it *before* the final `. = ALIGN(512)`,
+        or else it would fall out of the loaded memory.
+         */
+        __stage2_size = (ALIGN(.) / 512) - 1;
+
+        /* Ensure that the generated image is a multiple of 512. */
+        . = ALIGN(512);
     }
 }
 

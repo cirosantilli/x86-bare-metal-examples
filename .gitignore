@@ -6,3 +6,4 @@
 *.o
 *.so
 *.tmp
+tmp.S

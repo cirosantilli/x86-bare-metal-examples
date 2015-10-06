@@ -1,17 +1,18 @@
 .POSIX:
 
-IN_EXT ?= .S
+ASM_EXT ?= .asm
+S_EXT ?= .S
 LD ?= ld
 LINKER_SCRIPT ?= linker.ld
 # Use gcc so that the preprocessor will run first.
-MYAS ?= gcc
+GAS ?= gcc
 OBJ_EXT ?= .o
 OUT_EXT ?= .img
 QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
 TMP_EXT ?= .tmp
 
-OUTS := $(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT)))
+OUTS := $(foreach IN_EXT,$(ASM_EXT) $(S_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT))))
 RUN_FILE := $(RUN)$(OUT_EXT)
 
 .PRECIOUS: %$(OBJ_EXT)
@@ -22,8 +23,11 @@ all: $(OUTS)
 %$(OUT_EXT): %$(OBJ_EXT) $(LINKER_SCRIPT)
 	$(LD) --oformat binary -o '$@' -T '$(LINKER_SCRIPT)' '$<'
 
-%$(OBJ_EXT): %$(IN_EXT)
-	$(MYAS) -c -o '$@' '$<'
+%$(OBJ_EXT): %$(S_EXT)
+	$(GAS) -c -o '$@' '$<'
+
+%$(OUT_EXT): %$(ASM_EXT)
+	nasm -f bin -o '$@' '$<'
 
 clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
@@ -37,7 +41,8 @@ debug: all
 
 bochs: all
 	# Supposes size is already multiples of 512.
-	# `grub-mkrescue` seems to respect that.
+	# We force that with our linker script,
+	# and `grub-mkrescue` also seems to respect it as well.
 	CYLINDERS="$$(($$(stat -c '%s' '$(RUN_FILE)') / 512))" && \
 	bochs -qf /dev/null \
 		'ata0-master: type=disk, path="$(RUN_FILE)", mode=flat, cylinders='"$$CYLINDERS"', heads=1, spt=1' \

@@ -22,6 +22,8 @@ Hello world programs that run without an operating system.
         1.  [keyboard](bios_keyboard.S)
             1.  [keyboard loop](bios_keyboard_loop.S)
         1.  [disk load](bios_disk_load.S)
+            1.  [disk load 2](bios_disk_load2.S)
+    1.  [Initial state](initial_state.S)
     1.  [reboot](reboot.S)
     1.  [Not testable in userland](not-testable-in-userland.md)
         1.  [Segment registers real mode](segment_registers_real_mode.S)
@@ -58,7 +60,7 @@ Hello world programs that run without an operating system.
 
 ## Getting started
 
-    sudo apt-get install bochs bochs-sdl build-essential gnu-efi qemu nasm xorriso
+    sudo apt-get install bochs bochs-sdl build-essential gdb gnu-efi qemu nasm xorriso
 
 ### Emulator
 

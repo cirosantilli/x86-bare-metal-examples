@@ -89,6 +89,8 @@ end:
 /*
 Print a byte as two hexadecimal digits.
 
+reg: 1 byte register.
+
 Clobbers: ax, dl
 */
 #define PRINT_HEX(reg) \
@@ -127,3 +129,28 @@ loop:
     jmp loop
 end:
 .endm
+
+/*
+Load stage2 from disk to memory, and jump to it.
+
+TODO not working?
+
+To be used when the program does not fit in the 512 bytes.
+
+Sample usage:
+
+    STAGE2
+    Stage 2 code here.
+*/
+#define STAGE2 \
+    mov $2, %ah;\
+    mov __stage2_size, %al;\
+    mov $0x80, %dl;\
+    mov $0, %ch;\
+    mov $0, %dh;\
+    mov $2, %cl;\
+    mov $1f, %bx;\
+    int $0x13;\
+    jmp 1f;\
+    .section .stage2;\
+    1:

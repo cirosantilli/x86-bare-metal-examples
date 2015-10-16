@@ -1,18 +1,18 @@
 .POSIX:
 
-ASM_EXT ?= .asm
-S_EXT ?= .S
 LD ?= ld
 LINKER_SCRIPT ?= linker.ld
 # Use gcc so that the preprocessor will run first.
 GAS ?= gcc
+GAS_EXT ?= .S
+NASM_EXT ?= .asm
 OBJ_EXT ?= .o
 OUT_EXT ?= .img
 QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
 TMP_EXT ?= .tmp
 
-OUTS := $(foreach IN_EXT,$(ASM_EXT) $(S_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT))))
+OUTS := $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT))))
 RUN_FILE := $(RUN)$(OUT_EXT)
 
 .PRECIOUS: %$(OBJ_EXT)
@@ -23,10 +23,10 @@ all: $(OUTS)
 %$(OUT_EXT): %$(OBJ_EXT) $(LINKER_SCRIPT)
 	$(LD) --oformat binary -o '$@' -T '$(LINKER_SCRIPT)' '$<'
 
-%$(OBJ_EXT): %$(S_EXT)
+%$(OBJ_EXT): %$(GAS_EXT)
 	$(GAS) -c -o '$@' '$<'
 
-%$(OUT_EXT): %$(ASM_EXT)
+%$(OUT_EXT): %$(NASM_EXT)
 	nasm -f bin -o '$@' '$<'
 
 clean:
@@ -37,7 +37,11 @@ run: all
 
 debug: all
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &
-	gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
+	gdb \
+		-ex 'target remote localhost:1234' \
+		-ex 'set architecture i8086' \
+		-ex 'break *0x7c00' \
+		-ex 'continue'
 
 bochs: all
 	# Supposes size is already multiples of 512.

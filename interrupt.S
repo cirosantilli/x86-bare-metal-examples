@@ -1,21 +1,30 @@
 /*
+# Interrupt
+
 Minimal interrupt example.
 
-Should print the characters 'ab' to screen.
+Expected outcome: 'ab' gets printed to the screen.
 
 TODO: is STI not needed because this interrupt is not maskable?
 
-TODO: use IDTR as a base. Is the initial value 0 guaranteed?
+TODO: interrupt priority: order looks like: 0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 15, 3, 4, 5, 6, 7. What is that?
 
-TODO: interrupt priority: order looks like: 0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 15, 3, 4, 5, 6, 7
+## int
+
+What it does:
+
+- long jumps to the CS : IP found in the corresponding interrupt vector.
+- also pushes EFLAGS. Why? To let them be restored by iret?
 
 ## iret
 
 Returns to the next instruction to be executed
 before the interrupt came in.
 
-TODO I think this is mandatory, e.g. a `jmp` wouldn't be enough.
-Otherwise what?
+I think this is mandatory, e.g. a `jmp` wouldn't be enough because:
+
+- we may have far jumped
+- iret also pops EFLAGS restoring
 
 ## ISR
 
@@ -24,6 +33,25 @@ Otherwise what?
 Fancy name for the handler.
 
 http://wiki.osdev.org/Interrupt_Service_Routines
+
+## Interrupt descriptor table
+
+## IDTR
+
+## Interrupt descriptor table register
+
+IDTR points to the IDT.
+
+The IDT contains the list of callbacks for each interrupt.
+
+This name seems to be reserved to 32-bit protected mode, IVT is the 16-bit term.
+
+## IVT
+
+http://wiki.osdev.org/IVT
+
+osdev says that the default address is 0:0, and that it shouldn't be changed by LIDT,
+as it is incompatible with older CPUs.
 */
 
 #include "common.h"
@@ -33,9 +61,7 @@ BEGIN
     mov %cs, 0x02
     int $0
     PUTC($0x62)
-    jmp end
+    hlt
 handler:
     PUTC($0x61)
     iret
-end:
-    hlt

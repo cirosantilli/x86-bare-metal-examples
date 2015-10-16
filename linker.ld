@@ -31,6 +31,8 @@ SECTIONS
         *(.stage2)
 
         /*
+        TODO get this working.
+
         Number of sectors in stage 2. Used by the `int 13`.
 
         The value gets put into memory as the very last thing
@@ -39,9 +41,10 @@ SECTIONS
         We must put it *before* the final `. = ALIGN(512)`,
         or else it would fall out of the loaded memory.
          */
-        __stage2_size = (ALIGN(.) / 512) - 1;
+        __stage2_size = .;
+        /*BYTE((ALIGN(.) / 512) - 1);*/
 
-        /* Ensure that the generated image is a multiple of 512. */
+        /* Ensure that the generated image is a multiple of 512 bytes long. */
         . = ALIGN(512);
     }
 }

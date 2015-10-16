@@ -37,7 +37,7 @@ The most common modes seem to be:
 - 0x03: 80x25 Text, 16 colors, 8 pages
 - 0x13: 320x200 Graphics, 256 colors, 1 page
 
-You can add 128 to the modes to avoid clearing the screen.
+You can add 128 to the modes to prevent them from clearing the screen.
 
 Taken from: <https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html>
 

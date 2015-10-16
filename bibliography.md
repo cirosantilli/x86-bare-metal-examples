@@ -57,6 +57,14 @@ The following did not work on my machine out of the box:
 
 -   <http://www.brokenthorn.com/Resources/OSDevIndex.html>
 
+-   <http://skelix.net/skelixos/index_en.html>
+
+    Cleaned up version: <https://github.com/cirosantilli/skelix-os>
+
+    Not tested yet.
+
+    GAS based, no GRUB needed.
+
 ## Actually useful
 
 These are not meant as learning resources but rather as useful programs:

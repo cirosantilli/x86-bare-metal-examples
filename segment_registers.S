@@ -1,5 +1,5 @@
 /*
-# Segment registers real mde
+# Segment registers
 
 Show how most segment registers work in 16-bit real mode.
 
@@ -11,9 +11,16 @@ I think their goal was to implement process virtualization in the past.
 
 The special semantics of other registers will be covered in other files.
 
+Rationale of the registers:
+
+- extend other registers. For e.g., http://stackoverflow.com/questions/17777146/what-is-the-purpose-of-cs-and-ip-registers-intel-8086
+- rudimentary virtual process spaces
+
 ## ES
 
 TODO: this does seem to have special properties as used by string instructions.
+
+- used by the `int 13h` BIOS disk read service
 
 ## FS
 
@@ -63,6 +70,7 @@ This makes `ds` the most efficient one for data access, and thus a good default.
 #include "common.h"
 BEGIN
     CLEAR
+
     /*
     It is not possible to encode moving immediates
     to segment registers: we must either:
@@ -81,20 +89,6 @@ BEGIN
     */
     mov msg, %al
     PUTC(%al)
-
-    /* Try using other segment as well. */
-
-    /*
-    CS is the exception: if we do this, the program halts. TODO why?
-
-    Some info: http://wiki.osdev.org/Segmentation#Operations_that_affect_segment_registers
-    */
-    /*
-    mov $1, %ax
-    mov %ax, %cs
-    mov %cs:msg, %al
-    PUTC(%al)
-    */
 
     mov $1, %ax
     mov %ax, %es

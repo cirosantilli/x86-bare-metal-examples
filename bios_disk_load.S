@@ -1,4 +1,8 @@
 /*
+# Bios disk load
+
+# int 13h
+
 Load one more sector from the disk
 besides the first 512 bytes and do something with it.
 
@@ -19,9 +23,9 @@ BIOS call used for disk operations.
 
 ## Bibliography
 
+- https://en.wikipedia.org/wiki/INT_13H
 - http://wiki.osdev.org/ATA_in_x86_RealMode_%28BIOS%29
 - https://thiscouldbebetter.wordpress.com/2011/03/15/creating-a-bootable-program-in-assembly-language/
-- https://en.wikipedia.org/wiki/INT_13H
 - http://stackoverflow.com/questions/19381434/cannot-read-disk-sectors-in-assembly-language
 - http://stackoverflow.com/questions/15497842/read-a-sector-from-hard-drive-with-int-13h
 */
@@ -58,7 +62,14 @@ BEGIN
     mov $0, %dh
     /* Starting sector number. 2 because 1 was already loaded. */
     mov $2, %cl
-    /* Where to load to. Must coincide with our stage2 for the linking to work. */
+    /*
+    Where to load to.
+    Must coincide with our stage2 for the linking to work.
+
+    The address is calculated as:
+
+        16 * ES + BX
+    */
     mov $stage2, %bx
     int $0x13
 

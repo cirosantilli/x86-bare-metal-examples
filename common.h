@@ -9,15 +9,51 @@ The big ones do bloat the executable.
 #define BEGIN \
     .code16 ;\
     cli ;\
+    /* This sets %cs to 0. TODO Is that really needed? */ ;\
+    ljmp $0, $1f;\
+    1:;\
     xor %ax, %ax ;\
-    /* We must zero %ds for any data access.. */ \
+    /* We must zero %ds for any data access. */ \
     mov %ax, %ds ;\
+    /* TODO is this really need to clear all those segment registers, e.g. for BIOS calls? */ \
+    mov %ax, %es ;\
+    mov %ax, %fs ;\
+    mov %ax, %gs ;\
     /* TODO What to move into BP and SP? http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process */ \
     mov 0x0000, %bp ;\
-    /* Disables interrupts until the end of the next instruction. */ \
+    /* Automatically disables interrupts until the end of the next instruction. */ \
     mov %ax, %ss ;\
     /* We should set SP because BIOS calls may depend on that. TODO confirm. */ \
     mov %bp, %sp
+
+/*
+Load stage2 from disk to memory, and jump to it.
+
+TODO not working.
+
+To be used when the program does not fit in the 512 bytes.
+
+Sample usage:
+
+    STAGE2
+    Stage 2 code here.
+*/
+#define STAGE2 \
+    mov $2, %ah;\
+    /* TODO get working on linker script. Above my paygrade for now, so I just load a bunch of sectors instead. */;\
+    /* mov __stage2_size, %al;\ */;\
+    mov $9, %al;\
+    mov $0x80, %dl;\
+    mov $0, %ch;\
+    mov $0, %dh;\
+    mov $2, %cl;\
+    mov $1f, %bx;\
+    int $0x13;\
+    jmp 1f;\
+    .section .stage2;\
+    1:
+
+/* BIOS */
 
 #define CURSOR_POSITION(x, y) \
     mov $0x02, %ah;\
@@ -130,27 +166,4 @@ loop:
 end:
 .endm
 
-/*
-Load stage2 from disk to memory, and jump to it.
-
-TODO not working?
-
-To be used when the program does not fit in the 512 bytes.
-
-Sample usage:
-
-    STAGE2
-    Stage 2 code here.
-*/
-#define STAGE2 \
-    mov $2, %ah;\
-    mov __stage2_size, %al;\
-    mov $0x80, %dl;\
-    mov $0, %ch;\
-    mov $0, %dh;\
-    mov $2, %cl;\
-    mov $1f, %bx;\
-    int $0x13;\
-    jmp 1f;\
-    .section .stage2;\
-    1:
+/* VGA */

@@ -53,6 +53,8 @@ The following did not work on my machine out of the box:
 
     Just works, but examples are non-minimal, lots of code duplication and blobs. There must be around 20 El Torito blobs in that repo.
 
+    Multiboot based.
+
 -   <https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System>
 
 -   <http://www.brokenthorn.com/Resources/OSDevIndex.html>

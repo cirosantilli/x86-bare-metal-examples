@@ -23,14 +23,6 @@
     - https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/boot.h#L78
     - http://stackoverflow.com/questions/6793899/what-does-the-0x80-port-address-connects
 
-- lgdt:
-
-    - http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table
-    - http://stackoverflow.com/questions/7415515/problem-accessing-control-registers-cr0-cr2-cr3
-    - http://stackoverflow.com/questions/10671147/how-do-x86-page-tables-work?rq=1
-    - http://stackoverflow.com/questions/14354626/how-to-create-two-separate-segments-in-global-descriptor-table
-    - http://stackoverflow.com/questions/14812160/near-and-far-jmps
-
 - lidt, interrupts, IDTR:
 
     - http://stackoverflow.com/questions/3392831/what-happens-in-an-interrupt-service-routine
@@ -43,7 +35,7 @@
 
 - WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
 
--   Segment registers and protected mode. Then try to answer all of:
+-   Segment registers /segmentation and protected mode. Then try to answer all of:
 
       http://stackoverflow.com/questions/18736663/what-does-the-colon-mean-in-x86-assembly-gas-syntax-as-in-dsbx
     - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
@@ -74,6 +66,14 @@
     - http://stackoverflow.com/questions/21165678/why-64-bit-mode-long-mode-doesnt-use-segment-registers
     - http://stackoverflow.com/questions/19502868/meaning-of-cs-and-ss-registers-on-x86-64-linux-in-userland
     - http://stackoverflow.com/questions/7844963/how-to-interpret-segment-register-accesses-on-x86-64
+
+    lgdt:
+
+    - http://stackoverflow.com/questions/21128311/the-physical-address-of-global-descriptor-table
+    - http://stackoverflow.com/questions/7415515/problem-accessing-control-registers-cr0-cr2-cr3
+    - http://stackoverflow.com/questions/10671147/how-do-x86-page-tables-work?rq=1
+    - http://stackoverflow.com/questions/14354626/how-to-create-two-separate-segments-in-global-descriptor-table
+    - http://stackoverflow.com/questions/14812160/near-and-far-jmps
 
 -   timer, IPT
 

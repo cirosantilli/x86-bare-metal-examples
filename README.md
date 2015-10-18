@@ -42,6 +42,7 @@ Hello world programs that run without an operating system.
             1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
         1.  [Protected mode](protected-mode.S)
+            1. [Segmentation](segmentation.md)
             1. Segmentation offset
             1. Segmentation fault handler: memory bound, ring, RWX violations
     1.  APM

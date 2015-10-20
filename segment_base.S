@@ -1,5 +1,5 @@
 /*
-TODO get working.
+TODO get working. All tutorials I've seen so far just set it to 0 like real OSes :-(
 
 Example of the effect on a memory access of changing the segment base address .
 
@@ -60,7 +60,7 @@ BEGIN
     /*
     TODO this sanity check is not printing "ab",
     so we're not restoring the old state properly.
-    HOW??
+    Likely blows up because video memory going wrong.
     */
     VGA_PRINT_STRING $message
 

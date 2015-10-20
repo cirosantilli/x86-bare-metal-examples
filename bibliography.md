@@ -65,7 +65,7 @@ The following did not work on my machine out of the box:
 
     Not tested yet.
 
-    GAS based, no GRUB needed.
+    GAS based, no multiboot used.
 
 ## Actually useful
 

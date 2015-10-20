@@ -1,7 +1,9 @@
 # x86 Bare Metal Examples
 
-Hello world programs that run without an operating system.
+Minimal operating systems to learn low level programming.
 
+1.  [Getting started](getting-started.md)
+1.  [About](about.md)
 1.  Examples
     1.  [printf](printf/)
     1.  [min](min.S)
@@ -64,59 +66,3 @@ Hello world programs that run without an operating system.
     1.  [Debug](debug.md)
     1.  [Bibliography](bibliography.md)
 1.  [TODO](TODO.md)
-
-## Getting started
-
-    sudo apt-get install bochs bochs-sdl build-essential gdb gnu-efi qemu nasm xorriso
-
-### Emulator
-
-Run the default program on QEMU:
-
-    make run
-
-Run a given program:
-
-    make run RUN=min
-    make run RUN=bios_one_char
-
-Use Bochs instead of QEMU:
-
-    make bochs RUN=min
-
-Tested on Ubuntu 14.04 AMD64.
-
-### Real hardware
-
-Insert an USB, determine its device (`/dev/sdX`) with:
-
-    sudo lsblk
-    sudo fdisk -l
-
-Pick the `.img` file that you wan to run and:
-
-    sudo dd if=bios_hello_world.img of=/dev/sdX
-
-Then:
-
-- insert the USB in a computer
-- during boot, hit some special hardware dependant key, usually F12, Esc
-- choose to boot from the USB
-
-When you are done, just hit the power button to shutdown.
-
-Tested on: ThinkPad T400.
-
-#### Big image
-
-Create a `big.img` that contains all examples that can be booted from GRUB:
-
-    make big-img
-
-Now if you do:
-
-    sudo dd if=big.img of=/dev/sdX
-
-you can test several examples with a single USB burn, which is much faster.
-
-You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.

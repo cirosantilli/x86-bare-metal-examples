@@ -85,12 +85,13 @@
 
 -   multithreading:
 
-    http://stackoverflow.com/questions/7308391/how-is-concurrency-done-in-intel-x86-assembly || http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like || http://stackoverflow.com/questions/714905/threads-in-x86-assembler-using-the-gnu-assember-as || https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
+    - http://stackoverflow.com/questions/7308391/how-is-concurrency-done-in-intel-x86-assembly
+    - http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like
+    - http://stackoverflow.com/questions/714905/threads-in-x86-assembler-using-the-gnu-assember-as
+    - https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
 
 -   play with hardware
 
-    -   keyboard through interrupt (high level BIOS int 16 that waits for input done)
-        - keyboard protected mode: http://stackoverflow.com/questions/219120/x86-assembly-protected-mode-keyboard-access
     -   set a pixel on screen in protected mode http://stackoverflow.com/questions/14419088/assembly-draw-a-pixel-on-the-screen-in-protected-mode
     -   USB
     -   networking
@@ -105,3 +106,12 @@
 -   https://en.wikipedia.org/wiki/Task_state_segment
 
     Not used by Linux: <http://stackoverflow.com/questions/2711044/why-doesnt-linux-use-the-hardware-context-switch-via-the-tss>
+
+-   keyboard through interrupt (high level BIOS int 16 that waits for input done)
+
+    - keyboard protected mode: http://stackoverflow.com/questions/219120/x86-assembly-protected-mode-keyboard-access
+    - oszur does it with the i8042: http://stackoverflow.com/questions/22744624/keyboard-interrupt-handler-for-own-kernel-c
+
+-   mouse
+
+

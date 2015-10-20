@@ -30,6 +30,6 @@ loop:
     cmp %al, %cl
     jz loop
     mov %al, %cl
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PRINT_NEWLINE
     jmp loop

@@ -201,11 +201,12 @@ reg: 1 byte register.
 
 Clobbers: ax, dl
 */
-#define PRINT_HEX(reg) \
-    HEX(<reg>);\
-    mov %ah, %dl;\
-    PUTC(%al);\
+.macro PRINT_HEX reg
+    HEX(<\reg>)
+    mov %ah, %dl
+    PUTC(%al)
     PUTC(%dl)
+.endm
 
 #define PRINT_NEWLINE \
     PUTC($0x0A);\

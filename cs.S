@@ -20,12 +20,12 @@ BEGIN
     1:
     .skip 0x10
     mov %cs, %ax
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
 
     ljmp $2, $1f
     1:
     .skip 0x20
     mov %cs, %ax
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
 
     hlt

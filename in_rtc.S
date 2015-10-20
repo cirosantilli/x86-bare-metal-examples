@@ -50,42 +50,42 @@ update_in_progress:
     je update_in_progress
     mov %al, %cl
 
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PUTC($0x20)
 
     /* Minute. */
     mov $0x02, %al
     out %al, $RTCaddress
     in $RTCdata, %al
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PUTC($0x20)
 
     /* Hour. */
     mov $0x04, %al
     out %al, $RTCaddress
     in $RTCdata, %al
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PUTC($0x20)
 
     /* Day. */
     mov $0x07, %al
     out %al, $RTCaddress
     in $RTCdata, %al
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PUTC($0x20)
 
     /* Month. */
     mov $0x08, %al
     out %al, $RTCaddress
     in $RTCdata, %al
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PUTC($0x20)
 
     /* Year. */
     mov $0x09, %al
     out %al, $RTCaddress
     in $RTCdata, %al
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
     PRINT_NEWLINE
 
     jmp update_in_progress

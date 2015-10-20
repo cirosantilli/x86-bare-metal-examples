@@ -17,7 +17,7 @@ BEGIN
     pop %ax
     /* Restore the old stack so that it won't mess with our othe functions. */
     mov %bx, %sp
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
 
     /* Now let's move ss and see if anything happens. */
     mov $1, %ax
@@ -26,7 +26,7 @@ BEGIN
     /* This pop should happen 16 bytes higher than the first one. */
     pop %ax
     mov %bx, %sp
-    PRINT_HEX(%al)
+    PRINT_HEX <%al>
 
     hlt
 

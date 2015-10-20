@@ -14,7 +14,7 @@ Could be done with GDB on the emulator, but this will also work on real hardware
 
 #define INITIAL_PRINT(x) \
     PRINT($x ## s);\
-    PRINT_HEX(x);\
+    PRINT_HEX <x>;\
     PRINT_NEWLINE
 
 INITIAL_STORE(ax)

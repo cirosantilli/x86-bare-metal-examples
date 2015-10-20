@@ -20,7 +20,7 @@ Rationale of the registers:
 
 TODO: this does seem to have special properties as used by string instructions.
 
-- used by the `int 13h` BIOS disk read service
+- BIOS calls: `int 13h` disk read, `int 15` memory detection
 
 ## FS
 

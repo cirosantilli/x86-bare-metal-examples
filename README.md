@@ -25,6 +25,7 @@ Minimal operating systems to learn low level programming.
             1.  [keyboard loop](bios_keyboard_loop.S)
         1.  [disk load](bios_disk_load.S)
             1.  [disk load 2](bios_disk_load2.S)
+        1.  [detect memory](bios_detect_memory.S)
     1.  [Initial state](initial_state.S)
     1.  [reboot](reboot.S)
     1.  [Not testable in userland](not-testable-in-userland.md)

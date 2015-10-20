@@ -285,7 +285,18 @@ end:
     pop %eax
 .endm
 
-/* Print a 32-bit register in hex. */
+/*
+Print a 32-bit register in hex.
+
+Sample usage:
+
+    mov $12345678, %eax
+    VGA_PRINT_REG <%eax>
+
+Expected output on screen:
+
+    12345678
+*/
 .macro VGA_PRINT_REG reg=<%eax>
     LOCAL loop
     push %eax

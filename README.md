@@ -41,9 +41,8 @@ Hello world programs that run without an operating system.
             1.  [in beep](in_beep.S)
             1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
-        1.  [Protected mode](protected-mode.S)
-            1. [Segmentation](segmentation.md)
-            1. Segmentation offset
+        1.  [Protected mode](protected_mode.S)
+            1. [Segment base](segment_base.S)
             1. Segmentation fault handler: memory bound, ring, RWX violations
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
@@ -56,11 +55,13 @@ Hello world programs that run without an operating system.
         1.  [hajji](hajji/)
 1.  Theory
     1.  [Modes of operation](modes-of-operation.md)
+        1.  [Segmentation](segmentation.md)
     1.  [Formats](formats.md)
         1.  [MBR](mbr.md)
     1.  [IO](io.md)
         1.  [BIOS](bios.md)
         1.  [APM](apm.md)
+    1.  [Debug](debug.md)
     1.  [Bibliography](bibliography.md)
 1.  [TODO](TODO.md)
 

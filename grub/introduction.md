@@ -42,6 +42,10 @@ Determine your GRUB version with:
 
 Here we discuss GRUB 2.
 
+## Supported architectures
+
+x86 is of course the primary... ARM was recently added in 2.0.2 it seems: <https://wiki.linaro.org/LEG/Engineering/Kernel/GRUB>
+
 ## Configuration files
 
 Input files:

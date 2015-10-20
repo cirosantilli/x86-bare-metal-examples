@@ -66,24 +66,23 @@ Enter protected mode.
 Use the simplest GDT possible.
 */
 .macro PROTECTED_MODE
+    /* Must come before they are used. */
+    .equ CODE_SEG, 8
+    .equ DATA_SEG, gdt_data - gdt_start
+
     cli
     /* Tell the processor where our Global Descriptor Table is in memory. */
     lgdt gdt_descriptor
 
-    /* Set PE (Protection Enable) bit in CR0 (Control Register 0) */
+    /*
+    Set PE (Protection Enable) bit in CR0 (Control Register 0),
+    effectively entering protected mode.
+    */
     mov %cr0, %eax
     orl $0x1, %eax
     mov %eax, %cr0
 
-    /* TODO why does equ not work? What is the alternative? */
-    /*ljmp $CODE_SEG, $b32*/
-    /*
-    This is needed to set `%cs` to 8.
-
-    8 means the second entry, since each entry is 8 bytes wide,
-    and we have an initial null entry.
-    */
-    ljmp $0x08, $protected_mode
+    ljmp $CODE_SEG, $protected_mode
 .code32
 gdt_start:
 gdt_null:
@@ -105,20 +104,24 @@ gdt_data:
     .byte 0x0
 gdt_end:
 gdt_descriptor:
-   .word gdt_end - gdt_start
-   .long gdt_start
-.equ CODE_SEG, gdt_code - gdt_start
-.equ DATA_SEG, gdt_data - gdt_start
+    .word gdt_end - gdt_start
+    .long gdt_start
+vga_current_line:
+    .long 0
 protected_mode:
-    /* Setup the other segments. */
+    /*
+    Setup the other segments.
+    Those movs are mandatory because they update the descriptor cache:
+    http://wiki.osdev.org/Descriptor_Cache
+    */
     mov $DATA_SEG, %ax
     mov %ax, %ds
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
     mov %ax, %ss
-    /* TODO: what is the maximum we can put were? Why does `FFFFFFFF` fail? */
-    mov $0XFFFFFF00, %ebp
+    /* TODO detect memory properly. */
+    mov $0X7000, %ebp
     mov %ebp, %esp
 .endm
 
@@ -159,8 +162,7 @@ Clobbers: ax
 /*
 Convert a byte to hex ASCII value.
 c: r/m8 byte to be converted
-Output: two ASCII characters, is stored in `al:bl`
-Clobbers: ax
+Output: two ASCII characters, is stored in `ah:al`
 http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
 */
 #define HEX(c) GAS_HEX c
@@ -242,13 +244,29 @@ Print a NULL terminated string to position 0 in VGA.
 
 s: 32-bit register or memory containing the address of the string to print.
 
-Clobbers: eax, ecx, edx
+Clobbers: none.
+
+Uses and updates vga_current_line to decide the current line.
+Loops around the to the top.
 */
-.macro VGA_PRINT s
+.macro VGA_PRINT_STRING s
     LOCAL loop, end
-    mov s, %ecx
-    /* Video memory address. */
-    mov $0xb8000, %edx
+    push %eax
+    push %ebx
+    push %ecx
+    push %edx
+    mov \s, %ecx
+    mov vga_current_line, %eax
+    mov $0, %edx
+    /* Number of horizontal lines. */
+    mov $25, %ebx
+    div %ebx
+    mov %edx, %eax
+    /* 160 == 80 * 2 == line width * bytes per character on screen */
+    mov $160, %edx
+    mul %edx
+    /* 0xb8000 == magic video memory address which shows on the screen. */
+    lea 0xb8000(%eax), %edx
     /* White on black. */
     mov $0x0f, %ah
 loop:
@@ -260,4 +278,46 @@ loop:
     add $2, %edx
     jmp loop
 end:
+    incl vga_current_line
+    pop %edx
+    pop %ecx
+    pop %ebx
+    pop %eax
+.endm
+
+/* Print a 32-bit register in hex. */
+.macro VGA_PRINT_REG reg=<%eax>
+    LOCAL loop
+    push %eax
+    push %ebx
+    push %ecx
+    push %edx
+    /* Null terminator. */
+    mov \reg, %ecx
+
+    /* Write ASCII representation to memory. */
+    push $0
+    mov $2, %ebx
+loop:
+    GAS_HEX <%cl>
+    mov %ax, %dx
+    shl $16, %edx
+    GAS_HEX <%ch>
+    mov %ax, %dx
+    push %edx
+    shr $16, %ecx
+    dec %ebx
+    cmp $0, %ebx
+    jne loop
+
+    /* Print it. */
+    mov %esp, %edx
+    VGA_PRINT_STRING <%edx>
+
+    /* Restore the stack. We have pushed 3 * 4 bytes. */
+    add $12, %esp
+    pop %edx
+    pop %ecx
+    pop %ebx
+    pop %eax
 .endm

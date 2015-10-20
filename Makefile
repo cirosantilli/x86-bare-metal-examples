@@ -1,5 +1,6 @@
 .POSIX:
 
+COMMON ?= common.h
 LD ?= ld
 LINKER_SCRIPT ?= linker.ld
 # Use gcc so that the preprocessor will run first.
@@ -21,13 +22,18 @@ RUN_FILE := $(RUN)$(OUT_EXT)
 all: $(OUTS)
 
 %$(OUT_EXT): %$(OBJ_EXT) $(LINKER_SCRIPT)
+	@# Failed attempt at getting debug symbols.
+	@#$(LD) -melf_i386 -o '$(@:$(OUT_EXT)=.elf)' -T '$(LINKER_SCRIPT)' '$<'
 	$(LD) --oformat binary -o '$@' -T '$(LINKER_SCRIPT)' '$<'
 
-%$(OBJ_EXT): %$(GAS_EXT)
-	$(GAS) -c -o '$@' '$<'
+%$(OBJ_EXT): %$(GAS_EXT) $(COMMON)
+	$(GAS) -c -g -o '$@' '$<'
 
 %$(OUT_EXT): %$(NASM_EXT)
 	nasm -f bin -o '$@' '$<'
+
+# So that directories without a common.h can reuse this.
+$(COMMON):
 
 clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
@@ -37,11 +43,7 @@ run: all
 
 debug: all
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &
-	gdb \
-		-ex 'target remote localhost:1234' \
-		-ex 'set architecture i8086' \
-		-ex 'break *0x7c00' \
-		-ex 'continue'
+	gdb -x gdb.gdb
 
 bochs: all
 	# Supposes size is already multiples of 512.

@@ -1,10 +1,5 @@
 # TODO
 
--   exemplify all CPU modes
-
-    -   move to 32 bit mode. Answer http://stackoverflow.com/questions/7130726/writing-a-hello-world-kernel
-    -   http://stackoverflow.com/questions/20848412/modes-of-intel-64-cpu
-
 - cache: wbinvd
 
 -   inb outb
@@ -18,7 +13,7 @@
     - http://stackoverflow.com/questions/8894241/real-mode-x86-asm-how-are-the-basics-done?rq=1
     - http://wiki.osdev.org/Text_UI
 
-    Port 0x80 on Linux kenrnel:
+    Port 0x80 on Linux kernel:
 
     - https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/boot.h#L78
     - http://stackoverflow.com/questions/6793899/what-does-the-0x80-port-address-connects
@@ -31,21 +26,22 @@
     - https://en.wikipedia.org/wiki/Double_fault
     - https://en.wikipedia.org/wiki/Triple_fault
 
+    timer, IPT
+
 - paging
 
-- WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
+-   Segment registers /segmentation and protected mode. Then try to answer all of: GDT
 
--   Segment registers /segmentation and protected mode. Then try to answer all of:
-
-      http://stackoverflow.com/questions/18736663/what-does-the-colon-mean-in-x86-assembly-gas-syntax-as-in-dsbx
     - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
     - http://stackoverflow.com/questions/10810203/what-is-the-fs-gs-register-intended-for
+    - http://stackoverflow.com/questions/11540104/designing-gdt-for-a-small-kernel
     - http://stackoverflow.com/questions/12760109/data-segment-in-x86-programs
     - http://stackoverflow.com/questions/14480579/when-does-segment-registers-change
     - http://stackoverflow.com/questions/14661916/gdt-segmented-memory
     - http://stackoverflow.com/questions/15335003/x86-protected-mode-segment-registers-purpose
     - http://stackoverflow.com/questions/17210620/assembler-calculating-a-memory-address-with-register-base?lq=1
     - http://stackoverflow.com/questions/18247106/implementing-gdt-with-basic-kernel
+    - http://stackoverflow.com/questions/18736663/what-does-the-colon-mean-in-x86-assembly-gas-syntax-as-in-dsbx
     - http://stackoverflow.com/questions/20717890/how-to-interpret-gs0x14?lq=1
     - http://stackoverflow.com/questions/22446104/do-the-x86-segment-registers-have-special-meaning-usage-on-modern-cpus-and-oses?lq=1
     - http://stackoverflow.com/questions/22962251/how-to-enter-64-bit-mode-on-a-x86-64/22963701#22963701
@@ -75,7 +71,11 @@
     - http://stackoverflow.com/questions/14354626/how-to-create-two-separate-segments-in-global-descriptor-table
     - http://stackoverflow.com/questions/14812160/near-and-far-jmps
 
--   timer, IPT
+    Local descriptor table:
+
+    - http://stackoverflow.com/questions/14299893/any-tutorials-on-how-to-set-up-a-ldt?rq=1
+
+- WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
 
 -   BIOS
 
@@ -98,20 +98,10 @@
 
 -   POST https://en.wikipedia.org/wiki/Power-on_self-test
 
--   2 stage two stage boot: load another part from the disk
+-   exemplify all CPU modes
 
-    - http://stackoverflow.com/a/28645943/895245 contains:
+    -   http://stackoverflow.com/questions/20848412/modes-of-intel-64-cpu
 
-            [bits 16]
-            [org 0x7c00]
-            mov ax, 0201h
-            mov cx, 0002h
-            mov dh, 0
-            mov bx, 0
-            mov es, bx
-            mov bx, 2000h
-            int 13h
-            jmp 0:2000h
+-   https://en.wikipedia.org/wiki/Task_state_segment
 
-            [SECTION signature start=0x7dfe]
-            dw 0AA55h
+    Not used by Linux: <http://stackoverflow.com/questions/2711044/why-doesnt-linux-use-the-hardware-context-switch-via-the-tss>

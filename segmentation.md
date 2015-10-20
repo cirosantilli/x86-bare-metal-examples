@@ -10,21 +10,20 @@ Segment registers in protected mode point to entries of that table.
 
 GDT is used as soon as we enter protected mode, so that's why we have to deal with it, but the preferred way of managing program memory spaces is paging.
 
-Format:
+Format straight from the Linux kernel 4.2: `arch/x86/include/asm/desc_defs.h` in `struct desc_struct`:
+
+    u16 limit0;
+    u16 base0;
+    unsigned base1: 8, type: 4, s: 1, dpl: 2, p: 1;
+    unsigned limit: 4, avl: 1, l: 1, d: 1, g: 1, base2: 8;
+
+- `g`: granularity of the limit. If `0`, 1 byte, if `1`, 4KiB.
+
+Other sources:
 
 - Intel Manual 325384-053US Volume 3, 3.4.5 Segment Descriptors
 - https://en.wikipedia.org/wiki/Global_Descriptor_Table
 - http://wiki.osdev.org/GDT
-
-    +-------------------------------------------------+
-    | segment address 24-31  | flags #2  | len 16-19  |
-    +-------------------------------------------------+
-    | flags #1               | segment address 16-23  |
-    +-------------------------------------------------+
-    | segment address bits 0-15                       |
-    +-------------------------------------------------+
-    | segment length bits 0-15                        |
-    +-------------------------------------------------+
 
 ### Null segment selector
 
@@ -38,6 +37,8 @@ does not generate an exception when a segment register (other than the CS or SS 
 selector. It does, however, generate an exception when a segment register holding a null selector is used to access
 memory. A null selector can be used to initialize unused segment registers. Loading the CS or SS register with a null
 segment selector causes a general-protection exception (#GP) to be generated.
+
+I think this means that it is impossible to use the first entry. So you can do whatever you want with it?
 
 ### Effect on memory access
 
@@ -84,3 +85,14 @@ In 32-bit, a 6 byte register that holds:
 In 64 bit, makes 10 bytes, with the address having 8 bytes
 
 GRUB seems to setup one for you: http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
+
+## lgdt
+
+Loads the segment description register from memory.
+
+TODO where is it on the Linux kernel?
+
+Candidates:
+
+- linux/arch/x86/kernel/head_64.S
+- linux/arch/x86/boot/compressed/head_64.S

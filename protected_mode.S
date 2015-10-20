@@ -26,7 +26,7 @@ Major changes from real moe:
 BEGIN
     CLEAR
     PROTECTED_MODE
-    VGA_PRINT $message
+    VGA_PRINT_STRING $message
     jmp .
 message:
     .asciz "hello world"

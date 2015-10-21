@@ -45,7 +45,7 @@ Minimal operating systems to learn low level programming.
             1.  [in mouse (TODO)](in_mouse.S)
         1.  [Protected mode](protected_mode.S)
             1. [Segment base (TODO)](segment_base.S)
-            1. [IDT TODO](idt.S)
+            1. [IDT](idt.S)
                 1. [IDT zero divide](idt_zero_divide.S)
             1. Segmentation fault handler: memory bound, ring, RWX violations
     1.  APM

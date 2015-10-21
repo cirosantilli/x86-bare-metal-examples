@@ -1,9 +1,12 @@
 /*
 # IDT Zero Divide
 
-TODO why does it enter an infinite loop? How to prevent it?
-
 Division by zero causes a Divide Error which Intel notes as `#DE`.
+
+Remember that DE is not *only* for division by zero: it also happens on overflow!
+Thus the name: Division Error, and not Division by zero.
+
+- http://stackoverflow.com/questions/33029457/what-to-do-in-interrupt-handler-for-divide-by-zero
 */
 
 #include "common.h"
@@ -13,8 +16,11 @@ BEGIN
     CLEAR
     PROTECTED_MODE
     lidt idt_descriptor
-    mov $0, %eax
-    div %eax
+    mov $0, %edx
+    mov $1, %eax
+    mov $0, %ecx
+    /* The iret jumps back here! */
+    div %ecx
     jmp .
 /* TODO DRY up with idt.S */
 idt_start:
@@ -29,6 +35,8 @@ idt_descriptor:
     .long idt_start
 handler:
     VGA_PRINT_STRING $message
+    /* If we don't do this, we get an infinite loop! */
+    mov $1, %ecx
     iret
 message:
     .asciz "a"

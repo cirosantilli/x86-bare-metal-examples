@@ -26,6 +26,8 @@ I think this is mandatory, e.g. a `jmp` wouldn't be enough because:
 - we may have far jumped
 - iret also pops EFLAGS restoring. TODO more things also seem restored: CS, EIP, EFLAGS, SS, and ESP
 
+http://stackoverflow.com/questions/10462884/must-iret-be-used-when-returning-from-an-interrupt
+
 ## ISR
 
 ## Interrupt service routines

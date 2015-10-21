@@ -6,7 +6,7 @@ This will only cover specifics, you have to know GDB debugging already.
 
 First read the `make debug` target to get started. Those points will not be repeated here.
 
-How to have debug symbols: <http://stackoverflow.com/a/32960272/895245> TODO implement here.
+How to have debug symbols: <http://stackoverflow.com/a/32960272/895245> TODO implement here. Needs to point GDB to an ELF file in addition to the remote listen.
 
 How to step over `int` calls: <http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q>
 

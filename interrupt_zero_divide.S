@@ -9,8 +9,7 @@ BEGIN
     movw %cs, 0x02
     mov $0, %ax
     div %ax
-    jmp fail
+    hlt
 handler:
     PUTC $'a
-fail:
-    hlt
+    iret

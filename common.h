@@ -53,6 +53,20 @@ so this cancels that one.
     pop %ax
 .endm
 
+.macro PUSH_EADX
+    push %eax
+    push %ebx
+    push %ecx
+    push %edx
+.endm
+
+.macro POP_EDAX
+    pop %edx
+    pop %ecx
+    pop %ebx
+    pop %eax
+.endm
+
 /*
 Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
 reg: r8 to be converted
@@ -155,7 +169,6 @@ Use the simplest GDT possible.
     .equ CODE_SEG, 8
     .equ DATA_SEG, gdt_data - gdt_start
 
-    cli
     /* Tell the processor where our Global Descriptor Table is in memory. */
     lgdt gdt_descriptor
 
@@ -177,6 +190,9 @@ Our GDT contains:
   - it is impossible execute the data segment
   Both start at 0 and span the entire memory,
   allowing us to access anything without problems.
+A real OS might have 2 extra segments: user data and code.
+This is better than modifying the privilege bit of the GDT
+as we'd have to reload it several times, losing cache.
 */
 gdt_start:
 gdt_null:
@@ -372,10 +388,7 @@ Loops around the to the top.
 */
 .macro VGA_PRINT_STRING s
     LOCAL loop, end
-    push %eax
-    push %ebx
-    push %ecx
-    push %edx
+    PUSH_EADX
     mov \s, %ecx
     mov vga_current_line, %eax
     mov $0, %edx
@@ -400,10 +413,7 @@ loop:
     jmp loop
 end:
     incl vga_current_line
-    pop %edx
-    pop %ecx
-    pop %ebx
-    pop %eax
+    POP_EDAX
 .endm
 
 /*
@@ -420,10 +430,7 @@ Expected output on screen:
 */
 .macro VGA_PRINT_REG reg=<%eax>
     LOCAL loop
-    push %eax
-    push %ebx
-    push %ecx
-    push %edx
+    PUSH_EADX
     /* Null terminator. */
     mov \reg, %ecx
 
@@ -448,8 +455,5 @@ loop:
 
     /* Restore the stack. We have pushed 3 * 4 bytes. */
     add $12, %esp
-    pop %edx
-    pop %ecx
-    pop %ebx
-    pop %eax
+    POP_EDAX
 .endm

@@ -114,4 +114,13 @@
 
 -   mouse
 
-    - DOS question: http://stackoverflow.com/questions/23043732/accessing-the-mouse-via-assembly-x86
+    Does not seem to be an easy BIOS way:
+
+    -   DOS question: http://stackoverflow.com/questions/23043732/accessing-the-mouse-via-assembly-x86
+
+    -   http://stackoverflow.com/questions/5754233/int-33h-doesnt-work
+
+    -   Linux questions:
+
+        - http://stackoverflow.com/questions/15322892/linux-usb-mouse-drivers
+        - http://stackoverflow.com/questions/25175960/which-drivers-are-used-by-usb-mouse-in-linux-kernel

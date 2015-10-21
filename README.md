@@ -36,7 +36,6 @@ Minimal operating systems to learn low level programming.
             1.  [int $1](interrupt1.S)
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
             1.  [Interrupt loop](interrupt_loop.S)
-            1.  [lidt (TODO)](lidt.S)
         1.  in
             1.  [in keyboard](in_keyboard.S)
             1.  [in RTC](in_rtc.S)
@@ -45,7 +44,9 @@ Minimal operating systems to learn low level programming.
             1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
         1.  [Protected mode](protected_mode.S)
-            1. [Segment base](segment_base.S)
+            1. [Segment base (TODO)](segment_base.S)
+            1. [IDT TODO](idt.S)
+                1. [IDT zero divide](idt_zero_divide.S)
             1. Segmentation fault handler: memory bound, ring, RWX violations
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)

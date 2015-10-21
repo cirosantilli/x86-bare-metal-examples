@@ -24,7 +24,7 @@ before the interrupt came in.
 I think this is mandatory, e.g. a `jmp` wouldn't be enough because:
 
 - we may have far jumped
-- iret also pops EFLAGS restoring
+- iret also pops EFLAGS restoring. TODO more things also seem restored: CS, EIP, EFLAGS, SS, and ESP
 
 ## ISR
 

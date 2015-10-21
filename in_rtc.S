@@ -51,35 +51,35 @@ update_in_progress:
     mov %al, %cl
 
     PRINT_HEX <%al>
-    PUTC($0x20)
+    PUTC
 
     /* Minute. */
     mov $0x02, %al
     out %al, $RTCaddress
     in $RTCdata, %al
     PRINT_HEX <%al>
-    PUTC($0x20)
+    PUTC
 
     /* Hour. */
     mov $0x04, %al
     out %al, $RTCaddress
     in $RTCdata, %al
     PRINT_HEX <%al>
-    PUTC($0x20)
+    PUTC
 
     /* Day. */
     mov $0x07, %al
     out %al, $RTCaddress
     in $RTCdata, %al
     PRINT_HEX <%al>
-    PUTC($0x20)
+    PUTC
 
     /* Month. */
     mov $0x08, %al
     out %al, $RTCaddress
     in $RTCdata, %al
     PRINT_HEX <%al>
-    PUTC($0x20)
+    PUTC
 
     /* Year. */
     mov $0x09, %al

@@ -6,7 +6,7 @@
 Load one more sector from the disk
 besides the first 512 bytes and do something with it.
 
-Expected outcome: `@` gets printed to the screen.
+Expected output: "a"
 
 Grub 2.0 makes several calls to it under `grub-core/boot/i386/pc`
 
@@ -81,7 +81,7 @@ just after the magic bytes.
 */
 .section .stage2
 stage2:
-    PUTC($0x40)
+    PUTC $'a
     hlt
 
     /*

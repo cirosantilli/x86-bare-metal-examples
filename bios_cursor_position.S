@@ -1,10 +1,16 @@
+/*
+Change the current cursor position.
+
+Expected output: "cb"
+*/
+
 #include "common.h"
 BEGIN
 CLEAR
 
 /* Print "ab" */
-PUTC($0x61)
-PUTC($0x62)
+PUTC $'a
+PUTC $'b
 
 /* Move back to 0, 0.*/
 mov $0x02, %ah
@@ -15,6 +21,6 @@ mov $0x0, %dx
 int $0x10
 
 /* Overwrite 'a' with c'. */
-PUTC($0x63)
+PUTC $'c
 
 hlt

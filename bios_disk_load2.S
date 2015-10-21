@@ -4,9 +4,9 @@
 BEGIN
     CLEAR
 STAGE2
-    PUTC($0x61)
+    PUTC $'a
     jmp sector3
 .org 512
 sector3:
-    PUTC($0x62)
+    PUTC $'b
     hlt

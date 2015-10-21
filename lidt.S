@@ -26,7 +26,7 @@ BEGIN
     mov %cs, 0x06
 
     int $0
-    PUTC($0x62)
+    PUTC $'b
     hlt
 
 idt:
@@ -39,5 +39,5 @@ idt_descriptor:
     .long idt
 
 handler:
-    PUTC($0x61)
+    PUTC $'a
     iret

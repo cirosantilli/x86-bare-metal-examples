@@ -103,7 +103,7 @@ BEGIN
     mov %ah, %al
     out %al, $0x40
 
-    PUTC($0x61)
+    PUTC $'a
     sti
 
 loop:
@@ -111,7 +111,7 @@ loop:
     jmp loop
 
 handler:
-    PUTC($0x61)
+    PUTC $'a
     iret
 
     /* TODO turn off. */

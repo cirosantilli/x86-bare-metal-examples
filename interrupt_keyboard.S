@@ -15,6 +15,6 @@ BEGIN
 loop:
     jmp loop
 handler:
-    PUTC($0x61)
+    PUTC $'a
     iret
 jmp loop

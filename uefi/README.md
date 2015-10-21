@@ -2,6 +2,14 @@
 
 Successor for BIOS.
 
+Made by Intel, mostly MIT open source, but vendors do modify it.
+
+Matthew Garrett says it is huge: larger than Linux without drivers. Like BIOS, it is a "mini-OS".
+
+Since it is huge, it inevitably contains bugs. Garret says that Intel sometimes does not feel like updating the firmware with bugfixes.
+
+ARM is considering an implementation <https://wiki.linaro.org/ARM/UEFI>
+
 TODO get a hello world program working:
 
 - http://www.rodsbooks.com/efi-programming/hello.html Best source so far: allowed me to compile the hello world! TODO: how to run it now on QEMU and real hardware?

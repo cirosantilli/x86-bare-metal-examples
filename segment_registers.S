@@ -81,34 +81,34 @@ BEGIN
     mov $1, %ax
     mov %ax, %ds
     mov %ds:msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     /*
     %ds is the default segment for GAS memory operations
     if we don't write it explicitly.
     */
     mov msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     mov $1, %ax
     mov %ax, %es
     mov %es:msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     mov $1, %ax
     mov %ax, %fs
     mov %fs:msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     mov $1, %ax
     mov %ax, %gs
     mov %gs:msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     mov $1, %ax
     mov %ax, %ss
     mov %ss:msg, %al
-    PUTC(%al)
+    PUTC <%al>
 
     hlt
 msg:

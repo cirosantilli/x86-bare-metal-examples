@@ -1,38 +1,123 @@
 /*
-Using macros for everything to make linking simpler.
+Using macros for now instead of functions because it simplifies the linker script.
 
-The big ones do bloat the executable.
+But the downsides are severe:
 
-## Calling convention
+-   no symbols to help debugging
+
+-   impossible to step over method calls: you have to step into everything
+
+-   larger output, supposing I can get linker gc for unused functions working,
+    see --gc-section, which is for now uncertain.
+    If I can get this working, I'll definitely move to function calls.
+
+    The problem is that if I don't, every image will need a stage 2 loader.
+    That is not too serious though, it could be added to BEGIN.
+
+## Conventions
+
+Every "function-like macro" should maintain register state
+(flags currently not maintained).
+
+%sp cannot be used to pass most arguments.
+
+We don't care about setting %bp.
 */
 
+/*
+I really want this for the local labels.
+
+The major downside is that every register passed as argument requires `<>`:
+http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-sign-in-a-default-parameter-fails-with-oper/
+*/
 .altmacro
 
+/* Helpers */
+
+/* Push regiesters ax, bx, cx and dx. Lightweight `pusha`. */
+.macro PUSH_ADX
+    push %ax
+    push %bx
+    push %cx
+    push %dx
+.endm
+
+/*
+Pop registers dx, cx, bx, ax. Inverse order from PUSH_ADX,
+so this cancels that one.
+*/
+.macro POP_DAX
+    pop %dx
+    pop %cx
+    pop %bx
+    pop %ax
+.endm
+
+/*
+Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
+reg: r8 to be converted
+Output: stored in reg itself. Letters are uppercase.
+*/
+.macro HEX_NIBBLE reg
+    LOCAL letter, end
+    cmp $10, \reg
+    jae letter
+    add $'0, \reg
+    jmp end
+letter:
+    /* 0x37 == 'A' - 10 */
+    add $0x37, \reg
+end:
+.endm
+
+/*
+Convert a byte to hex ASCII value.
+c: r/m8 byte to be converted
+Output: two ASCII characters, is stored in `ah:al`
+http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
+*/
+.macro HEX c
+    mov \c, %al
+    mov \c, %ah
+    shr $4, %al
+    HEX_NIBBLE <%al>
+    and $0x0F, %ah
+    HEX_NIBBLE <%ah>
+.endm
+
+/* Structural. */
+
+/*
+Setup a sane initial state.
+
+Should be the first thing in every file.
+*/
 .macro BEGIN
     .code16
     cli
-    /* Set %cs to 0. TODO Is that really needed? */ ;\
+    /* Set %cs to 0. TODO Is that really needed? */
     ljmp $0, $1f
     1:
     xor %ax, %ax
-    /* We must zero %ds for any data access. */ \
+    /* We must zero %ds for any data access. */
     mov %ax, %ds
-    /* TODO is it really need to clear all those segment registers, e.g. for BIOS calls? */ \
+    /* TODO is it really need to clear all those segment registers, e.g. for BIOS calls? */
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
-    /* TODO What to move into BP and SP? http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process */ \
+    /*
+    TODO What to move into BP and SP?
+    http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process
+    */
     mov 0x0000, %bp
-    /* Automatically disables interrupts until the end of the next instruction. */ \
+    /* Automatically disables interrupts until the end of the next instruction. */
     mov %ax, %ss
-    /* We should set SP because BIOS calls may depend on that. TODO confirm. */ \
+    /* We should set SP because BIOS calls may depend on that. TODO confirm. */
     mov %bp, %sp
 .endm
 
 /*
 Load stage2 from disk to memory, and jump to it.
-
-TODO not working.
 
 To be used when the program does not fit in the 512 bytes.
 
@@ -44,7 +129,7 @@ Sample usage:
 .macro STAGE2
     mov $2, %ah
     /*
-    TODO get working on linker script.
+    TODO get working with linker script.
     Above my paygrade for now, so I just load a bunch of sectors instead.
     */
     /* mov __stage2_size, %al;\ */
@@ -83,7 +168,16 @@ Use the simplest GDT possible.
     mov %eax, %cr0
 
     ljmp $CODE_SEG, $protected_mode
-.code32
+/*
+Our GDT contains:
+- a null entry to fill the unusable entry 0:
+  http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
+- a code and data. Both are necessary, because:
+  - it is impossible to write to the code segment
+  - it is impossible execute the data segment
+  Both start at 0 and span the entire memory,
+  allowing us to access anything without problems.
+*/
 gdt_start:
 gdt_null:
     .long 0x0
@@ -108,6 +202,7 @@ gdt_descriptor:
     .long gdt_start
 vga_current_line:
     .long 0
+.code32
 protected_mode:
     /*
     Setup the other segments.
@@ -120,115 +215,103 @@ protected_mode:
     mov %ax, %fs
     mov %ax, %gs
     mov %ax, %ss
-    /* TODO detect memory properly. */
+    /*
+    TODO detect the last memory address available properly.
+    It depends on how much RAM we have.
+    */
     mov $0X7000, %ebp
     mov %ebp, %esp
 .endm
 
 /* BIOS */
 
-#define CURSOR_POSITION(x, y) \
-    mov $0x02, %ah;\
-    mov $0x00, %bh;\
-    mov $0x ## x ## y, %dx;\
+.macro CURSOR_POSITION x=$0, y=$0
+    PUSH_ADX
+    mov $0x02, %ah
+    mov $0x00, %bh
+    mov \x, %dh
+    mov \y, %dl
     int $0x10
+    POP_DAX
+.endm
 
 /* Clear the screen, move to position 0, 0. */
 .macro CLEAR
+    PUSH_ADX
     mov $0x0600, %ax
     mov $0x7, %bh
     mov $0x0, %cx
     mov $0x184f, %dx
     int $0x10
-    CURSOR_POSITION(0, 0)
+    CURSOR_POSITION
+    POP_DAX
 .endm
 
 /*
-Print a single immediate byte or 8 bit register.
+Print a 8 bit ASCII value at current cursor position.
 
-`c` is it's value in hex.
+- c  r/m/imm8  ASCII value to be printed.
 
-Usage: character 'A' (ASCII 61):
+Usage:
 
-    PUTS(61)
+    PUTC $'a
 
-Clobbers: ax
+prints `'a'` to the screen.
 */
-#define PUTC(c) \
-    mov $0x0E, %ah;\
-    mov c, %al;\
-    int $0x10
-
-/*
-Convert a byte to hex ASCII value.
-c: r/m8 byte to be converted
-Output: two ASCII characters, is stored in `ah:al`
-http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
-*/
-#define HEX(c) GAS_HEX c
-.macro GAS_HEX c
+.macro PUTC c=$0x20
+    push %ax
     mov \c, %al
-    mov \c, %ah
-    shr $4, %al
-    GAS_HEX_NIBBLE al
-    and $0x0F, %ah
-    GAS_HEX_NIBBLE ah
-.endm
-
-/*
-Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
-reg: r8 to be converted
-Clobbered registers: none
-Output: stored in reg itself. Letters are uppercase.
-*/
-.macro GAS_HEX_NIBBLE reg
-    LOCAL letter, end
-    cmp $10, %\reg
-    jae letter
-    /* 0x30 == '0' */
-    add $0x30, %\reg
-    jmp end
-letter:
-    /* 0x37 == 'A' - 10 */
-    add $0x37, %\reg
-end:
+    mov $0x0E, %ah
+    int $0x10
+    pop %ax
 .endm
 
 /*
 Print a byte as two hexadecimal digits.
 
-reg: 1 byte register.
-
-Clobbers: ax, dl
+- reg: 1 byte register.
 */
-.macro PRINT_HEX reg
-    HEX(<\reg>)
-    mov %ah, %dl
-    PUTC(%al)
-    PUTC(%dl)
+.macro PRINT_HEX reg=<%al>
+    push %ax
+    HEX <\reg>
+    PUTC <%al>
+    PUTC <%ah>
+    pop %ax
 .endm
 
-#define PRINT_NEWLINE \
-    PUTC($0x0A);\
-    PUTC($0x0D)
+/*
+Print a 16-bit number
+
+- in: r/m/imm16
+*/
+.macro PRINT_WORD_HEX in=<%ax>
+    push %ax
+    mov \in, %ax
+    PRINT_HEX <%ah>
+    PRINT_HEX <%al>
+    pop %ax
+.endm
+
+.macro PRINT_NEWLINE
+    PUTC $'\n
+    PUTC $'\r
+.endm
 
 /*
 Print a null terminated string.
 
 Use as:
 
-        PRINT($s)
+        PRINT $s
         hlt
     s:
         .asciz "string"
-
-We use this `cpp` macro to allow writing `PRINT(S)` with parenthesis.
 */
-#define PRINT(s) GAS_PRINT s
-.macro GAS_PRINT s
-    LOCAL loop, end
+.macro PRINT s
+    LOCAL end, loop
     mov s, %si
     mov $0x0e, %ah
+    cld
 loop:
     lodsb
     or %al, %al
@@ -236,6 +319,43 @@ loop:
     int $0x10
     jmp loop
 end:
+.endm
+
+/*
+Dump memory.
+
+- s: starting address
+- n: number of bytes to dump
+*/
+.macro PRINT_BYTES s, n=$16
+    LOCAL end, loop, no_newline
+    PUSH_ADX
+    push %di
+    mov s, %si
+    mov \n, %cx
+    mov $0, %di
+    cld
+loop:
+    cmp $0, %cx
+    je end
+    dec %cx
+    lodsb
+    PRINT_HEX
+    PUTC
+    /* Print a newline for every 8 bytes. */
+    mov $0, %dx
+    mov %di, %ax
+    mov $8, %bx
+    div %bx
+    cmp $7, %dx
+    jne no_newline
+    PRINT_NEWLINE
+no_newline:
+    inc %di
+    jmp loop
+end:
+    pop %di
+    POP_DAX
 .endm
 
 /* VGA */
@@ -311,10 +431,10 @@ Expected output on screen:
     push $0
     mov $2, %ebx
 loop:
-    GAS_HEX <%cl>
+    HEX <%cl>
     mov %ax, %dx
     shl $16, %edx
-    GAS_HEX <%ch>
+    HEX <%ch>
     mov %ax, %dx
     push %edx
     shr $16, %ecx

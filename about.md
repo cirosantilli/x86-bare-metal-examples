@@ -11,3 +11,15 @@ This is not meant provide a template from which you can write a real OS, but ins
 Minimal examples are useful because it is easier to observe the requirements for a given concept to be observable.
 
 Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
+
+## Pre-requisites
+
+OS dev is one of the most insanely hard programming tasks a person can undertake, and will push your knowledge of several domains to the limit.
+
+Knowing the following will help a lot:
+
+- userland x86 assembly: https://github.com/cirosantilli/assembly-cheat
+- compilation, linking and ELF format basics
+- GDB debugging
+
+While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.

@@ -6,5 +6,5 @@ http://stackoverflow.com/questions/4113250/how-to-handle-keyboard-in-real-mode-t
 BEGIN
 mov $0x00, %ah
 int $0x16
-PUTC(%al)
+PUTC <%al>
 hlt

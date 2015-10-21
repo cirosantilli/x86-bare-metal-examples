@@ -7,7 +7,7 @@ Same as the kernel version.
 #include "common.h"
 BEGIN
 start:
-    PUTC($0x61)
+    PUTC $'a
 
     mov $0xb6, %al
     out %al, $0x43

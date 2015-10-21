@@ -11,6 +11,6 @@ BEGIN
     div %ax
     jmp fail
 handler:
-    PUTC($0x61)
+    PUTC $'a
 fail:
     hlt

@@ -8,5 +8,5 @@ BEGIN
     mov %cs, 0x02
     int $0
 handler:
-    PUTC($0x61)
+    PUTC $'a
     int $0

@@ -10,8 +10,8 @@ BEGIN
     movw $handler, 0x04
     mov %cs, 0x06
     int $1
-    PUTC($0x62)
+    PUTC $'b
     hlt
 handler:
-    PUTC($0x61)
+    PUTC $'a
     iret

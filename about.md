@@ -12,6 +12,8 @@ Minimal examples are useful because it is easier to observe the requirements for
 
 Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
 
+Using C or not is a hard choice. It does make it much easier to express higher level ideas, and gives portability. But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
+
 ## Pre-requisites
 
 OS dev is one of the most insanely hard programming tasks a person can undertake, and will push your knowledge of several domains to the limit.

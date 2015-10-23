@@ -457,3 +457,52 @@ loop:
     add $12, %esp
     POP_EDAX
 .endm
+
+.macro IDT_START
+    idt_start:
+.endm
+
+.macro IDT_END
+idt_end:
+/* Exact same structure as gdt_descriptor. */
+idt_descriptor:
+    .word idt_end - idt_start
+    .long idt_start
+.endm
+
+.macro IDT_ENTRY
+    /* Low handler address.
+    It is impossible to write:
+    .word (handler & 0x0000FFFF)
+    as we would like:
+    http://stackoverflow.com/questions/18495765/invalid-operands-for-binary-and
+    So this must be done at runtime.
+    */
+    .word 0
+    /* Segment selector: byte offset into the GDT. */
+    .word CODE_SEG
+    /* Reserved 0. */
+    .byte 0
+    /*
+    Flags. Format:
+    - 1 bit: present. If 0 and this happens, triple fault.
+    - 2 bits: ring level we will be called from.
+    - 5 bits: fixed to 0xE.
+    */
+    .byte 0x8E
+    /* High word of base. */
+    .word 0
+.endm
+
+/*
+- index: r/m/imm32 Index of the entry to setup.
+- handler: r/m/imm32 Address of the handler function.
+*/
+.macro IDT_SETUP_ENTRY index, handler
+    mov \index, %eax
+    mov \handler, %ebx
+    mov %bx, idt_start(%eax, 8)
+    shr $16, %ebx
+    mov $6, %ecx
+    mov %bx, idt_start(%ecx, %eax, 8)
+.endm

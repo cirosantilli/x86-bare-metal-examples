@@ -46,6 +46,8 @@ SECTIONS
 
         /* Ensure that the generated image is a multiple of 512 bytes long. */
         . = ALIGN(512);
+        __end = .;
+        __end_align_4k = ALIGN(4k);
     }
 }
 

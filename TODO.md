@@ -1,6 +1,6 @@
 # TODO
 
-- cache: wbinvd
+-   cache: wbinvd
 
 -   inb outb
 
@@ -18,7 +18,7 @@
     - https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/boot.h#L78
     - http://stackoverflow.com/questions/6793899/what-does-the-0x80-port-address-connects
 
-- lidt, interrupts, IDTR:
+-   lidt, interrupts, IDTR:
 
     - http://stackoverflow.com/questions/3392831/what-happens-in-an-interrupt-service-routine
     - http://stackoverflow.com/questions/1817577/what-does-int-0x80-mean-in-assembly-code
@@ -28,7 +28,7 @@
 
     timer, IPT
 
-- paging
+-   paging
 
 -   Segment registers /segmentation and protected mode. Then try to answer all of: GDT
 

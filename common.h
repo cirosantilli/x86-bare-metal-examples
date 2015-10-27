@@ -191,6 +191,7 @@ Our GDT contains:
   Both start at 0 and span the entire memory,
   allowing us to access anything without problems.
 A real OS might have 2 extra segments: user data and code.
+This is the case for the Linux kernel.
 This is better than modifying the privilege bit of the GDT
 as we'd have to reload it several times, losing cache.
 */
@@ -237,6 +238,59 @@ protected_mode:
     */
     mov $0X7000, %ebp
     mov %ebp, %esp
+.endm
+
+/* IDT */
+
+.macro IDT_START
+    idt_start:
+.endm
+
+.macro IDT_END
+idt_end:
+/* Exact same structure as gdt_descriptor. */
+idt_descriptor:
+    .word idt_end - idt_start
+    .long idt_start
+.endm
+
+.macro IDT_ENTRY
+    /* Low handler address.
+    It is impossible to write:
+    .word (handler & 0x0000FFFF)
+    as we would like:
+    http://stackoverflow.com/questions/18495765/invalid-operands-for-binary-and
+    because this address has to be split up into two.
+    So this must be done at runtime.
+    Why this design choice from Intel?! Weird.
+    */
+    .word 0
+    /* Segment selector: byte offset into the GDT. */
+    .word CODE_SEG
+    /* Reserved 0. */
+    .byte 0
+    /*
+    Flags. Format:
+    - 1 bit: present. If 0 and this happens, triple fault.
+    - 2 bits: ring level we will be called from.
+    - 5 bits: fixed to 0xE.
+    */
+    .byte 0x8E
+    /* High word of base. */
+    .word 0
+.endm
+
+/*
+- index: r/m/imm32 Index of the entry to setup.
+- handler: r/m/imm32 Address of the handler function.
+*/
+.macro IDT_SETUP_ENTRY index, handler
+    mov \index, %eax
+    mov \handler, %ebx
+    mov %bx, idt_start(%eax, 8)
+    shr $16, %ebx
+    mov $6, %ecx
+    mov %bx, idt_start(%ecx, %eax, 8)
 .endm
 
 /* BIOS */
@@ -422,13 +476,13 @@ Print a 32-bit register in hex.
 Sample usage:
 
     mov $12345678, %eax
-    VGA_PRINT_REG <%eax>
+    VGA_PRINT_HEX <%eax>
 
 Expected output on screen:
 
     12345678
 */
-.macro VGA_PRINT_REG reg=<%eax>
+.macro VGA_PRINT_HEX reg=<%eax>
     LOCAL loop
     PUSH_EADX
     /* Null terminator. */
@@ -456,53 +510,4 @@ loop:
     /* Restore the stack. We have pushed 3 * 4 bytes. */
     add $12, %esp
     POP_EDAX
-.endm
-
-.macro IDT_START
-    idt_start:
-.endm
-
-.macro IDT_END
-idt_end:
-/* Exact same structure as gdt_descriptor. */
-idt_descriptor:
-    .word idt_end - idt_start
-    .long idt_start
-.endm
-
-.macro IDT_ENTRY
-    /* Low handler address.
-    It is impossible to write:
-    .word (handler & 0x0000FFFF)
-    as we would like:
-    http://stackoverflow.com/questions/18495765/invalid-operands-for-binary-and
-    So this must be done at runtime.
-    */
-    .word 0
-    /* Segment selector: byte offset into the GDT. */
-    .word CODE_SEG
-    /* Reserved 0. */
-    .byte 0
-    /*
-    Flags. Format:
-    - 1 bit: present. If 0 and this happens, triple fault.
-    - 2 bits: ring level we will be called from.
-    - 5 bits: fixed to 0xE.
-    */
-    .byte 0x8E
-    /* High word of base. */
-    .word 0
-.endm
-
-/*
-- index: r/m/imm32 Index of the entry to setup.
-- handler: r/m/imm32 Address of the handler function.
-*/
-.macro IDT_SETUP_ENTRY index, handler
-    mov \index, %eax
-    mov \handler, %ebx
-    mov %bx, idt_start(%eax, 8)
-    shr $16, %ebx
-    mov $6, %ecx
-    mov %bx, idt_start(%ecx, %eax, 8)
 .endm

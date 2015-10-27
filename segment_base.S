@@ -58,8 +58,8 @@ BEGIN
     mov %ax, %ds
 
     /*
-    TODO this sanity check is not printing "ab",
-    so we're not restoring the old state properly.
+    TODO this sanity check is not printing "ab".
+    It fails, so we're not restoring the old state properly.
     Likely blows up because video memory going wrong.
     */
     VGA_PRINT_STRING $message

@@ -53,3 +53,5 @@ Now if you do:
 you can test several examples with a single USB burn, which is much faster.
 
 You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.
+
+TODO: boot sectors that load STAGE2 are not working with the big image chainloader. TODO why?

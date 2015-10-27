@@ -76,54 +76,7 @@ BEGIN
     mov $0b00100111, %al
     mov %al, page_directory
 
-    /*
-    Make all pages of the first directory into an identity map (linear address == logical address).
-    This will give us: 2^10 * 2^12 == 4MiB of identity memory.
-    This is particularly important because our code segment is running there.
-    */
-    mov $0, %eax
-    mov $page_table, %ebx
-page_setup_start:
-    cmp $0x400, %eax
-    je page_setup_end
-
-    /*
-    Byte 0: fixed flags:
-    - 0: present
-    - 1: RW
-    - 2: user mode can access iff 1
-    - 3: Page-level write-through
-    - 4: Page-level cache disable
-    - 5: accessed
-    - 6: dirty
-    - 7: PAT: TODO
-    */
-    movb $0b00100111, (%ebx)
-
-    /*
-    Byte 1:
-    -   4 bits of flags:
-        - 8: Global
-        - 9:11: ignored
-    -   4 low bits of page address
-    */
-    mov %eax, %edx
-    /*
-    4 because the 4 low bits of eax are the 4 high bits of the second byte.
-    The 4 low bits of the second byte are flags / ignored and set to 0.
-    */
-    shl $4, %edx
-    mov %dl, 1(%ebx)
-
-    /* Bytes 2 and 3: 16 high bits of page address. */
-    mov %eax, %edx
-    shr $4, %edx
-    mov %dx, 2(%ebx)
-
-    inc %eax
-    add $4, %ebx
-    jmp page_setup_start
-page_setup_end:
+    call setup_page_table
 
     /* Setup a test canary value. */
     mov $0x1234, %eax
@@ -169,6 +122,57 @@ page_setup_end:
 
 message:
     .asciz "hello world"
+
+setup_page_table:
+    /*
+    Setup a single directory: 2^10 * 2^12 == 4MiB of identity memory.
+    Make all pages of the first directory into an identity map (linear address == logical address).
+    This is particularly important because our code segment is running there.
+    */
+    mov $0, %eax
+    mov $page_table, %ebx
+page_setup_start:
+    cmp $0x400, %eax
+    je page_setup_end
+
+    /*
+    Byte 0: fixed flags:
+    - 0: present
+    - 1: RW
+    - 2: user mode can access iff 1
+    - 3: Page-level write-through
+    - 4: Page-level cache disable
+    - 5: accessed
+    - 6: dirty
+    - 7: PAT: TODO
+    */
+    movb $0b00100111, (%ebx)
+
+    /*
+    Byte 1:
+    -   4 bits of flags:
+        - 8: Global
+        - 9:11: ignored
+    -   4 low bits of page address
+    */
+    mov %eax, %edx
+    /*
+    4 because the 4 low bits of eax are the 4 high bits of the second byte.
+    The 4 low bits of the second byte are flags / ignored and set to 0.
+    */
+    shl $4, %edx
+    mov %dl, 1(%ebx)
+
+    /* Bytes 2 and 3: 16 high bits of page address. */
+    mov %eax, %edx
+    shr $4, %edx
+    mov %dx, 2(%ebx)
+
+    inc %eax
+    add $4, %ebx
+    jmp page_setup_start
+page_setup_end:
+    ret
 
 /*
 .align could use aligned symbols here, but that is less good

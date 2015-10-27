@@ -15,7 +15,7 @@ TODO: not working on:
 - Bochs: `BOUND_GdMa: fails bounds test`.
 - GRUB `chainloader` through big.img
 
-Does work on QEMU and Thinkpad T400.
+Does work on QEMU and ThinkPad T400.
 
 ## int 13
 

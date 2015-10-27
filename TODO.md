@@ -30,6 +30,8 @@
 
 -   paging
 
+    - http://stackoverflow.com/questions/7924031/how-prompt-is-x86-at-setting-the-page-dirty-bit/7926931#7926931
+
 -   Segment registers /segmentation and protected mode. Then try to answer all of: GDT
 
     - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
@@ -93,7 +95,7 @@
 -   play with hardware
 
     -   set a pixel on screen in protected mode http://stackoverflow.com/questions/14419088/assembly-draw-a-pixel-on-the-screen-in-protected-mode
-    -   USB
+    -   USB: http://stackoverflow.com/questions/11810736/usb-control-in-x86-real-mode?rq=1
     -   networking
     -   GPU...
 

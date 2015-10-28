@@ -3,7 +3,7 @@
 
 Division by zero causes a Divide Error which Intel notes as `#DE`.
 
-Expected output: "a"
+Expected output: "division by zero handled"
 
 It is then handled by IDT 0.
 
@@ -36,4 +36,4 @@ handler:
     mov $1, %ecx
     iret
 message:
-    .asciz "a"
+    .asciz "division by zero handled"

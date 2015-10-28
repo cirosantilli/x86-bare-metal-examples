@@ -7,8 +7,6 @@ Expected outcome: 'ab' gets printed to the screen.
 
 TODO: is STI not needed because this interrupt is not maskable?
 
-TODO: interrupt priority: order looks like: 0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 15, 3, 4, 5, 6, 7. What is that?
-
 ## int
 
 What it does:
@@ -54,6 +52,19 @@ http://wiki.osdev.org/IVT
 
 osdev says that the default address is 0:0, and that it shouldn't be changed by LIDT,
 as it is incompatible with older CPUs.
+
+## Interrupt priority
+
+Volume 3 6.9 "PRIORITY AMONG SIMULTANEOUS EXCEPTIONS AND INTERRUPTS"
+says that interrupts have different priorities that arrive
+at the same cycle have different priorities.
+
+TODO make a minimal example.
+
+## Fault vs interrupt vs trap vs abort
+
+Volume 3 Table 6-1. "Protected-Mode Exceptions and Interrupts"
+classifies interrupts into multiple types. What is the difference between them?
 */
 
 #include "common.h"

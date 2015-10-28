@@ -44,12 +44,14 @@ Minimal operating systems to learn low level programming.
             1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
         1.  [Protected mode](protected_mode.S)
-            1. [Segment base (TODO)](segment_base.S)
-            1. [IDT](idt.S)
+            1.  [Segment base (TODO)](segment_base.S)
+            1.  [IDT](idt.S)
+                1.  [IDT 1](idt1.S)
                 1. [IDT zero divide](idt_zero_divide.S)
                 1. IDT PIT
-            1. Segmentation fault handler: memory bound, ring, RWX violations
-            1. [Paging](paging.S)
+            1.  Segmentation fault handler: memory bound, ring, RWX violations
+            1.  [Paging](paging.S)
+                1. [Page fault](page-fault.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)

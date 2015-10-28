@@ -16,7 +16,7 @@ But the downsides are severe:
 
 ## Conventions
 
-Every "function-like macro" should maintain register state
+Every "function-like macro" should maintain GP register state
 (flags currently not maintained).
 
 %sp cannot be used to pass most arguments.
@@ -240,6 +240,76 @@ protected_mode:
     mov %ebp, %esp
 .endm
 
+/*
+Setup a single page directory, which give us 2^10 * 2^12 == 4MiB
+of identity memory starting at address 0.
+The currently executing code is inside that range, or else we'd jump somewhere and die.
+*/
+.equ page_directory, __end_align_4k
+.equ page_table, __end_align_4k + 0x1000
+.macro SETUP_PAGING_4M
+    LOCAL page_setup_start page_setup_end
+    PUSH_EADX
+
+    /* Page directory steup. */
+    /* Set the top 20 address bits. */
+    mov $page_table, %eax
+    /* Zero out the 4 low flag bits of the second byte (top 20 are address). */
+    and $0xF000, %ax
+    mov %eax, page_directory
+    /* Set flags for the first byte. */
+    mov $0b00100111, %al
+    mov %al, page_directory
+
+    /* Page table setup. */
+    mov $0, %eax
+    mov $page_table, %ebx
+page_setup_start:
+    cmp $0x400, %eax
+    je page_setup_end
+    /* Top 20 address bits. */
+    mov %eax, %edx
+    shl $12, %edx
+    /*
+    Set flag bits 0-7. We only set to 1:
+    -   bit 0: Page present
+
+    -   bit 1: Page is writable.
+        Might work without this as the permission also depends on CR0.WP.
+    */
+    mov $0b00000011, %dl
+    /* Zero flag bits 8-11 */
+    and $0xF0, %dh
+    mov %edx, (%ebx)
+    inc %eax
+    add $4, %ebx
+    jmp page_setup_start
+page_setup_end:
+    POP_EDAX
+.endm
+
+/*
+Turn paging on.
+Registers are not saved because memory will be all messed up.
+*/
+.macro PAGING_ON
+    /* Tell the CPU where the page directory is. */
+    mov $page_directory, %eax
+    mov %eax, %cr3
+
+    /* Turn paging on. */
+    mov %cr0, %eax
+    or $0x80000000, %eax
+    mov %eax, %cr0
+.endm
+
+/* Turn paging off. */
+.macro PAGING_OFF
+    mov %cr0, %eax
+    and $0x7FFFFFFF, %eax
+    mov  %eax, %cr0
+.endm
+
 /* IDT */
 
 .macro IDT_START
@@ -255,7 +325,8 @@ idt_descriptor:
 .endm
 
 .macro IDT_ENTRY
-    /* Low handler address.
+    /*
+    Low handler address.
     It is impossible to write:
     .word (handler & 0x0000FFFF)
     as we would like:
@@ -280,17 +351,25 @@ idt_descriptor:
     .word 0
 .endm
 
+/* Skip n IDT entries, usually to set the Nth one next. */
+.macro IDT_SKIP n=1
+    .skip n * 8
+.endm
+
 /*
 - index: r/m/imm32 Index of the entry to setup.
 - handler: r/m/imm32 Address of the handler function.
 */
 .macro IDT_SETUP_ENTRY index, handler
+    push %eax
+    push %edx
     mov \index, %eax
-    mov \handler, %ebx
-    mov %bx, idt_start(%eax, 8)
-    shr $16, %ebx
-    mov $6, %ecx
-    mov %bx, idt_start(%ecx, %eax, 8)
+    mov \handler, %edx
+    mov %dx, idt_start(,%eax, 8)
+    shr $16, %edx
+    mov %dx, (idt_start + 6)(,%eax, 8)
+    pop %edx
+    pop %eax
 .endm
 
 /* BIOS */
@@ -471,18 +550,18 @@ end:
 .endm
 
 /*
-Print a 32-bit register in hex.
+Print a 32-bit r/m/immm in hex.
 
 Sample usage:
 
     mov $12345678, %eax
-    VGA_PRINT_HEX <%eax>
+    VGA_PRINT_HEX_4 <%eax>
 
 Expected output on screen:
 
     12345678
 */
-.macro VGA_PRINT_HEX reg=<%eax>
+.macro VGA_PRINT_HEX_4 reg=<%eax>
     LOCAL loop
     PUSH_EADX
     /* Null terminator. */
@@ -510,4 +589,43 @@ loop:
     /* Restore the stack. We have pushed 3 * 4 bytes. */
     add $12, %esp
     POP_EDAX
+.endm
+
+/*
+Dump memory.
+
+- s: starting address
+- n: number of bytes to dump
+
+TODO implement
+*/
+.macro VGA_PRINT_BYTES s, n=$16
+    LOCAL end, loop, no_newline
+    PUSH_ADX
+    push %edi
+    mov s, %esi
+    mov \n, %ecx
+    mov $0, %edi
+    cld
+loop:
+    cmp $0, %ecx
+    je end
+    dec %ecx
+    lodsb
+    PRINT_HEX
+    PUTC
+    /* Print a newline for every 8 bytes. */
+    mov $0, %edx
+    mov %di, %eax
+    mov $8, %ebx
+    div %ebx
+    cmp $7, %edx
+    jne no_newline
+    /*VGA_PRINT_NEWLINE*/
+no_newline:
+    inc %edi
+    jmp loop
+end:
+    pop %di
+    POP_DAX
 .endm

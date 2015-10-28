@@ -32,6 +32,15 @@
 
     - http://stackoverflow.com/questions/7924031/how-prompt-is-x86-at-setting-the-page-dirty-bit/7926931#7926931
 
+    Page fault:
+
+    - http://stackoverflow.com/questions/5684365/what-causes-page-faults/5690636#5690636
+    - http://stackoverflow.com/questions/23899567/distinguishing-between-code-and-data-pages-on-x86-64-mmu/23900691#23900691
+    - http://stackoverflow.com/questions/12607288/what-happens-when-a-mov-instruction-causes-a-page-fault-with-interrupts-disabled
+    - http://stackoverflow.com/questions/21211942/x86-page-fault-description
+    - http://stackoverflow.com/questions/15275059/whats-the-purpose-of-x86-cr0-wp-bit
+    - http://stackoverflow.com/questions/21820814/what-happens-with-a-processor-when-it-tries-to-access-a-nonexistent-address
+
 -   Segment registers /segmentation and protected mode. Then try to answer all of: GDT
 
     - http://reverseengineering.stackexchange.com/questions/2006/how-are-the-segment-registers-fs-gs-cs-ss-ds-es-used-in-linux
@@ -57,6 +66,12 @@
     - http://stackoverflow.com/questions/9172837/idt-without-gdt-using-grub
     - http://stackoverflow.com/questions/9249315/what-is-gs-in-assembly?rq=1
     - http://stackoverflow.com/questions/928082/why-does-the-mov-instruction-have-to-be-used-this-way?lq=1
+
+    Segfault:
+
+    - http://stackoverflow.com/questions/6950549/segmentation-fault-vs-page-fault
+    - http://stackoverflow.com/questions/10948930/page-fault-and-segmentation-fault
+    - http://stackoverflow.com/questions/10948930/page-fault-and-segmentation-fault
 
     64-bit:
 
@@ -126,3 +141,7 @@
 
         - http://stackoverflow.com/questions/15322892/linux-usb-mouse-drivers
         - http://stackoverflow.com/questions/25175960/which-drivers-are-used-by-usb-mouse-in-linux-kernel
+
+-   control registers CRX
+
+    - why CR1 does not exist, but CR8 does http://www.pagetable.com/?p=364

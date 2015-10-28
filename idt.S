@@ -3,15 +3,19 @@
 
 # Interrupt Descriptor Table
 
-Expected output: "a"
+Expected output: "int 0 handled"
 
-The first 32 handlers are reserved by the processor and have predefined meanings.
-
-TODO on Linux kernel.
+The first 32 handlers are reserved by the processor and have predefined meanings, as specified in:
+https://web.archive.org/web/20151025081259/http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-system-programming-manual-325384.pdf
+Table 3-3. "Intel 64 and IA-32 General Exceptions".
 
 ## lidt
 
 Analogous to lgdt but for the IDT.
+
+## Linux kernel usage
+
+TODO
 
 ## Bibliography
 
@@ -37,4 +41,4 @@ handler:
     VGA_PRINT_STRING $message
     iret
 message:
-    .asciz "a"
+    .asciz "int 0 handled"

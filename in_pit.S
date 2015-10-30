@@ -1,22 +1,17 @@
 /*
 # PIT
 
-TODO get working
-
-TODO answer with example:
-
-- http://stackoverflow.com/questions/13950264/does-using-tsc-as-clock-source-improve-timer-and-scheduling-granularity
-- http://stackoverflow.com/questions/26853905/use-of-irq0-pit-in-x86-linux
-- http://stackoverflow.com/questions/12229644/time-sources-in-x86-processors
-- http://stackoverflow.com/questions/26321531/pit-not-sending-interrupts-to-irq0
-
-TODO where is it documented?
-
 Programmable interrupt timer.
 
-Read this *now*: http://wiki.osdev.org/PIT
+Expected output: "a\n" is printed infinitely many times.
 
-Can generate periodic interrupts, or sounds.
+Generates periodic interrupts (or sound!) with a given frequency to IRQ0,
+which on real mode maps to interrupt 8 by default.
+
+Major applicaiton: interrupt the running process
+to allow the OS to schedule processes.
+
+Read this *now*: http://wiki.osdev.org/PIT
 
 Has 3 channels that can generate 3 independent signals
 
@@ -28,6 +23,17 @@ Port 0x43 is used to control signal properties except frequency
 (which goes in the channel ports) for the 3 channels.
 See osdev article for details.
 
+## Frequency
+
+We don't control the frequency of the PIT directly,
+which is fixed at 1193181.
+
+Instead, we control a frequency divisor.
+This is an well known type of discrete electronic circuit:
+https://en.wikipedia.org/wiki/Frequency_divider
+
+1193181 has 2 occurrences on Linux 4.2.
+
 ## PIC
 
 Programmable interrupt controller:
@@ -35,50 +41,41 @@ Programmable interrupt controller:
 - http://wiki.osdev.org/PIC
 - http://www.jamesmolloy.co.uk/tutorial_html/5.-IRQs%20and%20the%20PIT.html
 
-Controls interrupts. Ports:
+How it works:
 
-- 0x0020: Master PIC command
-- 0x0021: Master PIC data
-- 0x00A0: Slave PIC command
-- 0x00A1: Slave PIC Data
+    Hardware -> IRQ -> PIC -> Interrupt handler
+
+Each hardware has an IRQ, e.g. 0 for the PIT.
+
+When an IRQ activated (e.g. PIT sends a signal), the PIC decides:
+
+- whether or not it will call an interrupt handler. For example, without and EOI, further interrupts will not be generated.
+- which interrupt handler it will call. This can be modified by programming the PIT.
+
+Like other external circuits, the PIC is itself also programmed by `in` and `out` instructions.
 
 ### EOI
 
 End of interrupt.
 
-We must tell the PIC that we are at the end. TODO otherwise what?
+We must tell the PIC that we are at the end.
+
+Otherwise what?
 
 https://en.wikipedia.org/wiki/End_of_interrupt
 
-## 1193181
-
-Magic number that is the frequency of the oscillator.
-
-http://f.osdev.org/viewtopic.php?f=1&t=15503
-
-Frequency divisor.
-
-Produce 1000Hz signal.
-
-1193181 is the source frequency.
-
-This is an electronics concept:
-https://en.wikipedia.org/wiki/Frequency_divider
-
-2 occurrences on Linux 4.2.
-
 ## Bibliography
 
-- https://en.wikipedia.org/wiki/Intel_8253
+- https://en.wikipedia.org/wiki/Intel_8253 That is the circuit ID for the PIT.
 - http://kernelx.weebly.com/programmable-interval-timer.html
 */
 
 #include "common.h"
 
 BEGIN
-    /* Setup interrupt handler 0. */
-    movw $handler, 0x00
-    mov %cs, 0x02
+    /* Setup interrupt handler 8: this is where the PIC maps IRQ 0 to. */
+    movw $handler, 8 * 4
+    mov %cs, 8 * 4 + 2
 
     /*
     Define the properties of the wave:
@@ -88,8 +85,7 @@ BEGIN
     - operating mode: rate generator
     - BCD/binary: binary
     */
-    mov $0b00110100, %al
-    out %al, $0x43
+    OUTB $0b00110100, $0x43
 
     /*
     Set frequency of Channel 0.
@@ -97,21 +93,32 @@ BEGIN
     We have to split the 2 ax bytes,
     as we can only communicate one byte at a time here.
     */
+
+    /* If we wanted an approximate frequency, we'd use: */
+    /*
     .equ div, 1193181 / 1000
     mov div, %ax
     out %al, $0x40
     mov %ah, %al
     out %al, $0x40
+    */
 
-    PUTC $'a
+    /* Instead, let's just use the smallest frequency possible. */
+    mov $0xFF, %al
+    out %al, $0x40
+    out %al, $0x40
+
     sti
 
-loop:
-    nop
-    jmp loop
+    jmp .
 
 handler:
+    cli
     PUTC $'a
+    PUTC $'\n
+    /* EOI: it will not fire again unless we reset it. */
+    OUTB PIC_CMD_RESET, PORT_PIC_MASTER_CMD
+    sti
     iret
 
     /* TODO turn off. */

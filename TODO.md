@@ -1,6 +1,11 @@
 # TODO
 
--   cache: wbinvd
+-   PIT
+
+    - http://stackoverflow.com/questions/13950264/does-using-tsc-as-clock-source-improve-timer-and-scheduling-granularity
+    - http://stackoverflow.com/questions/26853905/use-of-irq0-pit-in-x86-linux
+    - http://stackoverflow.com/questions/12229644/time-sources-in-x86-processors
+    - http://stackoverflow.com/questions/26321531/pit-not-sending-interrupts-to-irq0
 
 -   inb outb
 
@@ -18,6 +23,8 @@
     - https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/boot.h#L78
     - http://stackoverflow.com/questions/6793899/what-does-the-0x80-port-address-connects
 
+-   cache: wbinvd
+
 -   lidt, interrupts, IDTR:
 
     - http://stackoverflow.com/questions/3392831/what-happens-in-an-interrupt-service-routine
@@ -26,7 +33,13 @@
     - https://en.wikipedia.org/wiki/Double_fault
     - https://en.wikipedia.org/wiki/Triple_fault
 
-    timer, IPT
+-   PIC
+
+    APIC vs PIC:
+
+    - allows for multithreading
+    - more than 15 IRQs
+    - has a millisecond timer built-in. Different from the HPET.
 
 -   paging
 
@@ -100,12 +113,24 @@
 
 -   ACPI
 
--   multithreading:
+-   multiprocessing, multi-threading:
 
     - http://stackoverflow.com/questions/7308391/how-is-concurrency-done-in-intel-x86-assembly
     - http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like
     - http://stackoverflow.com/questions/714905/threads-in-x86-assembler-using-the-gnu-assember-as
+    - http://stackoverflow.com/questions/1622388/running-code-on-different-processor-x86-assembly
     - https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
+    - http://stackoverflow.com/questions/663958/how-to-control-which-core-a-process-runs-on
+    - http://stackoverflow.com/questions/2986931/the-way-cores-processes-and-threads-work-exactly?rq=1
+    - http://stackoverflow.com/questions/1516530/assembly-and-multicore-cpus?lq=1
+
+    Intel docs: Volume 3, Chapter 8 "Multiple processor Management".
+
+    Does not seem standardized across to AMD.
+
+    On Intel goes through the APIC to generate an interrupt across processors:
+
+    > Wait-for-SIPI. As part of its initialization, the primary thread sends a special inter-processor-interrupt (IPI) over the APIC called a SIPI (Startup IPI) to each thread that is in WFS. The SIPI contains the address from which that thread should start fetching code.
 
 -   play with hardware
 
@@ -145,3 +170,5 @@
 -   control registers CRX
 
     - why CR1 does not exist, but CR8 does http://www.pagetable.com/?p=364
+
+-   HPET https://en.wikipedia.org/wiki/High_Precision_Event_Timer

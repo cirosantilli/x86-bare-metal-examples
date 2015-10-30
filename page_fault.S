@@ -9,6 +9,8 @@ Expected output:
     00000002
 
 ## Error code
+
+http://stackoverflow.com/a/33398064/895245
 */
 
 #include "common.h"

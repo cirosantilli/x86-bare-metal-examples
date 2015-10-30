@@ -15,7 +15,8 @@ Analogous to lgdt but for the IDT.
 
 ## Linux kernel usage
 
-TODO
+https://github.com/torvalds/linux/blob/v4.2/arch/x86/entry/entry_64.S
+sets them all up: each `idtentry divide_error` call sets up a new one.
 
 ## Bibliography
 

@@ -14,7 +14,7 @@ Another advantage is that it is easier to DRY up minimal examples (here done sim
 
 Using C or not is a hard choice. It does make it much easier to express higher level ideas, and gives portability. But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
 
-Always try to look into to Linux kernel to find where those CPU capabilities are used on a "real" OS.
+Always try looking into the Linux kernel to find how those CPU capabilities are used in a "real" OS.
 
 ## Pre-requisites
 

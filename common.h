@@ -105,6 +105,8 @@ http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-asse
 Setup a sane initial state.
 
 Should be the first thing in every file.
+
+Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
 */
 .macro BEGIN
     .code16
@@ -123,7 +125,7 @@ Should be the first thing in every file.
     TODO What to move into BP and SP?
     http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process
     */
-    mov 0x0000, %bp
+    mov %ax, %bp
     /* Automatically disables interrupts until the end of the next instruction. */
     mov %ax, %ss
     /* We should set SP because BIOS calls may depend on that. TODO confirm. */

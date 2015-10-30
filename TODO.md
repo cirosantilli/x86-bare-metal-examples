@@ -2,20 +2,17 @@
 
 -   PIT
 
-    - http://stackoverflow.com/questions/13950264/does-using-tsc-as-clock-source-improve-timer-and-scheduling-granularity
-    - http://stackoverflow.com/questions/26853905/use-of-irq0-pit-in-x86-linux
     - http://stackoverflow.com/questions/12229644/time-sources-in-x86-processors
+    - http://stackoverflow.com/questions/13950264/does-using-tsc-as-clock-source-improve-timer-and-scheduling-granularity
+    - http://stackoverflow.com/questions/14848645/what-does-this-code-do-in-intel-assembly-language/14848821#14848821
     - http://stackoverflow.com/questions/26321531/pit-not-sending-interrupts-to-irq0
+    - http://stackoverflow.com/questions/26853905/use-of-irq0-pit-in-x86-linux
 
 -   inb outb
 
-    Answer with bare metal Tetris
-
-    - http://stackoverflow.com/questions/8365746/what-does-outb-in-att-asm-mean
     - http://stackoverflow.com/questions/3215878/what-are-in-out-instructions-in-x86-used-for DUPE
+    - http://stackoverflow.com/questions/8365746/what-does-outb-in-att-asm-mean
     - http://stackoverflow.com/questions/3194139/x86-memory-and-i-o-map DUPE
-    - http://stackoverflow.com/questions/14848645/what-does-this-code-do-in-intel-assembly-language/14848821#14848821
-    - http://stackoverflow.com/questions/8894241/real-mode-x86-asm-how-are-the-basics-done?rq=1
     - http://wiki.osdev.org/Text_UI
 
     Port 0x80 on Linux kernel:

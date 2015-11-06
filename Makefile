@@ -39,7 +39,7 @@ clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: all
-	$(QEMU) '$(RUN_FILE)'
+	$(QEMU) -smp 2 '$(RUN_FILE)'
 
 debug: all
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &

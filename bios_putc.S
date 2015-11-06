@@ -1,7 +1,7 @@
 /*
-Print a single `@` character with the BIOS.
+# BIOS putc
 
-More minimal than the hello world.
+Print a single `@` character with the BIOS.
 */
 
 #include "common.h"

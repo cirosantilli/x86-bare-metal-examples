@@ -25,6 +25,8 @@ See osdev article for details.
 
 ## Frequency
 
+## 1193181
+
 We don't control the frequency of the PIT directly,
 which is fixed at 1193181.
 
@@ -33,36 +35,6 @@ This is an well known type of discrete electronic circuit:
 https://en.wikipedia.org/wiki/Frequency_divider
 
 1193181 has 2 occurrences on Linux 4.2.
-
-## PIC
-
-Programmable interrupt controller:
-
-- http://wiki.osdev.org/PIC
-- http://www.jamesmolloy.co.uk/tutorial_html/5.-IRQs%20and%20the%20PIT.html
-
-How it works:
-
-    Hardware -> IRQ -> PIC -> Interrupt handler
-
-Each hardware has an IRQ, e.g. 0 for the PIT.
-
-When an IRQ activated (e.g. PIT sends a signal), the PIC decides:
-
-- whether or not it will call an interrupt handler. For example, without and EOI, further interrupts will not be generated.
-- which interrupt handler it will call. This can be modified by programming the PIT.
-
-Like other external circuits, the PIC is itself also programmed by `in` and `out` instructions.
-
-### EOI
-
-End of interrupt.
-
-We must tell the PIC that we are at the end.
-
-Otherwise what?
-
-https://en.wikipedia.org/wiki/End_of_interrupt
 
 ## Bibliography
 
@@ -93,7 +65,6 @@ BEGIN
     We have to split the 2 ax bytes,
     as we can only communicate one byte at a time here.
     */
-
     /* If we wanted an approximate frequency, we'd use: */
     /*
     .equ div, 1193181 / 1000

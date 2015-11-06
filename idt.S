@@ -37,8 +37,6 @@ IDT_START
 IDT_ENTRY
 IDT_END
 handler:
-    /* TODO needed? Molloy uses it. */
-    /*cli*/
     VGA_PRINT_STRING $message
     iret
 message:

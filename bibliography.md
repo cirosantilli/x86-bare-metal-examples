@@ -14,6 +14,10 @@
 
     Almost entirely in C `-nostdlib`, with very few inline `asm` commands, and a small assembly entry point. So a good tutorial in how to do the bridge.
 
+-   <https://github.com/arjun024/mkeykernel>, <https://github.com/arjun024/mkernel>
+
+    Worked, but bad build system: not `Makefile` or `.gitignore`.
+
 The following did not work on my machine out of the box:
 
 - <https://github.com/apparentlymart/ToyOS>
@@ -35,9 +39,11 @@ The following did not work on my machine out of the box:
 
 -   <http://www.jamesmolloy.co.uk/tutorial_html/index.html>
 
+    Highly recommended.
+
     Multiboot based kernels of increasing complexity, one example builds on the last one. Non DRY as a result.
 
-    Source code: <https://github.com/cirosantilli/jamesmolloy-kernel-development-tutorials>
+    Cleaned up source code: <https://github.com/cirosantilli/jamesmolloy-kernel-development-tutorials>
 
     Well known bugs: <http://wiki.osdev.org/James_Molloy's_Tutorial_Known_Bugs> That's what happens when you don't use GitHub.
 

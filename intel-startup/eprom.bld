@@ -1,0 +1,38 @@
+INIT_BLD_EXAMPLE;
+
+SEGMENT
+    *SEGMENTS(DPL = 0),
+    startup.startup_code(BASE = 0FFFF0000H)
+    ;
+
+TASK
+    BOOT_TASK(OBJECT = startup, INITIAL,DPL = 0,
+    NOT INTENABLED),
+    PROTECTED_MODE_TASK(OBJECT = main_module,DPL = 0,
+    NOT INTENABLED)
+
+TABLE
+    GDT (
+        LOCATION = GDT_EPROM,
+        ENTRY = (
+            10: PROTECTED_MODE_TASK,
+            startup.startup_code,
+            startup.startup_data,
+            main_module.data,
+            main_module.code,
+            main_module.stack
+        )
+    ),
+    IDT (
+        LOCATION = IDT_EPROM
+    );
+
+MEMORY
+(
+    RESERVE = (0..3FFFH,
+        -- Area for the GDT, IDT, TSS copied from ROM
+        60000H..0FFFEFFFFH),
+    RANGE = (ROM_AREA = ROM (0FFFF0000H..0FFFFFFFFH)),
+        -- Eprom size 64K
+    RANGE = (RAM_AREA = RAM (4000H..05FFFFH))
+)

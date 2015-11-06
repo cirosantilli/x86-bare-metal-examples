@@ -9,7 +9,7 @@ Minimal operating systems to learn low level programming.
     1.  [min](min.S)
     1.  [No ld script](no-ld-script/)
     1.  BIOS
-        1.  [one char](bios_one_char.S)
+        1.  [putc](bios_putc.S)
         1.  [hello world](bios_hello_world.S)
             1.  [NASM](nasm/)
         1.  [newline](bios_newline.S)
@@ -36,7 +36,7 @@ Minimal operating systems to learn low level programming.
             1.  [int $1](interrupt1.S)
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
             1.  [Interrupt loop](interrupt_loop.S)
-        1.  in
+        1.  [in](in.md)
             1.  [in keyboard](in_keyboard.S)
             1.  [in RTC](in_rtc.S)
             1.  [in PIT](in_pit.S)
@@ -56,6 +56,9 @@ Minimal operating systems to learn low level programming.
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)
+    1.  SMP TODO
+        1.  [source](smp.S)
+        1.  [information](smp.md)
     1.  [Multiboot](multiboot/)
     1.  [GRUB](grub/)
     1.  TODO not working
@@ -72,6 +75,7 @@ Minimal operating systems to learn low level programming.
     1.  [IO](io.md)
         1.  [BIOS](bios.md)
         1.  [APM](apm.md)
+    1.  [PIC](pic.md)
     1.  [Debug](debug.md)
     1.  [Bibliography](bibliography.md)
 1.  [TODO](TODO.md)

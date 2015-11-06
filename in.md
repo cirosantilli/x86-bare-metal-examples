@@ -6,6 +6,8 @@ IO operations.
 
 Do not work with immediates: only registers or memory locations.
 
+http://stackoverflow.com/questions/14194798/is-there-a-specification-of-x86-i-o-port-assignment
+
 ## Memory mapped vs Port mapped IO
 
 <http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access>

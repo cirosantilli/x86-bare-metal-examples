@@ -14,7 +14,7 @@ end
 break *0x7c00
 continue
 
-# 0x1234 is a magic address. Add a:
+# Magic address. Add a:
 # mov %ax, 0x1234
 # to your program to break there.
 awatch *0x9000

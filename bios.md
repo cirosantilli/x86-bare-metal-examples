@@ -4,8 +4,6 @@
 
 <http://wiki.osdev.org/BIOS>
 
-<http://wiki.osdev.org/Real_Mode>
-
 Can only be used in real mode.
 
 ## Documentation

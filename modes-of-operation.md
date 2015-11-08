@@ -13,6 +13,17 @@ Covered on Intel Volume 3. Specially useful is the "Transitions Among the Proces
 
 CPU starts here for backwards compatibility.
 
+<http://wiki.osdev.org/Real_Mode>
+
+It is possible to use 32-bit registers in this mode with the "Operand Size Override Prefix" `0x66`.
+
+TODO: is it possible to access memory above 1M like this:
+
+    mov $1, 0xF0000000
+    mov $1, (%eax)
+
+<http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode>
+
 ## IA-32e
 
 Wikipedia seems to call it *long mode*: <https://en.wikipedia.org/wiki/Long_mode>

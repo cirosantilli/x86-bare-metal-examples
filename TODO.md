@@ -1,6 +1,13 @@
 # TODO
 
--   cache: wbinvd
+-   cache:
+
+    - http://stackoverflow.com/questions/1756825/how-can-i-do-a-cpu-cache-flush
+    - http://stackoverflow.com/questions/10989403/how-is-x86-instruction-cache-synchronized
+
+    - wbinvd: write back from cache to memory, and invalidate all cache
+    - invd: just invalidate, but don't write back
+    - clflush: flush only selected cache lines
 
 -   lidt, interrupts, IDTR:
 
@@ -29,14 +36,8 @@
 
     Bunch of basic dupes:
 
+    - answered: http://stackoverflow.com/questions/4119504/real-mode-memory-addressing-explanation
     - http://stackoverflow.com/questions/3819699/what-does-ds40207a-mean-in-assembly
-    - http://stackoverflow.com/questions/17210620/assembler-calculating-a-memory-address-with-register-base?lq=1
-    - http://stackoverflow.com/questions/18736663/what-does-the-colon-mean-in-x86-assembly-gas-syntax-as-in-dsbx
-    - http://stackoverflow.com/questions/20717890/how-to-interpret-gs0x14?lq=1
-    - http://stackoverflow.com/questions/26058665/fs-register-in-assembly-code?lq=1
-    - http://stackoverflow.com/questions/4903906/assembly-using-the-data-segment-register-ds answer with minimal example and mention QEMU vs real hardwre http://wiki.osdev.org/Segmentation
-    - http://stackoverflow.com/questions/7844963/how-to-interpret-segment-register-accesses-on-x86-64?lq=1
-    - http://stackoverflow.com/questions/9249315/what-is-gs-in-assembly?rq=1
 
     In actual OSes:
 
@@ -78,20 +79,6 @@
     - pages
 
 -   ACPI
-
--   multiprocessing, multi-threading:
-
-    - http://stackoverflow.com/questions/7308391/how-is-concurrency-done-in-intel-x86-assembly
-    - http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like
-    - http://stackoverflow.com/questions/714905/threads-in-x86-assembler-using-the-gnu-assember-as
-    - http://stackoverflow.com/questions/1622388/running-code-on-different-processor-x86-assembly
-    - https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
-    - http://stackoverflow.com/questions/663958/how-to-control-which-core-a-process-runs-on
-    - http://stackoverflow.com/questions/2986931/the-way-cores-processes-and-threads-work-exactly?rq=1
-    - http://stackoverflow.com/questions/1516530/assembly-and-multicore-cpus?lq=1
-    - http://stackoverflow.com/questions/419486/multithreading-and-interrupts
-    - http://stackoverflow.com/questions/15091165/inter-processor-interrupt-usage
-    - http://stackoverflow.com/questions/26452323/how-can-we-use-multi-core-and-cpu-on-assembly-boot-loader-x86
 
 -   play with hardware
 
@@ -140,3 +127,5 @@
 -   BIOS memory detect:
 
     http://stackoverflow.com/questions/21820814/what-happens-with-a-processor-when-it-tries-to-access-a-nonexistent-physical-add
+
+-   `40h:6Ch` a bios timer incremented at 18.2 Hz: `

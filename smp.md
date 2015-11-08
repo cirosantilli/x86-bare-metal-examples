@@ -10,7 +10,9 @@
 
     > Wait-for-SIPI. As part of its initialization, the primary thread sends a special inter-processor-interrupt (IPI) over the APIC called a SIPI (Startup IPI) to each thread that is in WFS. The SIPI contains the address from which that thread should start fetching code.
 
--   https://en.wikipedia.org/wiki/Inter-processor_interrupt
+-   <http://wiki.osdev.org/Symmetric_Multiprocessing>
+
+-   <https://en.wikipedia.org/wiki/Inter-processor_interrupt>
 
 -   Linux kernel `arch/x86/kernel/smpboot.c`
 
@@ -32,7 +34,7 @@
 
     GPU competitor basically.
 
-    One huge advantage: Phi is programmed with x86!
+    One huge advantage: Phi is programmed with x86, unlike GPUs which have no low level API:
 
     - <http://stackoverflow.com/questions/7353136/is-there-an-assembly-language-for-cuda>
     - <http://superuser.com/questions/668019/how-do-device-driver-instructions-program-the-gpu>
@@ -46,3 +48,20 @@ processors on the system bus as the BSP. The remaining processors are designated
 > Following a power-up or reset, the APs complete a minimal self-configuration, then wait for a startup signal (a SIPI
 message) from the BSP processor. Upon receiving a SIPI message, an AP executes the BIOS AP configuration code,
 which ends with the AP being placed in halt state.
+
+## AP
+
+Application processor: all processors except the boot one.
+
+## ICR
+
+## Interrupt command register
+
+When we write to it, interrupts are sent.
+
+It is memory mapped to `0xFEE0 0300`.
+
+[Intel Manual Volume 3 System Programming Guide - 325384-056US September 2015](https://web.archive.org/web/20151025081259/http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-system-programming-manual-325384.pdf)
+
+- 10.6 "ISSUING INTERPROCESSOR INTERRUPTS" documents its format
+- Table 10-1 Local APIC Register Address Map documents where it is mapped to in memory

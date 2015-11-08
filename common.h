@@ -455,12 +455,12 @@ Print a null terminated string.
 
 Use as:
 
-        PRINT $s
+        PRINT_STRING $s
         hlt
     s:
         .asciz "string"
 */
-.macro PRINT s
+.macro PRINT_STRING s
     LOCAL end, loop
     mov s, %si
     mov $0x0e, %ah
@@ -651,3 +651,5 @@ end:
 /* PIC. */
 
 #define PIC_CMD_RESET $0x20
+#define PIC_ICR_ADDRESS $0xFEE00300
+

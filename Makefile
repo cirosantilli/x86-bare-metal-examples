@@ -39,7 +39,7 @@ clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: all
-	$(QEMU) -smp 2 '$(RUN_FILE)'
+	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2
 
 debug: all
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &

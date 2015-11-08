@@ -11,7 +11,7 @@ Carriage returns are needed just like in old days.
 
 #include "common.h"
 BEGIN
-    PRINT $msg
+    PRINT_STRING $msg
     hlt
 msg:
     .asciz "hello\nworld"

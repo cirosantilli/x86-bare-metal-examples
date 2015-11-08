@@ -31,7 +31,7 @@ Thus it usually contains 0x80.
 .endm
 
 .macro INITIAL_PRINT x
-    PRINT $\x\()s
+    PRINT_STRING $\x\()s
     PRINT_BYTES $\x, $2
     PRINT_NEWLINE
 .endm
@@ -79,7 +79,7 @@ STAGE2
     .irp reg, ax, bx, cx, dx, cs, ds, es, fs, gs, ss
         INITIAL_PRINT \reg
     .endr
-    PRINT $cr0s
+    PRINT_STRING $cr0s
     PRINT_BYTES cr0, $4
     PRINT_NEWLINE
 

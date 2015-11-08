@@ -37,7 +37,7 @@ which gets filled with the background color in bh.
 BEGIN
 
 CLEAR
-PRINT $stair
+PRINT_STRING $stair
 
 /* Function ID. */
 mov $0x06, %ah

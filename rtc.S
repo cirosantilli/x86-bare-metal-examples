@@ -1,5 +1,5 @@
 /*
-# in RTC
+# RTC
 
 Real time clock.
 

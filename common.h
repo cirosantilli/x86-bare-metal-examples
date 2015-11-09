@@ -670,9 +670,11 @@ but you don't have to wait much for each one.
 /* IVT */
 
 #define IVT_PIT 8
+#define IVT_HANDLER_SIZE 4
+#define IVT_CODE_OFFSET 2
 
 /* Setup interrupt handler 8: this is where the PIC maps IRQ 0 to. */
 .macro IVT_PIT_SETUP
-    movw $handler, IVT_PIT * 4
-    mov %cs, IVT_PIT * 4 + 2
+    movw $handler, IVT_PIT * IVT_HANDLER_SIZE
+    mov %cs, IVT_PIT * IVT_HANDLER_SIZE + IVT_CODE_OFFSET
 .endm

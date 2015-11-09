@@ -87,6 +87,7 @@
     -   networking
     -   GPU...
     -   how to setup arbitrary hardware: ports and IRQs http://stackoverflow.com/questions/773199/how-do-i-identify-device-specific-interrupts-on-x86
+    -   PCI: 0xCF8 <http://stackoverflow.com/questions/15574717/pci-device-check-in-assembly-language>
 
 -   POST https://en.wikipedia.org/wiki/Power-on_self-test
 

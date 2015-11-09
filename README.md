@@ -39,8 +39,8 @@ Minimal operating systems to learn low level programming.
             1.  [Interrupt loop](interrupt_loop.S)
         1.  [in](in.md)
             1.  [in keyboard](in_keyboard.S)
-            1.  [in RTC](in_rtc.S)
-            1.  [in PIT](in_pit.S)
+            1.  [RTC](rtc.S)
+            1.  [PIT](pit.S)
                 1.  [PIT once](pit_once.S)
             1.  [in beep](in_beep.S)
             1.  [in beep_illinois](in_beep_illinois.S)
@@ -51,6 +51,7 @@ Minimal operating systems to learn low level programming.
                 1.  [IDT 1](idt1.S)
                 1.  [IDT zero divide](idt_zero_divide.S)
                 1.  IDT PIT
+            1.  [PIT protected](pit_protected.S)
             1.  Segmentation fault handler: memory bound, ring, RWX violations
             1.  [Paging](paging.S)
                 1. [Page fault](page-fault.S)

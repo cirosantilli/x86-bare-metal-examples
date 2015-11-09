@@ -72,7 +72,7 @@
 
     - http://stackoverflow.com/questions/14299893/any-tutorials-on-how-to-set-up-a-ldt?rq=1
 
-- WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
+-   WRMSR https://en.wikipedia.org/wiki/Model-specific_register http://x86.renejeschke.de/html/file_module_x86_id_326.html
 
 -   BIOS
 

@@ -26,6 +26,7 @@ Minimal operating systems to learn low level programming.
         1.  [disk load](bios_disk_load.S)
             1.  [disk load 2](bios_disk_load2.S)
         1.  [detect memory](bios_detect_memory.S)
+        1.  [tick count](bios_tick_count.S)
     1.  [Initial state](initial_state.S)
     1.  [reboot](reboot.S)
     1.  [Not testable in userland](not-testable-in-userland.md)
@@ -40,6 +41,7 @@ Minimal operating systems to learn low level programming.
             1.  [in keyboard](in_keyboard.S)
             1.  [in RTC](in_rtc.S)
             1.  [in PIT](in_pit.S)
+                1.  [PIT once](pit_once.S)
             1.  [in beep](in_beep.S)
             1.  [in beep_illinois](in_beep_illinois.S)
             1.  [in mouse (TODO)](in_mouse.S)
@@ -48,7 +50,6 @@ Minimal operating systems to learn low level programming.
             1.  [IDT](idt.S)
                 1.  [IDT 1](idt1.S)
                 1.  [IDT zero divide](idt_zero_divide.S)
-                1.  [Maskable](maskable.S)
                 1.  IDT PIT
             1.  Segmentation fault handler: memory bound, ring, RWX violations
             1.  [Paging](paging.S)

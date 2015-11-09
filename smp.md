@@ -2,6 +2,12 @@
 
 # Symmetric multiprocessing
 
+At fist, a single processor starts.
+
+To start the others, the first processor must tell the APIC to send a few special interrupts to the other processors.
+
+One of those interrupts says where the there processors start running their first instruction from.
+
 -   Intel docs: Volume 3, Chapter 8 "Multiple processor Management".
 
     Does not seem standardized across to AMD.

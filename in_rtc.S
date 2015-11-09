@@ -17,21 +17,19 @@ Kenrel 4.2 usage: https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rt
 
 ## Milliseconds
 
-Not possible. Must use the PIT.
+Not possible. Consider the PIT, or the HPET.
 
 ## Time zone
 
 QEMU uses UTC.
 */
 
-#include "common.h"
-BEGIN
-
-/*
-TODO what do those numbers mean? Where is this all documented?
-*/
+/* TODO what do those numbers mean? Where is this all documented? */
 .equ RTCaddress, 0x70
 .equ RTCdata, 0x71
+
+#include "common.h"
+BEGIN
 
 update_in_progress:
     mov $10, %al

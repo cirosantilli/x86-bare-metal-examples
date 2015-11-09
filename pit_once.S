@@ -1,0 +1,30 @@
+/*
+# PIT once
+
+Make the PIT generate a single interrupt instead of a frequency.
+
+Expected output: "a".
+
+TODO how does this mode work exactly?
+I think it counts down from the value in PORT_PIT_CHANNEL0,
+and fires when it reaches 0 the first time.
+*/
+
+#include "common.h"
+BEGIN
+    IVT_PIT_SETUP
+    /* Operating mode: 0 rate generator. */
+    OUTB $0b00110000, PORT_PIT_MODE
+    /* TODO: Set the counter to 1. */
+    mov $0x01, %al
+    out %al, PORT_PIT_CHANNEL0
+    mov $0x00, %al
+    out %al, PORT_PIT_CHANNEL0
+    sti
+    jmp .
+handler:
+    cli
+    PUTC $'a
+    PIC_EOI
+    sti
+    iret

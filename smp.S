@@ -3,7 +3,7 @@
 
 Expected output: "SMP started"
 
-TODO get working:
+TODO get working + answer all of:
 
 - http://stackoverflow.com/questions/16364817/assessing-the-apic-and-creating-ipis-in-x86-assembly
     Closest quesiton so far! Almost there!
@@ -24,11 +24,15 @@ TODO get working:
 - https://github.com/cirosantilli/oszur11-operating-system-examples/tree/1af6451852887fac3d7206d4d09714c181c81d1e/Chapter_07_Threads
 */
 
+/* Must be a multiple of 0x1000. */
+.equ STARTUP_CODE_ADDRESS, 0x1000
+.equ SPINLOCK_ADDRESS, 0x2000
+
 #include "common.h"
 BEGIN
     CLEAR
     /*
-    TODO do we need 32-bit mode? The APIC register
+    TODO do we need 32-bit mode? I think yes because the APIC register
     FEE00300 is too high for 16-bit?
     */
     PROTECTED_MODE
@@ -42,11 +46,11 @@ BEGIN
     cld
     mov $init_len, %ecx
     mov $init, %esi
-    mov $0x1000, %edi
+    mov $STARTUP_CODE_ADDRESS, %edi
     rep movsb
 
     /* Setup the value that threads will modify for us. */
-    movb $0, 0x2000
+    movb $0, SPINLOCK_ADDRESS
 
     /*
     Move data into the lower ICR register:
@@ -68,26 +72,24 @@ BEGIN
     mov %eax, (%esi)
     /*
     10-millisecond delay loop.
-    TODO
+    TODO I think I'm going to do this with the PIT.
     */
     /*
     Load ICR encoding for broadcast SIPI IP to all APs.
     The low byte of this is the vector which encodes the staring address for the processors!
     This address is multiplied by 0x1000: processors start at CS = vector * 0x100 and IP = 0.
     */
-    /*TODO*/
-    mov $0x000C4601, %eax
+    mov $0x000C4600 + STARTUP_CODE_ADDRESS / 0x1000, %eax
     /* Broadcast SIPI IPI to all APs. */
     mov %eax, (%esi)
     /* 200-microsecond delay loop. */
     /* TODO */
     /* Broadcast second SIPI IPI to all APs */
     mov %eax, (%esi)
-    /* Wait for the timer interrupt until the timer expires. */
 
-    /* Busy loop until another thread changes this memory. */
+    /* TODO improve this spinlock. */
 not_started:
-    cmpb $1, 0x2000
+    cmpb $1, SPINLOCK_ADDRESS
     jne not_started
 
     VGA_PRINT_STRING $message
@@ -98,7 +100,9 @@ message:
     .asciz "SMP started"
 .code16
 init:
-    movb $1, 0x2000
+    xor %ax, %ax
+    mov %ax, %ds
+    movb $1, SPINLOCK_ADDRESS
     /* TODO mandatory? */
     wbinvd
     hlt

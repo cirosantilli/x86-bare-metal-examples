@@ -145,18 +145,12 @@ Sample usage:
     Stage 2 code here.
 */
 .macro STAGE2
-    mov $2, %ah
-    /*
-    TODO get working with linker script.
-    Above my paygrade for now, so I just load a bunch of sectors instead.
-    */
-    /* mov __stage2_size, %al;\ */
-    mov $9, %al
-    mov $0x80, %dl
-    mov $0, %ch
-    mov $0, %dh
-    mov $2, %cl
+    /* Defined in the linker script. */
+    mov $__stage2_nsectors, %al
+    mov $0x02, %ah
     mov $1f, %bx
+    mov $0x0002, %cx
+    mov $0x0080, %dx
     int $0x13
     jmp 1f
     .section .stage2
@@ -645,11 +639,40 @@ end:
 
 #define PORT_PIC_MASTER_CMD $0x20
 #define PORT_PIC_MASTER_DATA $0x21
+#define PORT_PIT_CHANNEL0 $0x40
+#define PORT_PIT_MODE $0x43
 #define PORT_PIC_SLAVE_CMD $0xA0
 #define PORT_PIC_SLAVE_DATA $0xA1
 
-/* PIC. */
+/* PIC */
 
 #define PIC_CMD_RESET $0x20
 #define PIC_ICR_ADDRESS $0xFEE00300
 
+/* EOI End Of Interrupt: PIC it will not fire again unless we reset it. */
+.macro PIC_EOI
+    OUTB PIC_CMD_RESET, PORT_PIC_MASTER_CMD
+.endm
+
+/* PIT */
+
+/*
+Set the minimum possible PIT frequency.
+This is a human friendly frequency: you can see individual events,
+but you don't have to wait much for each one.
+*/
+.macro PIT_SET_MIN_FREQ
+    mov $0xFF, %al
+    out %al, PORT_PIT_CHANNEL0
+    out %al, PORT_PIT_CHANNEL0
+.endm
+
+/* IVT */
+
+#define IVT_PIT 8
+
+/* Setup interrupt handler 8: this is where the PIC maps IRQ 0 to. */
+.macro IVT_PIT_SETUP
+    movw $handler, IVT_PIT * 4
+    mov %cs, IVT_PIT * 4 + 2
+.endm

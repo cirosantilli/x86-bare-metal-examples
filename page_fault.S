@@ -19,7 +19,7 @@ BEGIN
     CLEAR
     STAGE2
     PROTECTED_MODE
-    IDT_SETUP_ENTRY $14, $handler
+    IDT_SETUP_ENTRY $14, $interrupt_handler
     lidt idt_descriptor
     SETUP_PAGING_4M
 
@@ -39,7 +39,7 @@ IDT_START
 IDT_SKIP 14
 IDT_ENTRY
 IDT_END
-handler:
+interrupt_handler:
     VGA_PRINT_STRING $message
     /*
     Mandatory because page faults push the error code to the stack.

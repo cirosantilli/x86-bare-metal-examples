@@ -34,7 +34,7 @@ http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-si
 
 /* Helpers */
 
-/* Push regiesters ax, bx, cx and dx. Lightweight `pusha`. */
+/* Push registers ax, bx, cx and dx. Lightweight `pusha`. */
 .macro PUSH_ADX
     push %ax
     push %bx
@@ -370,6 +370,61 @@ idt_descriptor:
     pop %eax
 .endm
 
+/* Shamelessly copied from James Molloy's tutorial. */
+.macro ISR_NOERRCODE i
+    isr\()\i:
+        cli
+        push $0
+        push $\i
+        jmp interrupt_handler
+.endm
+
+.macro ISR_ERRCODE i
+    isr\()\i:
+        cli
+        push $\i
+        jmp interrupt_handler
+.endm
+
+/*
+Entries and handlers.
+48 = 32 processor built-ins + 16 PIC interrupts.
+*/
+.macro IDT_48_ENTRIES
+    IDT_START
+    .rept 48
+    IDT_ENTRY
+    .endr
+    IDT_END
+
+    .irp i, 0, 1, 2, 3, 4, 5, 6, 7
+        ISR_NOERRCODE \i
+    .endr
+    ISR_ERRCODE   8
+    ISR_NOERRCODE 9
+    .irp i, 10, 11, 12, 13, 14
+        ISR_ERRCODE \i
+    .endr
+    .irp i, 15, 16, 17, 18, 19, \
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29, \
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39, \
+            40, 41, 42, 43, 44, 45, 46, 47, 48
+        ISR_NOERRCODE \i
+    .endr
+.endm
+
+.macro IDT_SETUP_48_ISRS
+    .irp i,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, \
+            10, 11, 12, 13, 14, 15, 16, 17, 18, 19, \
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29, \
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29, \
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39, \
+            40, 41, 42, 43, 44, 45, 46, 47, 48
+        IDT_SETUP_ENTRY $\i, $isr\()\i
+    .endr
+    lidt idt_descriptor
+.endm
+
 /* BIOS */
 
 .macro CURSOR_POSITION x=$0, y=$0
@@ -652,6 +707,23 @@ end:
 /* EOI End Of Interrupt: PIC it will not fire again unless we reset it. */
 .macro PIC_EOI
     OUTB PIC_CMD_RESET, PORT_PIC_MASTER_CMD
+.endm
+
+.macro REMAP_PIC_32
+    /*
+    Remap the PIC interrupts to start at 32.
+    TODO understand.
+    */
+    OUTB $0x11, PORT_PIC_MASTER_CMD
+    OUTB $0x11, PORT_PIC_SLAVE_CMD
+    OUTB $0x20, PORT_PIC_MASTER_DATA
+    OUTB $0x28, PORT_PIC_SLAVE_DATA
+    OUTB $0x04, PORT_PIC_MASTER_DATA
+    OUTB $0x02, PORT_PIC_SLAVE_DATA
+    OUTB $0x01, PORT_PIC_MASTER_DATA
+    OUTB $0x01, PORT_PIC_SLAVE_DATA
+    OUTB $0x00, PORT_PIC_MASTER_DATA
+    OUTB $0x00, PORT_PIC_SLAVE_DATA
 .endm
 
 /* PIT */

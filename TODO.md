@@ -1,5 +1,8 @@
 # TODO
 
+-
+    http://stackoverflow.com/questions/1858640/how-can-i-create-a-sleep-function-in-16bit-masm-assembly-x86
+
 -   cache:
 
     - http://stackoverflow.com/questions/1756825/how-can-i-do-a-cpu-cache-flush
@@ -101,10 +104,13 @@
 
 -   keyboard through interrupt (high level BIOS int 16 that waits for input done)
 
+    Almost there! pit_protected almost works, the problem is that it only fires once: <http://board.flatassembler.net/topic.php?t=17437>
+    Needs some resetting fixed it seems.
+
+    - happens on IRQ 1 as mentioned at: https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29#Master_PIC
     - keyboard protected mode: http://stackoverflow.com/questions/219120/x86-assembly-protected-mode-keyboard-access
     - oszur does it with the i8042: http://stackoverflow.com/questions/22744624/keyboard-interrupt-handler-for-own-kernel-c
     - https://github.com/arjun024/mkeykernel contains a small example that is easy to dissect
-    - happens on IRQ 1 as mentioned at: https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29#Master_PIC
 
 -   mouse
 

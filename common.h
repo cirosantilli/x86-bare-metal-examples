@@ -374,29 +374,38 @@ idt_descriptor:
 .macro ISR_NOERRCODE i
     isr\()\i:
         cli
+        /*
+        Push a dummy 0 for interrupts that don't push any code.
+        http://stackoverflow.com/questions/10581224/why-does-iret-from-a-page-fault-handler-generate-interrupt-13-general-protectio/33398064#33398064
+        */
         push $0
         push $\i
-        jmp interrupt_handler
+        jmp interrupt_handler_stub
 .endm
 
 .macro ISR_ERRCODE i
     isr\()\i:
         cli
         push $\i
-        jmp interrupt_handler
+        jmp interrupt_handler_stub
 .endm
 
 /*
 Entries and handlers.
 48 = 32 processor built-ins + 16 PIC interrupts.
+In addition to including this, you should also call
+- call IDT_SETUP_48_ISRS to setup the handler addreses.
+- define an `interrupt_handler(uint32 number, uint32 error)` function
 */
 .macro IDT_48_ENTRIES
+    /* IDT. */
     IDT_START
     .rept 48
     IDT_ENTRY
     .endr
     IDT_END
 
+    /* ISRs */
     .irp i, 0, 1, 2, 3, 4, 5, 6, 7
         ISR_NOERRCODE \i
     .endr
@@ -411,6 +420,19 @@ Entries and handlers.
             40, 41, 42, 43, 44, 45, 46, 47, 48
         ISR_NOERRCODE \i
     .endr
+
+    /* Factor out things which we will want to do in every handler. */
+    interrupt_handler_stub:
+        cli
+        call interrupt_handler
+        /* If we are a PIC interrupt (>=32), do an EOI. */
+        cmp $0x20, (%esp)
+        jb interrupt_handler_stub.noeoi
+        PIC_EOI
+    interrupt_handler_stub.noeoi:
+        add $8, %esp
+        sti
+        iret
 .endm
 
 .macro IDT_SETUP_48_ISRS
@@ -614,11 +636,11 @@ Expected output on screen:
 
     12345678
 */
-.macro VGA_PRINT_HEX_4 reg=<%eax>
+.macro VGA_PRINT_HEX_4 in=<%eax>
     LOCAL loop
     PUSH_EADX
     /* Null terminator. */
-    mov \reg, %ecx
+    mov \in, %ecx
 
     /* Write ASCII representation to memory. */
     push $0
@@ -737,6 +759,18 @@ but you don't have to wait much for each one.
     mov $0xFF, %al
     out %al, PORT_PIT_CHANNEL0
     out %al, PORT_PIT_CHANNEL0
+.endm
+
+/*
+Define the properties of the wave:
+
+- Channel: 0
+- access mode: lobyte/hibyte
+- operating mode: rate generator
+- BCD/binary: binary
+*/
+.macro PIT_GENERATE_FREQUENCY
+    OUTB $0b00110100, PORT_PIT_MODE
 .endm
 
 /* IVT */

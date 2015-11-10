@@ -65,15 +65,7 @@ TODO learn to turn off the PIT after some iterations
 BEGIN
     IVT_PIT_SETUP
 
-    /*
-    Define the properties of the wave:
-
-    - Channel: 0
-    - access mode: lobyte/hibyte
-    - operating mode: rate generator
-    - BCD/binary: binary
-    */
-    OUTB $0b00110100, PORT_PIT_MODE
+    PIT_GENERATE_FREQUENCY
 
     /*
     Set frequency of Channel 0.

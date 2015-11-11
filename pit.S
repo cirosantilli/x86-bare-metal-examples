@@ -64,32 +64,11 @@ TODO learn to turn off the PIT after some iterations
 
 BEGIN
     IVT_PIT_SETUP
-
     PIT_GENERATE_FREQUENCY
-
-    /*
-    Set frequency of Channel 0.
-
-    We have to split the 2 ax bytes,
-    as we can only communicate one byte at a time here.
-    */
-    /* If we wanted an approximate frequency, we'd use: */
-    /*
-    .equ div, 1193181 / 1000
-    mov div, %ax
-    out %al, $0x40
-    mov %ah, %al
-    out %al, $0x40
-    */
-
-    /* Instead, let's just use the smallest frequency possible. */
     PIT_SET_MIN_FREQ
-
     /* If we comment out sti, nothing happens, because the PIT interrupts are maskable. */
     sti
-
     jmp .
-
 handler:
     cli
     PUTC $'a

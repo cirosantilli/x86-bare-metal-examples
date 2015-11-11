@@ -271,7 +271,6 @@ page_setup_start:
     /*
     Set flag bits 0-7. We only set to 1:
     -   bit 0: Page present
-
     -   bit 1: Page is writable.
         Might work without this as the permission also depends on CR0.WP.
     */
@@ -750,15 +749,66 @@ end:
 
 /* PIT */
 
+#define PIT_FREQ 0x1234DD
+
 /*
-Set the minimum possible PIT frequency.
+Set the minimum possible PIT frequency = 0x1234DD / 0xFFFF =~ 18.2 Hz
 This is a human friendly frequency: you can see individual events,
 but you don't have to wait much for each one.
 */
 .macro PIT_SET_MIN_FREQ
+    push %eax
     mov $0xFF, %al
     out %al, PORT_PIT_CHANNEL0
     out %al, PORT_PIT_CHANNEL0
+    pop %eax
+.endm
+
+/*
+We have to split the 2 ax bytes,
+as we can only communicate one byte at a time here.
+- freq: 16 bit compile time constant desired frequency.
+        Range: 19 - 0x1234DD.
+*/
+.macro PIT_SET_FREQ freq
+    push %eax
+    mov $(PIT_FREQ / \freq), %ax
+    out %al, PORT_PIT_CHANNEL0
+    mov %ah, %al
+    out %al, PORT_PIT_CHANNEL0
+    pop %eax
+.endm
+
+/*
+Sleep for `ticks` ticks of the PIT at current frequency.
+PIT_SLEEP_HANDLER_UPDATE must be placed in the PIT handler for this to work.
+*/
+.macro PIT_SLEEP_TICKS ticks
+    LOCAL loop
+    movb $1, pit_sleep_ticks_locked
+    movl \ticks, pit_sleep_ticks_count
+loop:
+    cmpb $0, pit_sleep_ticks_locked
+    jne loop
+.endm
+
+/*
+Must be placed in the PIT handler for PIT_SLEEP_TICKS to work.
+*/
+.macro PIT_SLEEP_TICKS_HANDLER_UPDATE
+    LOCAL dont_unlock
+    decl pit_sleep_ticks_count
+    cmpl $0, pit_sleep_ticks_count
+    jne dont_unlock
+    movb $0, pit_sleep_ticks_locked
+dont_unlock:
+.endm
+
+.macro PIT_SLEEP_TICKS_GLOBALS
+pit_sleep_ticks_count:
+    .long 0
+pit_sleep_ticks_locked:
+    .byte 0
 .endm
 
 /*

@@ -14,7 +14,6 @@ loop:
     PUTC $'\n
     PIT_SLEEP_TICKS $500
     jmp loop
-PIT_SLEEP_TICKS_GLOBALS
 handler:
     cli
     PIT_SLEEP_TICKS_HANDLER_UPDATE

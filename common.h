@@ -14,6 +14,11 @@ But the downsides are severe:
     The problem is that if I don't, every image will need a stage 2 loader.
     That is not too serious though, it could be added to BEGIN.
 
+    It seems that ld can only remove sections, not individual symbols:
+    http://stackoverflow.com/questions/6687630/c-c-gcc-ld-remove-unused-symbols
+    With GCC we can use `-ffunction-sections -fdata-sections`
+    to quickly generate a ton of sections, but I don't thing GAS supports that...
+
 ## Conventions
 
 Every "function-like macro" should maintain GP register state
@@ -31,6 +36,11 @@ The major downside is that every register passed as argument requires `<>`:
 http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-sign-in-a-default-parameter-fails-with-oper/
 */
 .altmacro
+
+.macro GLOBAL sym
+    .global \sym
+    \sym:
+.endm
 
 /* Helpers */
 
@@ -111,7 +121,9 @@ Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
 
 */
 .macro BEGIN
+    .section .bootstrap
     .code16
+    GLOBAL _start
     cli
     /* Set %cs to 0. TODO Is that really needed? */
     ljmp $0, $1f
@@ -802,13 +814,6 @@ Must be placed in the PIT handler for PIT_SLEEP_TICKS to work.
     jne dont_unlock
     movb $0, pit_sleep_ticks_locked
 dont_unlock:
-.endm
-
-.macro PIT_SLEEP_TICKS_GLOBALS
-pit_sleep_ticks_count:
-    .long 0
-pit_sleep_ticks_locked:
-    .byte 0
 .endm
 
 /*

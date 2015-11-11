@@ -1,3 +1,4 @@
+ENTRY(_start)
 SECTIONS
 {
     /*
@@ -13,9 +14,11 @@ SECTIONS
         /*
         We are going to stuff everything
         into a text segment for now, including data.
-        Who cares? Other segments only exist to appease C compilers.
-         */
-        *(.text)
+        This does not matter here because we are generating OUR kernel,
+        so Linux will not be there to prevent us from writing to a data section.
+        */
+        *(.bootstrap)
+        *(*)
 
         /*
         Magic bytes. 0x1FE == 510.

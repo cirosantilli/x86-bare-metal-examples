@@ -13,7 +13,7 @@ QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
 TMP_EXT ?= .tmp
 
-OUTS := $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT))))
+OUTS := $(sort $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT)))))
 RUN_FILE := $(RUN)$(OUT_EXT)
 
 .PRECIOUS: %$(OBJ_EXT)
@@ -38,14 +38,14 @@ $(COMMON):
 clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
-run: all
+run: $(RUN_FILE)
 	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2
 
-debug: all
+debug: $(RUN_FILE)
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &
 	gdb -x gdb.gdb
 
-bochs: all
+bochs: $(RUN_FILE)
 	# Supposes size is already multiples of 512.
 	# We force that with our linker script,
 	# and `grub-mkrescue` also seems to respect it as well.
@@ -59,7 +59,7 @@ bochs: all
 BIG_IMG_DIR := big_img$(TMP_EXT)
 BOOT_DIR := $(BIG_IMG_DIR)/boot
 GRUB_DIR := $(BOOT_DIR)/grub
-big-img: all
+big$(OUT_EXT): all
 	rm -rf '$(BIG_IMG_DIR)'
 	mkdir -p  '$(GRUB_DIR)'
 	for out in $(OUTS); do\
@@ -71,4 +71,4 @@ big-img: all
 	#mkdir -p '$(BOOT_DIR)/multiboot'
 	#printf "menuentry \"multiboot/hello-world\"  {\n   chainloader /boot/multiboot/hello-world.img\n}\n" >> '$(GRUB_DIR)/grub.cfg';\
 	#cp multiboot/hello-world/main.img '$(BOOT_DIR)/multiboot/hello-world.img'
-	grub-mkrescue -o 'big.img' '$(BIG_IMG_DIR)'
+	grub-mkrescue -o '$@' '$(BIG_IMG_DIR)'

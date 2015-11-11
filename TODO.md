@@ -1,7 +1,13 @@
 # TODO
 
--
-    http://stackoverflow.com/questions/1858640/how-can-i-create-a-sleep-function-in-16bit-masm-assembly-x86
+-   SMP sync
+
+    - MONITOR/MWAIT
+    - LOCK prefix
+    - MFENCE
+    - LFENCE
+    - SFENCE
+    - http://stackoverflow.com/a/33651438/895245
 
 -   cache:
 

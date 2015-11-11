@@ -2,15 +2,9 @@
 
 # Symmetric multiprocessing
 
-At fist, a single processor starts.
+Read this first: <http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like/33651438#33651438>
 
-To start the others, the first processor must tell the APIC to send a few special interrupts to the other processors.
-
-One of those interrupts says where the there processors start running their first instruction from.
-
--   Intel docs: Volume 3, Chapter 8 "Multiple processor Management".
-
-    Does not seem standardized across to AMD.
+-   Does not seem standardized across to AMD.
 
     On Intel goes through the APIC to generate an interrupt across processors:
 
@@ -19,8 +13,6 @@ One of those interrupts says where the there processors start running their firs
 -   <http://wiki.osdev.org/Symmetric_Multiprocessing>
 
 -   <https://en.wikipedia.org/wiki/Inter-processor_interrupt>
-
--   Linux kernel `arch/x86/kernel/smpboot.c`
 
 -   newer Intel processors have an L2 shared across cores:
 
@@ -55,19 +47,10 @@ processors on the system bus as the BSP. The remaining processors are designated
 message) from the BSP processor. Upon receiving a SIPI message, an AP executes the BIOS AP configuration code,
 which ends with the AP being placed in halt state.
 
-## AP
+Bibliography:
 
-Application processor: all processors except the boot one.
-
-## ICR
-
-## Interrupt command register
-
-When we write to it, interrupts are sent.
-
-It is memory mapped to `0xFEE0 0300`.
-
-[Intel Manual Volume 3 System Programming Guide - 325384-056US September 2015](https://web.archive.org/web/20151025081259/http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-system-programming-manual-325384.pdf)
-
-- 10.6 "ISSUING INTERPROCESSOR INTERRUPTS" documents its format
-- Table 10-1 Local APIC Register Address Map documents where it is mapped to in memory
+- http://stackoverflow.com/questions/16364817/assessing-the-apic-and-creating-ipis-in-x86-assembly
+- http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like
+- http://stackoverflow.com/questions/1622388/running-code-on-different-processor-x86-assembly
+- http://stackoverflow.com/questions/1516530/assembly-and-multicore-cpus?lq=1
+- http://stackoverflow.com/questions/663958/how-to-control-which-core-a-process-runs-on

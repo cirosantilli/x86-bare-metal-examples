@@ -30,12 +30,19 @@ TODO get working + answer all of:
 
 #include "common.h"
 BEGIN
+    STAGE2
     CLEAR
     /*
     TODO do we need 32-bit mode? I think yes because the APIC register
     FEE00300 is too high for 16-bit?
     */
     PROTECTED_MODE
+    IDT_SETUP_48_ISRS
+    REMAP_PIC_32
+    PIT_GENERATE_FREQUENCY
+    /* Each tick is 20us. */
+    PIT_SET_FREQ 50000
+    sti
 
     /*
     Setup the code that will be run
@@ -70,10 +77,8 @@ BEGIN
     mov $0x000C4500, %eax
     /* Broadcast INIT IPI to all APs */
     mov %eax, (%esi)
-    /*
-    10-millisecond delay loop.
-    TODO I think I'm going to do this with the PIT.
-    */
+    /* 10-millisecond delay loop. */
+    PIT_SLEEP_TICKS $500
     /*
     Load ICR encoding for broadcast SIPI IP to all APs.
     The low byte of this is the vector which encodes the staring address for the processors!
@@ -83,7 +88,7 @@ BEGIN
     /* Broadcast SIPI IPI to all APs. */
     mov %eax, (%esi)
     /* 200-microsecond delay loop. */
-    /* TODO */
+    PIT_SLEEP_TICKS $10
     /* Broadcast second SIPI IPI to all APs */
     mov %eax, (%esi)
 
@@ -98,12 +103,20 @@ not_started:
     hlt
 message:
     .asciz "SMP started"
+IDT_48_ENTRIES
+PIT_SLEEP_TICKS_GLOBALS
+interrupt_handler:
+    cmp PIT_ISR_NUMBER, 4(%esp)
+    jne not_pit
+    PIT_SLEEP_TICKS_HANDLER_UPDATE
+not_pit:
+    ret
 .code16
 init:
     xor %ax, %ax
     mov %ax, %ds
     movb $1, SPINLOCK_ADDRESS
-    /* TODO mandatory? */
+    /* TODO mandatory? Is lock prefix enough? */
     wbinvd
     hlt
 .equ init_len, . - init

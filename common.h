@@ -14,6 +14,11 @@ But the downsides are severe:
     The problem is that if I don't, every image will need a stage 2 loader.
     That is not too serious though, it could be added to BEGIN.
 
+    It seems that ld can only remove sections, not individual symbols:
+    http://stackoverflow.com/questions/6687630/c-c-gcc-ld-remove-unused-symbols
+    With GCC we can use `-ffunction-sections -fdata-sections`
+    to quickly generate a ton of sections, but I don't thing GAS supports that...
+
 ## Conventions
 
 Every "function-like macro" should maintain GP register state
@@ -390,6 +395,11 @@ idt_descriptor:
 .endm
 
 /*
+Protected mode PIT number after remapping it.
+*/
+#define PIT_ISR_NUMBER $0x20
+
+/*
 Entries and handlers.
 48 = 32 processor built-ins + 16 PIC interrupts.
 In addition to including this, you should also call
@@ -425,7 +435,7 @@ In addition to including this, you should also call
         cli
         call interrupt_handler
         /* If we are a PIC interrupt (>=32), do an EOI. */
-        cmp $0x20, (%esp)
+        cmp PIT_ISR_NUMBER, (%esp)
         jb interrupt_handler_stub.noeoi
         PIC_EOI
     interrupt_handler_stub.noeoi:
@@ -782,11 +792,13 @@ as we can only communicate one byte at a time here.
 /*
 Sleep for `ticks` ticks of the PIT at current frequency.
 PIT_SLEEP_HANDLER_UPDATE must be placed in the PIT handler for this to work.
+Currently only one can be used at a given time.
 */
 .macro PIT_SLEEP_TICKS ticks
     LOCAL loop
     movb $1, pit_sleep_ticks_locked
     movl \ticks, pit_sleep_ticks_count
+    jmp loop
 loop:
     cmpb $0, pit_sleep_ticks_locked
     jne loop

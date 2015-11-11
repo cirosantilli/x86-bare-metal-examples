@@ -1,9 +1,10 @@
 /*
+Test PIT_SLEEP_TICKS.
+
 Expected output: `a\n` gets printed with frequency 2Hz.
 */
 
 #include "common.h"
-
 BEGIN
     IVT_PIT_SETUP
     PIT_GENERATE_FREQUENCY

@@ -1,14 +1,22 @@
 # Getting started
 
+Tested on Ubuntu 14.04 AMD64:
+
     sudo apt-get install bochs bochs-sdl build-essential gdb gnu-efi qemu nasm xorriso
+
+Make all operating systems:
+
+    make
+
+Each `.S` file on the top-level is an operating system!
 
 ## Emulator
 
-Run the default program on QEMU:
+Run the default OS on QEMU:
 
     make run
 
-Run a given program:
+Run a given OS:
 
     make run RUN=min
     make run RUN=bios_one_char
@@ -16,8 +24,6 @@ Run a given program:
 Use Bochs instead of QEMU:
 
     make bochs RUN=min
-
-Tested on Ubuntu 14.04 AMD64.
 
 ## Real hardware
 

@@ -30,7 +30,7 @@ BEGIN
     Setup the code that will be run
     on the other processors when they start up.
     Should be somewhere into the first 1Mb,
-    as processors starte in real mode.
+    as processors start in real mode.
     */
     cld
     mov $init_len, %ecx
@@ -101,7 +101,7 @@ init:
     /*
     TODO mandatory?
     - is lock prefix enough?
-    - is caching even on I think not because it is off
+    - is caching even on? I not because of CR0.CD and CR0.NW
     */
     wbinvd
     hlt

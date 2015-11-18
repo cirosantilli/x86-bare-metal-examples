@@ -54,7 +54,7 @@ Minimal operating systems to learn low level programming.
             1.  [PIT protected](pit_protected.S)
             1.  Segmentation fault handler: memory bound, ring, RWX violations
             1.  [Paging](paging.S)
-                1. [Page fault](page-fault.S)
+                1. [Page fault](page_fault.S)
     1.  APM
         1.  [APM shutdown](apm_shutdown.S)
         1.  [APM shutdown 2](apm_shutdown2.S)

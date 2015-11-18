@@ -116,6 +116,7 @@ Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
 
 */
 .macro BEGIN
+    LOCAL after_locals
     .code16
     cli
     /* Set %cs to 0. TODO Is that really needed? */
@@ -137,6 +138,11 @@ Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
     mov %ax, %ss
     /* We should set SP because BIOS calls may depend on that. TODO confirm. */
     mov %bp, %sp
+    /* Store the initial dl to load stage 2 later on. */
+    mov %dl, initial_dl
+    jmp after_locals
+    initial_dl: .byte 0
+after_locals:
 .endm
 
 /*
@@ -155,7 +161,8 @@ Sample usage:
     mov $0x02, %ah
     mov $1f, %bx
     mov $0x0002, %cx
-    mov $0x0080, %dx
+    mov $0x00, %dh
+    mov initial_dl, %dl
     int $0x13
     jmp 1f
     .section .stage2
@@ -293,6 +300,20 @@ page_setup_end:
 /*
 Turn paging on.
 Registers are not saved because memory will be all messed up.
+
+## cr3
+
+The cr3 register does have a format, it is not simply the address of the page directory:
+
+-   20 top bits: 4KiB address. Since those are the only address bits,
+    this implies that the page directory must be aligned to 4Kib.
+-   bits 3 and 4: TODO some function I don't understand yet
+-   all others: ignored
+
+Many tutorials simply ignore bits 3 and 4, and do a direct address mov to `cr3`.
+
+This sets the 20 top address bits to their correct value, and puts trash in bits 3 and 4,
+but it generally works.
 */
 .macro PAGING_ON
     /* Tell the CPU where the page directory is. */

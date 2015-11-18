@@ -1,4 +1,8 @@
-/* Test loading 2 sectors instead of 1. */
+/*
+Test loading 2 sectors instead of 1.
+
+Expected output: "ab"
+*/
 
 #include "common.h"
 BEGIN

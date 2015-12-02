@@ -2,6 +2,8 @@
 
 Successor for BIOS.
 
+<https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface>
+
 Made by Intel, mostly MIT open source, but vendors do modify it.
 
 Matthew Garrett says it is huge: larger than Linux without drivers. Like BIOS, it is a "mini-OS".
@@ -15,6 +17,7 @@ TODO get a hello world program working:
 - http://www.rodsbooks.com/efi-programming/hello.html Best source so far: allowed me to compile the hello world! TODO: how to run it now on QEMU and real hardware?
 - https://fedoraproject.org/wiki/Using_UEFI_with_QEMU
 - https://wiki.ubuntu.com/UEFI/OVMF
+- https://github.com/tqh/efi-example
 
 Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: http://unix.stackexchange.com/a/228053/32558 , so we just need to generate the image.
 

@@ -67,9 +67,6 @@ Minimal operating systems to learn low level programming.
         1.  [UEFI](uefi/)
     1.  Misc
         1.  [hajji](hajji/)
-1.  Tests
-    1. [PRINT_BYTES](test_print_bytes.S)
-    1. [PRINT_BYTES](test_pit_sleep.S)
 1.  Theory
     1.  [Modes of operation](modes-of-operation.md)
         1.  [Segmentation](segmentation.md)
@@ -81,4 +78,8 @@ Minimal operating systems to learn low level programming.
     1.  [PIC](pic.md)
     1.  [Debug](debug.md)
     1.  [Bibliography](bibliography.md)
+1.  Tests
+    1. [PRINT_BYTES](test_print_bytes.S)
+    1. [PRINT_BYTES](test_pit_sleep.S)
 1.  [TODO](TODO.md)
+    1. [ring](ring.md)

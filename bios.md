@@ -1,5 +1,9 @@
 # BIOS
 
+Old, non-standardized, limited API that allows you to do quick and dirty IO.
+
+If you are making a serious OS, use it as little as possible.
+
 <https://en.wikipedia.org/wiki/BIOS>
 
 <http://wiki.osdev.org/BIOS>
@@ -66,12 +70,6 @@ TODO use it.
 Standardized by: <https://en.wikipedia.org/wiki/Distributed_Management_Task_Force>
 
 TODO: how is it obtained at the low level?
-
-## UEFI
-
-<https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface>
-
-<https://github.com/tqh/efi-example>
 
 ## SeaBIOS
 

@@ -1,4 +1,4 @@
-# Not testable in userland
+# CPU
 
 This section contains concepts that depend only on the CPU, but that cannot be tested on userland because they'd require ring 0.
 

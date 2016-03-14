@@ -1,6 +1,6 @@
 # x86 Bare Metal Examples
 
-Minimal operating systems to learn low level programming.
+Dozens of minimal operating systems to learn x86 system programming.
 
 1.  [Getting started](getting-started.md)
 1.  [About](about.md)
@@ -28,8 +28,7 @@ Minimal operating systems to learn low level programming.
         1.  [detect memory](bios_detect_memory.S)
         1.  [tick count](bios_tick_count.S)
     1.  [Initial state](initial_state.S)
-    1.  [reboot](reboot.S)
-    1.  [Not testable in userland](not-testable-in-userland.md)
+    1.  [CPU](cpu.md)
         1.  [Segment registers](segment_registers.S)
             1.  [SS](ss.S)
             1.  [CS](cs.S)
@@ -55,16 +54,19 @@ Minimal operating systems to learn low level programming.
             1.  Segmentation fault handler: memory bound, ring, RWX violations
             1.  [Paging](paging.S)
                 1. [Page fault](page_fault.S)
-    1.  APM
-        1.  [APM shutdown](apm_shutdown.S)
-        1.  [APM shutdown 2](apm_shutdown2.S)
+    1.  Power
+        1.  [reboot](reboot.S)
+        1.  APM
+            1.  [APM shutdown](apm_shutdown.S)
+            1.  [APM shutdown 2](apm_shutdown2.S)
     1.  SMP TODO
         1.  [source](smp.S)
         1.  [information](smp.md)
-    1.  [Multiboot](multiboot/)
-    1.  [GRUB](grub/)
-    1.  TODO not working
-        1.  [UEFI](uefi/)
+    1.  Libraries
+        1.  [Multiboot](multiboot/)
+        1.  [GRUB](grub/)
+        1.  TODO not working
+            1.  [UEFI](uefi/)
     1.  Misc
         1.  [hajji](hajji/)
 1.  Theory

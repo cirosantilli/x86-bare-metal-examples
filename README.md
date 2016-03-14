@@ -59,9 +59,9 @@ Dozens of minimal operating systems to learn x86 system programming.
         1.  APM
             1.  [APM shutdown](apm_shutdown.S)
             1.  [APM shutdown 2](apm_shutdown2.S)
-    1.  SMP TODO
-        1.  [source](smp.S)
-        1.  [information](smp.md)
+    1.  SMP
+        1.  [Theory](smp.md)
+        1.  [Example](smp.S)
     1.  Libraries
         1.  [Multiboot](multiboot/)
         1.  [GRUB](grub/)

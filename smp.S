@@ -3,7 +3,7 @@
 
 Expected output: "SMP started"
 
-The hard part is sleeping the right amount of time as required by Intel: this example uses the PIT.
+http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like/33651438#33651438
 */
 
 /* Must be a multiple of 0x1000. */
@@ -79,7 +79,12 @@ not_started:
     cmpb $1, SPINLOCK_ADDRESS
     jne not_started
 
+    /*
+    This only happens if another thread starts and changes the spinlock.
+    So if we see the message, SMP is working!
+    */
     VGA_PRINT_STRING $message
+
     /* Testing if it is possible in 16-bit real mode. */
     /*PRINT_STRING $message*/
     hlt
@@ -93,6 +98,11 @@ interrupt_handler:
     PIT_SLEEP_TICKS_HANDLER_UPDATE
 not_pit:
     ret
+
+/*
+Code that will run on the second, third,
+etc. processors (Application Processors),
+*/
 .code16
 init:
     xor %ax, %ax

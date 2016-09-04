@@ -4,19 +4,21 @@
 
 The CPU / system API is divided into two parts:
 
--   userland: things that applications can do freely on top of an OS. Basically only run simple instructions like: `add`, `jmp`, `cmp`, `mov`, or call some kernel handler (e.g. `int`).
-
-    So the only way to learn that is to create a bunch of OSes!
-
--   system: things that OSes can do, but they don't let applications do to prevent one application destroying / spying on another (sandboxing).
-
-    E.g.:
+-   system: things that OSes can do, but they don't let applications do to prevent one application destroying / spying on another (sandboxing). E.g.:
 
     -   some instructions, e.g. `in`, `out`
 
     -   memory without paging / segmentation.
 
         This in turn allows writing to magic hardware defined addresses that control other hardwares, like the interrupt handler (PIT) and the real time clock (RTC)
+
+    If an userland process tries to do those things, the CPU usually calls a handler registered by the kernel, and Linux kernel kills the process with a signal in that handler.
+
+    So the only way to learn that part is to create a bunch of OSes!
+
+-   userland: things that applications can do freely on top of an OS.
+
+    Basically only run simple instructions like: `add`, `jmp`, `cmp`, `mov`, or call some kernel handler (e.g. `int`).
 
 This repository covers only system level programming.
 

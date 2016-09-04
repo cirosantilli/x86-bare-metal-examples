@@ -23,6 +23,18 @@ The following did not work on my machine out of the box:
 - <https://github.com/apparentlymart/ToyOS>
 - <https://github.com/rde1024/toyos>
 
+## Tutorials
+
+- <https://arobenko.gitbooks.io/bare_metal_cpp/content/>
+
+### Educational NIXes
+
+One complexity order above the minimal tutorials, one below actual kernels
+
+- <http://www.xinu.cs.purdue.edu/>
+- <https://pdos.csail.mit.edu/6.828/2014/xv6.html>
+- <https://en.wikipedia.org/wiki/MINIX>, influenced Linux
+
 ## Multi collaborator websites
 
 -   osdev.org is a major source for this.
@@ -79,6 +91,8 @@ These are not meant as learning resources but rather as useful programs:
 
 -   <https://github.com/scanlime/metalkit> A more automated / general bare metal compilation system. Untested, but looks promising.
 
+-   Python without an "OS": <https://us.pycon.org/2015/schedule/presentation/378/>
+
 ## Other archs
 
 For when we decide to port this tutorial:
@@ -90,3 +104,4 @@ ARM:
 Raspberry PI:
 
 - <https://github.com/dwelch67/raspberrypi>
+- <https://github.com/BrianSidebotham/arm-tutorial-rpi>

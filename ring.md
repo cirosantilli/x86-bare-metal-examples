@@ -15,3 +15,12 @@ Rings are useful for OS programmers. The OS lets user programs run a restricted 
 Certain operations such are only allowed if certain privileges are given.
 
 Privilege control is only available on protected mode, and is managed by segmentation and paging.
+
+## Negative rings
+
+TODO: officially documented, possibly with other names?
+
+- <https://en.wikipedia.org/wiki/Popek_and_Goldberg_virtualization_requirements>
+- <https://www.quora.com/Computer-Science-What-does-In-x86-beyond-ring-0-lie-the-more-privileged-realms-of-execution-where-our-code-is-invisible-to-AV-we-have-unfettered-access-to-hardware-and-can-trivially-preempt-and-modify-the-OS-mean>
+
+Some of them were introduced to satisfy <https://en.wikipedia.org/wiki/Popek_and_Goldberg_virtualization_requirements>

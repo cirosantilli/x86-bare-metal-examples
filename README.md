@@ -1,6 +1,6 @@
 # x86 Bare Metal Examples
 
-Dozens of minimal operating systems to learn x86 system programming.
+Dozens of minimal operating systems to learn x86 system programming. Userland cheat at: <https://github.com/cirosantilli/x86-assembly-cheat>
 
 1.  [Getting started](getting-started.md)
 1.  [About](about.md)

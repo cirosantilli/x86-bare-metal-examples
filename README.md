@@ -33,7 +33,7 @@ Dozens of minimal operating systems to learn x86 system programming. Userland ch
             1.  [SS](ss.S)
             1.  [CS](cs.S)
         1.  [Interrupt](interrupt.S)
-            1.  [int $1](interrupt1.S)
+            1.  [int \$1](interrupt1.S)
             1.  [Interrupt zero divide](interrupt_zero_divide.S)
             1.  [Interrupt loop](interrupt_loop.S)
         1.  [in](in.md)
@@ -83,5 +83,6 @@ Dozens of minimal operating systems to learn x86 system programming. Userland ch
 1.  Tests
     1. [PRINT_BYTES](test_print_bytes.S)
     1. [PRINT_BYTES](test_pit_sleep.S)
+1.  [LICENSE](LICENSE.md)
 1.  [TODO](TODO.md)
     1. [ring](ring.md)

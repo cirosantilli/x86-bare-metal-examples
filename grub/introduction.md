@@ -184,10 +184,8 @@ TODO get a minimal example working using a minimal kernel from: <https://github.
     echo y | mke2fs -t ext4
     sudo mount "/dev/mapper/${loop}p1" d
 
-
     # Need a new Ubuntu.
     #sudo losetup --show -f -P test.img
-
 
     sudo grub-install /dev/loop0
 

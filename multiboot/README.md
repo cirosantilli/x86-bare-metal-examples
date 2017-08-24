@@ -3,6 +3,20 @@
 1.  [hello-world](hello-world/)
 1.  [osdev](osdev/)
 
+## Usage
+
+QEMU supports multiboot natively <https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
+
+    cd hello-world
+    make
+    qemu-system-x86_64 -kernel main.elf
+
+Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
+
+    qemu-system-x86_64 -hda main.img
+
+Outcome: `hello world` shows on screen.
+
 ## Introduction
 
 <https://en.wikipedia.org/wiki/Multiboot_Specification>
@@ -24,5 +38,3 @@ Disadvantages:
 GRUB leaves the application into a well defined starting state.
 
 It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: <http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2>
-
-Use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk.

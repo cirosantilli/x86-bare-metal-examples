@@ -2,25 +2,11 @@
 
 ## System vs userland
 
-The CPU / system API is divided into two parts:
+This repository covers only things that can only be done from ring 0 (system) and not ring 3 (userland).
 
--   system: things that OSes can do, but they don't let applications do to prevent one application destroying / spying on another (sandboxing). E.g.:
+Ring 3 is covered at: <https://github.com/cirosantilli/x86-assembly-cheat>
 
-    -   some instructions, e.g. `in`, `out`
-
-    -   memory without paging / segmentation.
-
-        This in turn allows writing to magic hardware defined addresses that control other hardwares, like the interrupt handler (PIT) and the real time clock (RTC)
-
-    If an userland process tries to do those things, the CPU usually calls a handler registered by the kernel, and Linux kernel kills the process with a signal in that handler.
-
-    So the only way to learn that part is to create a bunch of OSes!
-
--   userland: things that applications can do freely on top of an OS.
-
-    Basically only run simple instructions like: `add`, `jmp`, `cmp`, `mov`, or call some kernel handler (e.g. `int`).
-
-This repository covers only system level programming.
+An overview of rings 0 and 3 can be found at: <https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439>
 
 ## One minimal concept per OS
 

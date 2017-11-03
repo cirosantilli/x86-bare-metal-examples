@@ -2,7 +2,7 @@
 
 Dozens of minimal operating systems to learn x86 system programming. Userland cheat at: <https://github.com/cirosantilli/x86-assembly-cheat>
 
-1.  [Getting started](getting-started.md)
+1.  [**Getting started**](getting-started.md)
 1.  [About](about.md)
 1.  Examples
     1.  [printf](printf/)

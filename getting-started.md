@@ -61,3 +61,20 @@ you can test several examples with a single USB burn, which is much faster.
 You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.
 
 TODO: boot sectors that load STAGE2 are not working with the big image chainloader. TODO why?
+
+## Docker
+
+If you don't have an Ubuntu box, this is an easy alternative:
+
+    sudo docker run -it --net=host ubuntu:14.04 bash
+
+Then proceed normally in the guest: install packages, and build.
+
+To overcome the lack of GUI, we can use QEMU's VNC implementation instead of the default SDL, which is visible on the host due to `--net=host`:
+
+    qemu-system-i386 -hda main.img -vnc :0
+
+and then on host:
+
+    sudo apt-get install vinagre
+    vinagre localhost:5900

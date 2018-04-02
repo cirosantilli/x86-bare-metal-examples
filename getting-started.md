@@ -2,7 +2,7 @@
 
 Tested on Ubuntu 14.04 AMD64:
 
-    sudo apt-get install bochs bochs-sdl build-essential gdb gnu-efi grub qemu nasm xorriso
+    sudo apt-get install bochs bochs-sdl build-essential gcc-multilib gdb gnu-efi grub qemu nasm xorriso
 
 Make all operating systems:
 

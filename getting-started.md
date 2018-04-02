@@ -50,7 +50,7 @@ Tested on: ThinkPad T400.
 
 Create a `big.img` that contains all examples that can be booted from GRUB:
 
-    make big-img
+    make big.img
 
 Now if you do:
 

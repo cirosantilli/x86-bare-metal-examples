@@ -72,7 +72,14 @@ If you don't have an Ubuntu box, this is an easy alternative:
 
     sudo docker run -it --net=host ubuntu:14.04 bash
 
-Then proceed normally in the guest: install packages, and build.
+Then proceed normally in the guest: install packages, and build:
+
+    apt-get update
+    apt-get install git
+    git clone https://github.com/cirosantilli/x86-bare-metal-examples
+    cd x86-bare-metal-examples
+    ./configure
+    make
 
 To overcome the lack of GUI, we can use QEMU's VNC implementation instead of the default SDL, which is visible on the host due to `--net=host`:
 

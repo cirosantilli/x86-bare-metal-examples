@@ -1,8 +1,8 @@
 # Getting started
 
-Tested on Ubuntu 14.04 AMD64:
+Ubuntu:
 
-    sudo apt-get install bochs bochs-sdl build-essential gcc-multilib gdb gnu-efi grub qemu nasm xorriso
+    ./configure
 
 Make all operating systems:
 
@@ -57,6 +57,10 @@ Now if you do:
     sudo dd if=big.img of=/dev/sdX
 
 you can test several examples with a single USB burn, which is much faster.
+
+You can also try out the big image on QEMU for fun with:
+
+    qemu-system-i386 -hda big.img
 
 You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.
 

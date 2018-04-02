@@ -1,7 +1,5 @@
 # GRUB
 
-TODO not working: https://github.com/cirosantilli/x86-bare-metal-examples/issues/5#issuecomment-377948357
-
     cd chainloader
     make run
 

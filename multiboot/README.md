@@ -17,8 +17,6 @@ Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or d
 
     qemu-system-x86_64 -hda main.img
 
-TODO: can't get it working anymore: <https://github.com/cirosantilli/x86-bare-metal-examples/issues/5#issuecomment-377948357>
-
 ## Introduction
 
 <https://en.wikipedia.org/wiki/Multiboot_Specification>

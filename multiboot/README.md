@@ -11,11 +11,13 @@ QEMU supports multiboot natively <https://stackoverflow.com/questions/25469396/h
     make
     qemu-system-x86_64 -kernel main.elf
 
+Outcome: `hello world` shows on screen.
+
 Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
 
     qemu-system-x86_64 -hda main.img
 
-Outcome: `hello world` shows on screen.
+TODO: can't get it working anymore: <https://github.com/cirosantilli/x86-bare-metal-examples/issues/5#issuecomment-377948357>
 
 ## Introduction
 

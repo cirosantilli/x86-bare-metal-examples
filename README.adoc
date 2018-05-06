@@ -165,6 +165,22 @@ It does make it much easier to express higher level ideas, and gives portability
 
 But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
 
+=== NASM
+
+....
+cd nasm/
+make
+make run RUN=bios_hello_world
+....
+
+While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
+
+When writing an OS in C, we are going to use GCC, which already uses GAS. So it's better to reduce the number of assemblers to one and stick to GAS only.
+
+Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
+
+On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
+
 === Linux is open source
 
 Always try looking into the Linux kernel to find how those CPU capabilities are used in a "real" OS.
@@ -181,12 +197,12 @@ Knowing the following will help a lot:
 
 While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
 
-== Examples
+== Minimal examples
 
 [[printf]]
 === Create a minimal image with printf
 
-link:printf/[]
+https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
 
 ....
 cd printf/
@@ -201,8 +217,6 @@ Generated with `printf` byte by byte.
 
 You can't get more minimal than this.
 
-Also described at: https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
-
 === min.S
 
 link:min.S[]
@@ -211,10 +225,10 @@ Outcome: QEMU window opens up, prints a few boot messages, and hangs.
 
 === No linker script
 
-link:no-ld-script/[]
+link:no-linker-script/[]
 
 ....
-cd no-ld-lscript
+cd no-linker-lscript
 make run
 ....
 
@@ -230,10 +244,146 @@ Less stable, but more convenient for quick and dirty tests.
 
 == BIOS
 
-.. BIOS
+https://en.wikipedia.org/wiki/BIOS
+
+http://wiki.osdev.org/BIOS
+
+The BIOS is one of the most well known firmwares in existence
+
+A firmware is a software a software that:
+
+* runs before the OS / bootloader to do very low level setup
+* usually closed source, provided by the vendor, and interacts with undocumented hardware APIs
+* offers an API to the OS / bootloader, that allows you to do things like quick and dirty IO
+* undistinguishable from an OS, except that is it usually smaller
+
+BIOS is old, non-standardized, x86 omnipresent and limited.
+
+<<uefi>> is the shiny new overbloated thing.
+
+If you are making a serious OS, use it as little as possible.
+
+Can only be used in real mode.
+
+=== BIOS documentation
+
+Does any documentation or portability exist?
+
+* http://www.ctyme.com/intr/int.htm Ralf Brown's Interrupt List. Everyone says that this is the ultimate unofficial compilation.
+* https://en.wikipedia.org/wiki/INT_10H good quick summary
+* http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf says little about interrupts, I don't understand it's scope.
+
+=== Video mode
+
+There are several video modes.
+
+Modes determine what interrupt functions can be used.
+
+There are 2 main types of modes:
+
+* text, where we operate character-wise
+* video, operate byte-wise
+
+Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
+
+The most common modes seem to be:
+
+* 0x01: 40x25 Text, 16 colors, 8 pages
+* 0x03: 80x25 Text, 16 colors, 8 pages
+* 0x13: 320x200 Graphics, 256 colors, 1 page
+
+You can add 128 to the modes to prevent them from clearing the screen.
+
+Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html
+
+A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
+
+==== VESA
+
+https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
+
+TODO use it.
+
+=== Get BIOS information
+
+* http://stackoverflow.com/questions/20604644/how-to-check-the-bios-version-or-name-in-linux-through-command-prompt
+* https://en.wikipedia.org/wiki/System_Management_BIOS SMBIOS
+
+On host:
+
+....
+sudo dmidecode
+....
+
+Standardized by: https://en.wikipedia.org/wiki/Distributed_Management_Task_Force
+
+TODO: how is it obtained at the low level?
+
+=== SeaBIOS
+
+http://www.seabios.org/SeaBIOS
+
+Open source x86 BIOS implementation.
+
+Default BIOS for QEMU and KVM.
+
+== UEFI
+
+https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
+
+Successor for <<bios>>.
+
+Made by Intel, mostly MIT open source, which likely implies that vendors will hack away closed source versions.
+
+link:https://mjg59.dreamwidth.org/10014.html[Matthew Garrett says] it is huge: larger than Linux without drivers.
+
+Since it is huge, it inevitably contains bugs. Garret says that Intel sometimes does not feel like updating the firmware with bugfixes.
+
+UEFI offers a large API comparable to what most people would call an operating system:
+
+* https://software.intel.com/en-us/articles/uefi-application mentions a POSIX C library port
+* https://lwn.net/Articles/641244/ mentions a Python interpreter port!
+
+ARM is considering an implementation https://wiki.linaro.org/ARM/UEFI
+
+=== UEFI example
+
+link:uefi/[]
+
+....
+cd uefi
+make run
+....
+
+TODO get a hello world program working:
+
+* http://www.rodsbooks.com/efi-programming/hello.html Best source so far: allowed me to compile the hello world! TODO: how to run it now on QEMU and real hardware?
+* https://fedoraproject.org/wiki/Using_UEFI_with_QEMU
+* https://wiki.ubuntu.com/UEFI/OVMF
+* https://github.com/tqh/efi-example
+
+Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: http://unix.stackexchange.com/a/228053/32558 , so we just need to generate the image.
+
+`ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download Included in-source for convenience, even though it is ugly.
+
+=== UEFI Bibliography
+
+* https://www.youtube.com/watch?v=V2aq5M3Q76U hardcore kernel dev Matthew Garrett saying how bad UEFI is
+* https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
+* http://wiki.osdev.org/UEFI
+
+== Coreboot
+
+https://en.wikipedia.org/wiki/Coreboot
+
+https://www.coreboot.org
+
+Open source hippie freedom loving cross platform firmware that attempts to replace BIOS and UEFI for the greater good of mankind.
+
+TODO minimal example.
+
 ... link:bios_putc.S[putc]
 ... link:bios_hello_world.S[hello world]
-.... link:nasm/[NASM]
 ... link:bios_newline.S[newline]
 ... link:bios_carriage_return.S[carriage return]
 ... link:bios_cursor_position.S[cursor position]
@@ -249,6 +399,7 @@ Less stable, but more convenient for quick and dirty tests.
 .... link:bios_disk_load2.S[disk load 2]
 ... link:bios_detect_memory.S[detect memory]
 ... link:bios_tick_count.S[tick count]
+
 .. link:initial_state.S[Initial state]
 .. link:cpu.md[CPU]
 ... link:segment_registers.S[Segment registers]
@@ -284,26 +435,207 @@ Less stable, but more convenient for quick and dirty tests.
 .. SMP
 ... link:smp.md[Theory]
 ... link:smp.S[Example]
+. link:ring.md[ring]
 .. Libraries
 ... link:multiboot/[Multiboot]
 ... link:grub/[GRUB]
-... TODO not working
-.... link:uefi/[UEFI]
-.. Misc
-... link:hajji/[hajji]
 . Theory
-.. link:modes-of-operation.md[Modes of operation]
-... link:segmentation.md[Segmentation]
 .. link:formats.md[Formats]
 ... link:mbr.md[MBR]
 .. link:io.md[IO]
 ... link:apm.md[APM]
 .. link:pic.md[PIC]
 .. link:debug.md[Debug]
-.. link:bibliography.md[Bibliography]
-. Tests
-.. link:test_print_bytes.S[PRINT_BYTES]
-.. link:test_pit_sleep.S[PRINT_BYTES]
-. link:LICENSE.md[LICENSE]
-. link:TODO.md[TODO]
-.. link:ring.md[ring]
+
+== x86 modes of operation
+
+The x86 processor has a few modes, which have huge impact on how the processor works.
+
+Covered on Intel Volume 3. Specially useful is the "Transitions Among the Processor's Operating Modes" diagram.
+
+The modes are:
+
+* Protected
+* Real address
+* System management
+* IA-32e. Has two sub modes:
+** Compatibility
+** 64-bit
+
+=== Real mode
+
+http://wiki.osdev.org/Real_Mode
+
+CPU starts here for backwards compatibility.
+
+It is possible to use 32-bit registers in this mode with the "Operand Size Override Prefix" `0x66`.
+
+TODO: is it possible to access memory above 1M like this:
+
+....
+mov $1, 0xF0000000
+mov $1, (%eax)
+....
+
+http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode
+
+=== IA-32e
+
+Wikipedia seems to call it _long mode_: https://en.wikipedia.org/wiki/Long_mode
+
+Contains two sub-modes: 64-bit and compatibility.
+
+64-bit is the major mode of operation, compatibility mode emulates IA-32. This is where systems run most of the time.
+
+The other mode is legacy mode, which as the name implies, should not be used on new programs.
+
+==== Compatibility mode
+
+Controlled by the `CS.L` bit of the segment descriptor.
+
+It appears that it is possible for user programs to modify that during execution: http://stackoverflow.com/questions/12716419/can-you-enter-x64-32-bit-long-compatibility-sub-mode-outside-of-kernel-mode
+
+http://stackoverflow.com/questions/27868394/switch-from-64-bit-long-mode-to-32-bit-compatibility-mode-on-x64
+
+== Unit tests
+
+Tests for utilities defined in this repo, as opposed to x86 or external firmware concepts.
+
+* link:test_print_bytes.S[PRINT_BYTES]
+* link:test_pit_sleep.S[PIT_SLEEP]
+
+== Bibliography
+
+* https://github.com/cirosantilli/assembly-cheat Information about assembly in general.
++
+README.md explain `make qemu`
+* http://stackoverflow.com/questions/22054578/run-a-program-without-an-operating-system
+
+=== Small educational projects
+
+Fun, educational and useless:
+
+* https://github.com/programble/bare-metal-tetris tested on Ubuntu 14.04. Just works.
++
+Has Multiboot and El Torito. Uses custom linker script.
++
+Almost entirely in C `-nostdlib`, with very few inline `asm` commands, and a small assembly entry point. So a good tutorial in how to do the bridge.
+* https://github.com/daniel-e/tetros Tetris that fits into bootloader.
+* https://github.com/arjun024/mkeykernel, https://github.com/arjun024/mkernel
++
+Worked, but bad build system: not `Makefile` or `.gitignore`.
+* https://github.com/Overv/MineAssemble
+
+The following did not work on my machine out of the box:
+
+* https://github.com/apparentlymart/ToyOS
+* https://github.com/rde1024/toyos
+
+=== Tutorials
+
+* https://arobenko.gitbooks.io/bare_metal_cpp/content/
+
+==== Educational NIXes
+
+One complexity order above the minimal tutorials, one below actual kernels
+
+* http://www.xinu.cs.purdue.edu/
+* https://pdos.csail.mit.edu/6.828/2014/xv6.html
+* https://en.wikipedia.org/wiki/MINIX, influenced Linux
+
+==== Educational non-NIXes
+
+* https://github.com/intermezzOS/book
+* https://github.com/flosse/rust-os-comparison
+
+=== Multi collaborator websites
+
+* osdev.org is a major source for this.
+** http://wiki.osdev.org/C%2B%2B_Bare_Bones
+** http://wiki.osdev.org/Text_UI
+** http://wiki.osdev.org/GUI
+* http://www.osdever.net/
+* https://courses.engr.illinois.edu/ece390/books/labmanual/index.html Illinois course from 2004
+
+=== Progressive tutorials
+
+* http://www.jamesmolloy.co.uk/tutorial_html/index.html
++
+Highly recommended.
++
+Multiboot based kernels of increasing complexity, one example builds on the last one. Non DRY as a result.
++
+Cleaned up source code: https://github.com/cirosantilli/jamesmolloy-kernel-development-tutorials
++
+Well known bugs: http://wiki.osdev.org/James_Molloy's_Tutorial_Known_Bugs That's what happens when you don't use GitHub.
++
+Good tutorials, author seems to master the subject.
++
+But he could learn more about version control and build automation: source code inside ugly tar.gz with output files.
+* https://sourceforge.net/p/oszur11/code/ci/master/tree/
++
+GitHub mirror: https://github.com/cirosantilli/oszur11-operating-system-examples
++
+Several examples of increasing complexity. Found at: http://stackoverflow.com/questions/7130726/writing-a-hello-world-kernel
++
+Just works, but examples are non-minimal, lots of code duplication and blobs. There must be around 20 El Torito blobs in that repo.
++
+Multiboot based.
+* https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
+* http://www.brokenthorn.com/Resources/OSDevIndex.html
+* http://skelix.net/skelixos/index_en.html
++
+Cleaned up version: https://github.com/cirosantilli/skelix-os
++
+Not tested yet.
++
+GAS based, no multiboot used.
+* https://github.com/littleosbook/littleosbook
+
+=== Actually useful
+
+These are not meant as learning resources but rather as useful programs:
+
+* https://github.com/scanlime/metalkit A more automated / general bare metal compilation system. Untested, but looks promising.
+* Python without an "OS": https://us.pycon.org/2015/schedule/presentation/378/
+
+=== Other archs
+
+For when we decide to port this tutorial:
+
+ARM:
+
+* https://github.com/bravegnu/gnu-eprog
+
+Raspberry PI:
+
+* https://github.com/dwelch67/raspberrypi
+* https://github.com/BrianSidebotham/arm-tutorial-rpi
+
+== TODO
+
+Stuff here is too messy to put on the main README, needs cleanup:
+
+* link:TODO.adoc[]
+* link:segmentation.adoc[]
+
+== LICENSE
+
+Copyright Ciro Santilli http://www.cirosantilli.com/
+
+https://www.gnu.org/licenses/gpl-3.0.txt[GPL v3] for executable computer program usage.
+
+https://creativecommons.org/licenses/by-sa/4.0/[CC BY-SA v4] for human consumption usage in learning material, e.g. `.md` files, source code comments, using source code excerpts in tutorials. Recommended attribution:
+
+* Single file adaptations:
++
+....
+Based on https://github.com/cirosantilli/x86-bare-metal-examples/blob/<commit-id>/path/to/file.md under CC BY-SA v4
+....
+* Multi-file adaptations:
++
+....
+Based on https://github.com/cirosantilli/x86-bare-metal-examples/tree/<commit-id> under CC BY-SA v4
+....
+
+If you want to use this work under a different license, contact the copyright owner, and he might make a good price.

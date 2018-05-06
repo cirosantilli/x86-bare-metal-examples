@@ -1,4 +1,3 @@
-[[debug]]
 == Debug
 
 How to debug with QEMU + GDB?

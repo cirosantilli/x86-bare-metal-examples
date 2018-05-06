@@ -133,6 +133,22 @@ sudo apt-get install vinagre
 vinagre localhost:5900
 ....
 
+=== GDB step debug
+
+TODO get it working nicely.
+
+This will only cover specifics, you have to know GDB debugging already.
+
+How to have debug symbols: https://stackoverflow.com/questions/32955887/how-to-disassemble-16-bit-x86-boot-sector-code-in-gdb-with-x-i-pc-it-gets-tr/32960272#32960272 TODO implement here. Needs to point GDB to an ELF file in addition to the remote listen.
+
+How to step over `int` calls: http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q
+
+Single stepping until a given opcode can be helpful sometimes: https://stackoverflow.com/questions/14031930/break-on-instruction-with-specific-opcode-in-gdb/31249378#31249378
+
+TODO: detect if we are on 16 or 32 bit automatically from control registers. Now I'm using 2 functions `16` and `32` to switch manually, but that sucks. The problem is that it's not possible to read them directly: http://stackoverflow.com/a/31340294/895245 If we had `cr0`, it would be easy to do with an `if cr0 & 1` inside a hook-stop.
+
+TODO: Take segmentation offsets into account: http://stackoverflow.com/questions/10354063/how-to-use-a-logical-address-in-gdb
+
 == About
 
 === System vs userland
@@ -273,36 +289,25 @@ Does any documentation or portability exist?
 * https://en.wikipedia.org/wiki/INT_10H good quick summary
 * http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf says little about interrupts, I don't understand it's scope.
 
-=== Video mode
+=== BIOS examples
 
-There are several video modes.
-
-Modes determine what interrupt functions can be used.
-
-There are 2 main types of modes:
-
-* text, where we operate character-wise
-* video, operate byte-wise
-
-Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
-
-The most common modes seem to be:
-
-* 0x01: 40x25 Text, 16 colors, 8 pages
-* 0x03: 80x25 Text, 16 colors, 8 pages
-* 0x13: 320x200 Graphics, 256 colors, 1 page
-
-You can add 128 to the modes to prevent them from clearing the screen.
-
-Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html
-
-A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
-
-==== VESA
-
-https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
-
-TODO use it.
+. link:bios_putc.S[]
+. link:bios_hello_world.S[]
+. link:bios_newline.S[]
+. link:bios_carriage_return.S[]
+. link:bios_cursor_position.S[]
+. link:bios_color.S[]
+. link:bios_background.S[]
+. link:bios_scroll.S[]
+.. link:bios_clear_screen.S[]
+. link:bios_pixel.S[]
+.. link:bios_pixel_line.S[]
+. link:bios_keyboard.S[]
+.. link:bios_keyboard_loop.S[]
+. link:bios_disk_load.S[]
+.. link:bios_disk_load2.S[]
+. link:bios_detect_memory.S[]
+. link:bios_tick_count.S[]
 
 === Get BIOS information
 
@@ -382,24 +387,6 @@ Open source hippie freedom loving cross platform firmware that attempts to repla
 
 TODO minimal example.
 
-... link:bios_putc.S[putc]
-... link:bios_hello_world.S[hello world]
-... link:bios_newline.S[newline]
-... link:bios_carriage_return.S[carriage return]
-... link:bios_cursor_position.S[cursor position]
-... link:bios_color.S[color]
-... link:bios_background.S[background]
-... link:bios_scroll.S[scroll]
-.... link:bios_clear_screen.S[clear screen]
-... link:bios_pixel.S[pixel]
-.... link:bios_pixel_line.S[pixel line]
-... link:bios_keyboard.S[keyboard]
-.... link:bios_keyboard_loop.S[keyboard loop]
-... link:bios_disk_load.S[disk load]
-.... link:bios_disk_load2.S[disk load 2]
-... link:bios_detect_memory.S[detect memory]
-... link:bios_tick_count.S[tick count]
-
 .. link:initial_state.S[Initial state]
 .. link:cpu.md[CPU]
 ... link:segment_registers.S[Segment registers]
@@ -429,23 +416,25 @@ TODO minimal example.
 ..... link:page_fault.S[Page fault]
 .. Power
 ... link:reboot.S[reboot]
-... APM
+
+... APM.adoc
 .... link:apm_shutdown.S[APM shutdown]
 .... link:apm_shutdown2.S[APM shutdown 2]
 .. SMP
 ... link:smp.md[Theory]
 ... link:smp.S[Example]
-. link:ring.md[ring]
 .. Libraries
 ... link:multiboot/[Multiboot]
 ... link:grub/[GRUB]
+
+
+
 . Theory
 .. link:formats.md[Formats]
 ... link:mbr.md[MBR]
 .. link:io.md[IO]
-... link:apm.md[APM]
+.. link:ring.md[ring]
 .. link:pic.md[PIC]
-.. link:debug.md[Debug]
 
 == x86 modes of operation
 
@@ -461,6 +450,37 @@ The modes are:
 * IA-32e. Has two sub modes:
 ** Compatibility
 ** 64-bit
+
+== Video mode
+
+There are several video modes.
+
+Modes determine what interrupt functions can be used.
+
+There are 2 main types of modes:
+
+* text, where we operate character-wise
+* video, operate byte-wise
+
+Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
+
+The most common modes seem to be:
+
+* 0x01: 40x25 Text, 16 colors, 8 pages
+* 0x03: 80x25 Text, 16 colors, 8 pages
+* 0x13: 320x200 Graphics, 256 colors, 1 page
+
+You can add 128 to the modes to prevent them from clearing the screen.
+
+Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html
+
+A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
+
+=== VESA
+
+https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
+
+TODO use it.
 
 === Real mode
 
@@ -618,6 +638,8 @@ Stuff here is too messy to put on the main README, needs cleanup:
 
 * link:TODO.adoc[]
 * link:segmentation.adoc[]
+
+The other items in this section are mostly missing examples.
 
 == LICENSE
 

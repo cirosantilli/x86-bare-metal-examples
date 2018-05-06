@@ -1,5 +1,5 @@
 /*
-# Detecte memory
+# Detect memory
 
 # int 15
 

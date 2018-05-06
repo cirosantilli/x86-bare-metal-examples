@@ -394,19 +394,25 @@ Example originally minimized from https://github.com/programble/bare-metal-tetri
 . Theory
 .. link:formats.md[Formats]
 ... link:mbr.md[MBR]
-.. link:io.md[IO]
-.. link:ring.md[ring]
 .. link:pic.md[PIC]
+
+== Protection rings
+
+https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
 
 == Paging
 
 link:paging.S[]
+
+Requires <<protected-mode>>.
 
 === Page fault
 
 link:page_fault.S[]
 
 == Power
+
+=== Shutdown
 
 http://wiki.osdev.org/Shutdown
 

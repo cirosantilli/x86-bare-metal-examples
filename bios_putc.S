@@ -1,9 +1,3 @@
-/*
-# BIOS putc
-
-Print a single `@` character with the BIOS.
-*/
-
 #include "common.h"
 BEGIN
 /*

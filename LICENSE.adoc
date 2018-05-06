@@ -1,0 +1,3 @@
+= LICENSE
+
+See: link:README.adoc#license[]

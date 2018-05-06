@@ -1,13 +1,3 @@
-/*
-# PIT protected mode
-
-Expected output:
-
-    00000020\n
-
-is printed to the screen infinitely with the minimum PIT frequency.
-*/
-
 #include "common.h"
 BEGIN
     STAGE2

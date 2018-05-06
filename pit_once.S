@@ -1,15 +1,3 @@
-/*
-# PIT once
-
-Make the PIT generate a single interrupt instead of a frequency.
-
-Expected output: "a".
-
-TODO how does this mode work exactly?
-I think it counts down from the value in PORT_PIT_CHANNEL0,
-and fires when it reaches 0 the first time.
-*/
-
 #include "common.h"
 BEGIN
     IVT_PIT_SETUP

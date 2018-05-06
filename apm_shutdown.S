@@ -1,11 +1,3 @@
-/*
-http://wiki.osdev.org/Shutdown
-
-http://stackoverflow.com/questions/21463908/x86-instructions-to-power-off-computer-in-real-mode
-http://stackoverflow.com/questions/678458/shutdown-the-computer-using-assembly
-http://stackoverflow.com/questions/3145569/how-to-power-down-the-computer-from-a-freestanding-environment
-*/
-
 #include "common.h"
 
 BEGIN

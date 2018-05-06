@@ -1,9 +1,3 @@
-/*
-This just begs for a non-minimal for-fun infinite loop version.
-
-Do try Ctrl-key combinations.
-*/
-
 #include "common.h"
 BEGIN
 start:

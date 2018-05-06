@@ -1,43 +1,15 @@
-/*
-Using macros for now instead of functions because it simplifies the linker script.
-
-But the downsides are severe:
-
--   no symbols to help debugging
-
--   impossible to step over method calls: you have to step into everything
-
--   larger output, supposing I can get linker gc for unused functions working,
-    see --gc-section, which is for now uncertain.
-    If I can get this working, I'll definitely move to function calls.
-
-    The problem is that if I don't, every image will need a stage 2 loader.
-    That is not too serious though, it could be added to BEGIN.
-
-    It seems that ld can only remove sections, not individual symbols:
-    http://stackoverflow.com/questions/6687630/c-c-gcc-ld-remove-unused-symbols
-    With GCC we can use `-ffunction-sections -fdata-sections`
-    to quickly generate a ton of sections, but I don't thing GAS supports that...
-
-## Conventions
-
-Every "function-like macro" should maintain GP register state
-(flags currently not maintained).
-
-%sp cannot be used to pass most arguments.
-
-We don't care about setting %bp.
-*/
-
-/*
-I really want this for the local labels.
-
-The major downside is that every register passed as argument requires `<>`:
-http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-sign-in-a-default-parameter-fails-with-oper/
-*/
+/* I really want this for the local labels.
+ *
+ * The major downside is that every register passed as argument requires `<>`:
+ * http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-sign-in-a-default-parameter-fails-with-oper/
+ */
 .altmacro
 
 /* Helpers */
+
+.macro DBG
+	mov %ax, 0x9000
+.endm
 
 /* Push registers ax, bx, cx and dx. Lightweight `pusha`. */
 .macro PUSH_ADX
@@ -47,10 +19,9 @@ http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-si
     push %dx
 .endm
 
-/*
-Pop registers dx, cx, bx, ax. Inverse order from PUSH_ADX,
-so this cancels that one.
-*/
+/* Pop registers dx, cx, bx, ax. Inverse order from PUSH_ADX,
+ * so this cancels that one.
+ */
 .macro POP_DAX
     pop %dx
     pop %cx
@@ -72,11 +43,10 @@ so this cancels that one.
     pop %eax
 .endm
 
-/*
-Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
-reg: r8 to be converted
-Output: stored in reg itself. Letters are uppercase.
-*/
+/* Convert the low nibble of a r8 reg to ASCII of 8-bit in-place.
+ * reg: r8 to be converted
+ * Output: stored in reg itself. Letters are uppercase.
+ */
 .macro HEX_NIBBLE reg
     LOCAL letter, end
     cmp $10, \reg
@@ -89,12 +59,11 @@ letter:
 end:
 .endm
 
-/*
-Convert a byte to hex ASCII value.
-c: r/m8 byte to be converted
-Output: two ASCII characters, is stored in `ah:al`
-http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
-*/
+/* Convert a byte to hex ASCII value.
+ * c: r/m8 byte to be converted
+ * Output: two ASCII characters, is stored in `ah:al`
+ * http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-assembly
+ */
 .macro HEX c
     mov \c, %al
     mov \c, %ah
@@ -106,15 +75,12 @@ http://stackoverflow.com/questions/3853730/printing-hexadecimal-digits-with-asse
 
 /* Structural. */
 
-/*
-Setup a sane initial state.
-
-Should be the first thing in every file.
-
-Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
-
-
-*/
+/* Setup a sane initial state.
+ *
+ * Should be the first thing in every file.
+ *
+ * Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
+ */
 .macro BEGIN
     LOCAL after_locals
     .code16
@@ -129,10 +95,9 @@ Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
-    /*
-    TODO What to move into BP and SP?
-    http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process
-    */
+    /* TODO What to move into BP and SP?
+     * http://stackoverflow.com/questions/10598802/which-value-should-be-used-for-sp-for-booting-process
+     */
     mov %ax, %bp
     /* Automatically disables interrupts until the end of the next instruction. */
     mov %ax, %ss
@@ -145,16 +110,17 @@ Discussion of what is needed exactly: http://stackoverflow.com/a/32509555/895245
 after_locals:
 .endm
 
-/*
-Load stage2 from disk to memory, and jump to it.
-
-To be used when the program does not fit in the 512 bytes.
-
-Sample usage:
-
-    STAGE2
-    Stage 2 code here.
-*/
+/* Load stage2 from disk to memory, and jump to it.
+ *
+ * To be used when the program does not fit in the 512 bytes.
+ *
+ * Sample usage:
+ *
+ * ....
+ * STAGE2
+ * Stage 2 code here.
+ * ....
+ */
 .macro STAGE2
     /* Defined in the linker script. */
     mov $__stage2_nsectors, %al
@@ -169,11 +135,7 @@ Sample usage:
     1:
 .endm
 
-/*
-Enter protected mode.
-
-Use the simplest GDT possible.
-*/
+/* Enter protected mode. Use the simplest GDT possible. */
 .macro PROTECTED_MODE
     /* Must come before they are used. */
     .equ CODE_SEG, 8
@@ -182,29 +144,35 @@ Use the simplest GDT possible.
     /* Tell the processor where our Global Descriptor Table is in memory. */
     lgdt gdt_descriptor
 
-    /*
-    Set PE (Protection Enable) bit in CR0 (Control Register 0),
-    effectively entering protected mode.
-    */
+    /* Set PE (Protection Enable) bit in CR0 (Control Register 0),
+     * effectively entering protected mode.
+     */
     mov %cr0, %eax
     orl $0x1, %eax
     mov %eax, %cr0
 
     ljmp $CODE_SEG, $protected_mode
-/*
-Our GDT contains:
-- a null entry to fill the unusable entry 0:
-  http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
-- a code and data. Both are necessary, because:
-  - it is impossible to write to the code segment
-  - it is impossible execute the data segment
-  Both start at 0 and span the entire memory,
-  allowing us to access anything without problems.
-A real OS might have 2 extra segments: user data and code.
-This is the case for the Linux kernel.
-This is better than modifying the privilege bit of the GDT
-as we'd have to reload it several times, losing cache.
-*/
+/* Our GDT contains:
+ *
+ * * a null entry to fill the unusable entry 0:
+ * http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
+ * * a code and data. Both are necessary, because:
+ * +
+ * --
+ * ** it is impossible to write to the code segment
+ * ** it is impossible execute the data segment
+ * --
+ * +
+ * Both start at 0 and span the entire memory,
+ * allowing us to access anything without problems.
+ *
+ * A real OS might have 2 extra segments: user data and code.
+ *
+ * This is the case for the Linux kernel.
+ *
+ * This is better than modifying the privilege bit of the GDT
+ * as we'd have to reload it several times, losing cache.
+ */
 gdt_start:
 gdt_null:
     .long 0x0
@@ -231,30 +199,27 @@ vga_current_line:
     .long 0
 .code32
 protected_mode:
-    /*
-    Setup the other segments.
-    Those movs are mandatory because they update the descriptor cache:
-    http://wiki.osdev.org/Descriptor_Cache
-    */
+    /* Setup the other segments.
+     * Those movs are mandatory because they update the descriptor cache:
+     * http://wiki.osdev.org/Descriptor_Cache
+     */
     mov $DATA_SEG, %ax
     mov %ax, %ds
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
     mov %ax, %ss
-    /*
-    TODO detect the last memory address available properly.
-    It depends on how much RAM we have.
-    */
+    /* TODO detect the last memory address available properly.
+     * It depends on how much RAM we have.
+     */
     mov $0X7000, %ebp
     mov %ebp, %esp
 .endm
 
-/*
-Setup a single page directory, which give us 2^10 * 2^12 == 4MiB
-of identity memory starting at address 0.
-The currently executing code is inside that range, or else we'd jump somewhere and die.
-*/
+/* Setup a single page directory, which give us 2^10 * 2^12 == 4MiB
+ * of identity memory starting at address 0.
+ * The currently executing code is inside that range, or else we'd jump somewhere and die.
+ */
 .equ page_directory, __end_align_4k
 .equ page_table, __end_align_4k + 0x1000
 .macro SETUP_PAGING_4M
@@ -280,12 +245,11 @@ page_setup_start:
     /* Top 20 address bits. */
     mov %eax, %edx
     shl $12, %edx
-    /*
-    Set flag bits 0-7. We only set to 1:
-    -   bit 0: Page present
-    -   bit 1: Page is writable.
-        Might work without this as the permission also depends on CR0.WP.
-    */
+    /* Set flag bits 0-7. We only set to 1:
+     * * bit 0: Page present
+     * * bit 1: Page is writable.
+     *  Might work without this as the permission also depends on CR0.WP.
+     */
     mov $0b00000011, %dl
     /* Zero flag bits 8-11 */
     and $0xF0, %dh
@@ -297,24 +261,23 @@ page_setup_end:
     POP_EDAX
 .endm
 
-/*
-Turn paging on.
-Registers are not saved because memory will be all messed up.
-
-## cr3
-
-The cr3 register does have a format, it is not simply the address of the page directory:
-
--   20 top bits: 4KiB address. Since those are the only address bits,
-    this implies that the page directory must be aligned to 4Kib.
--   bits 3 and 4: TODO some function I don't understand yet
--   all others: ignored
-
-Many tutorials simply ignore bits 3 and 4, and do a direct address mov to `cr3`.
-
-This sets the 20 top address bits to their correct value, and puts trash in bits 3 and 4,
-but it generally works.
-*/
+/* * Turn paging on.
+ * Registers are not saved because memory will be all messed up.
+ *
+ * ## cr3
+ *
+ * The cr3 register does have a format, it is not simply the address of the page directory:
+ *
+ * * 20 top bits: 4KiB address. Since those are the only address bits,
+ *   this implies that the page directory must be aligned to 4Kib.
+ * * bits 3 and 4: TODO some function I don't understand yet
+ * * all others: ignored
+ *
+ * Many tutorials simply ignore bits 3 and 4, and do a direct address mov to `cr3`.
+ *
+ * This sets the 20 top address bits to their correct value, and puts trash in bits 3 and 4,
+ * but it generally works.
+ */
 .macro PAGING_ON
     /* Tell the CPU where the page directory is. */
     mov $page_directory, %eax
@@ -348,27 +311,25 @@ idt_descriptor:
 .endm
 
 .macro IDT_ENTRY
-    /*
-    Low handler address.
-    It is impossible to write:
-    .word (handler & 0x0000FFFF)
-    as we would like:
-    http://stackoverflow.com/questions/18495765/invalid-operands-for-binary-and
-    because this address has to be split up into two.
-    So this must be done at runtime.
-    Why this design choice from Intel?! Weird.
-    */
+    /* Low handler address.
+     * It is impossible to write:
+     * .word (handler & 0x0000FFFF)
+     * as we would like:
+     * http://stackoverflow.com/questions/18495765/invalid-operands-for-binary-and
+     * because this address has to be split up into two.
+     * So this must be done at runtime.
+     * Why this design choice from Intel?! Weird.
+     */
     .word 0
     /* Segment selector: byte offset into the GDT. */
     .word CODE_SEG
     /* Reserved 0. */
     .byte 0
-    /*
-    Flags. Format:
-    - 1 bit: present. If 0 and this happens, triple fault.
-    - 2 bits: ring level we will be called from.
-    - 5 bits: fixed to 0xE.
-    */
+    /* Flags. Format:
+     * 1 bit: present. If 0 and this happens, triple fault.
+     * 2 bits: ring level we will be called from.
+     * 5 bits: fixed to 0xE.
+     */
     .byte 0x8E
     /* High word of base. */
     .word 0
@@ -379,10 +340,9 @@ idt_descriptor:
     .skip n * 8
 .endm
 
-/*
-- index: r/m/imm32 Index of the entry to setup.
-- handler: r/m/imm32 Address of the handler function.
-*/
+/* * index: r/m/imm32 Index of the entry to setup.
+ * * handler: r/m/imm32 Address of the handler function.
+ */
 .macro IDT_SETUP_ENTRY index, handler
     push %eax
     push %edx
@@ -399,10 +359,9 @@ idt_descriptor:
 .macro ISR_NOERRCODE i
     isr\()\i:
         cli
-        /*
-        Push a dummy 0 for interrupts that don't push any code.
-        http://stackoverflow.com/questions/10581224/why-does-iret-from-a-page-fault-handler-generate-interrupt-13-general-protectio/33398064#33398064
-        */
+        /* Push a dummy 0 for interrupts that don't push any code.
+         * http://stackoverflow.com/questions/10581224/why-does-iret-from-a-page-fault-handler-generate-interrupt-13-general-protectio/33398064#33398064
+         */
         push $0
         push $\i
         jmp interrupt_handler_stub
@@ -415,18 +374,15 @@ idt_descriptor:
         jmp interrupt_handler_stub
 .endm
 
-/*
-Protected mode PIT number after remapping it.
-*/
+/* Protected mode PIT number after remapping it. */
 #define PIT_ISR_NUMBER $0x20
 
-/*
-Entries and handlers.
-48 = 32 processor built-ins + 16 PIC interrupts.
-In addition to including this, you should also call
-- call IDT_SETUP_48_ISRS to setup the handler addreses.
-- define an `interrupt_handler(uint32 number, uint32 error)` function
-*/
+/* Entries and handlers.
+ * 48 = 32 processor built-ins + 16 PIC interrupts.
+ * In addition to including this, you should also call
+ * * call IDT_SETUP_48_ISRS to setup the handler addreses.
+ * * define an `interrupt_handler(uint32 number, uint32 error)` function
+ */
 .macro IDT_48_ENTRIES
     /* IDT. */
     IDT_START
@@ -501,17 +457,18 @@ In addition to including this, you should also call
     POP_DAX
 .endm
 
-/*
-Print a 8 bit ASCII value at current cursor position.
-
-- c  r/m/imm8  ASCII value to be printed.
-
-Usage:
-
-    PUTC $'a
-
-prints `'a'` to the screen.
-*/
+/* Print a 8 bit ASCII value at current cursor position.
+ *
+ * * `c`: r/m/imm8 ASCII value to be printed.
+ *
+ * Usage:
+ *
+ * ....
+ * PUTC $'a
+ * ....
+ *
+ * prints `a` to the screen.
+ */
 .macro PUTC c=$0x20
     push %ax
     mov \c, %al
@@ -520,11 +477,10 @@ prints `'a'` to the screen.
     pop %ax
 .endm
 
-/*
-Print a byte as two hexadecimal digits.
-
-- reg: 1 byte register.
-*/
+/* Print a byte as two hexadecimal digits.
+ *
+ * * reg: 1 byte register.
+ */
 .macro PRINT_HEX reg=<%al>
     push %ax
     HEX <\reg>
@@ -533,11 +489,10 @@ Print a byte as two hexadecimal digits.
     pop %ax
 .endm
 
-/*
-Print a 16-bit number
-
-- in: r/m/imm16
-*/
+/* Print a 16-bit number
+ *
+ * * in: r/m/imm16
+ */
 .macro PRINT_WORD_HEX in=<%ax>
     push %ax
     mov \in, %ax
@@ -551,16 +506,17 @@ Print a 16-bit number
     PUTC $'\r
 .endm
 
-/*
-Print a null terminated string.
-
-Use as:
-
-        PRINT_STRING $s
-        hlt
-    s:
-        .asciz "string"
-*/
+/* Print a null terminated string.
+ *
+ * Use as:
+ *
+ * ....
+ *     PRINT_STRING $s
+ *     hlt
+ * s:
+ *     .asciz "string"
+ * ....
+ */
 .macro PRINT_STRING s
     LOCAL end, loop
     mov s, %si
@@ -575,12 +531,11 @@ loop:
 end:
 .endm
 
-/*
-Dump memory.
-
-- s: starting address
-- n: number of bytes to dump
-*/
+/* Dump memory:
+ *
+ * * s: starting address
+ * * n: number of bytes to dump
+ */
 .macro PRINT_BYTES s, n=$16
     LOCAL end, loop, no_newline
     PUSH_ADX
@@ -614,16 +569,15 @@ end:
 
 /* VGA */
 
-/*
-Print a NULL terminated string to position 0 in VGA.
-
-s: 32-bit register or memory containing the address of the string to print.
-
-Clobbers: none.
-
-Uses and updates vga_current_line to decide the current line.
-Loops around the to the top.
-*/
+/* Print a NULL terminated string to position 0 in VGA.
+ *
+ * s: 32-bit register or memory containing the address of the string to print.
+ *
+ * Clobbers: none.
+ *
+ * Uses and updates vga_current_line to decide the current line.
+ * Loops around the to the top.
+ */
 .macro VGA_PRINT_STRING s
     LOCAL loop, end
     PUSH_EADX
@@ -654,18 +608,21 @@ end:
     POP_EDAX
 .endm
 
-/*
-Print a 32-bit r/m/immm in hex.
-
-Sample usage:
-
-    mov $12345678, %eax
-    VGA_PRINT_HEX_4 <%eax>
-
-Expected output on screen:
-
-    12345678
-*/
+/* Print a 32-bit r/m/immm in hex.
+ *
+ * Sample usage:
+ *
+ * ....
+ * mov $12345678, %eax
+ * VGA_PRINT_HEX_4 <%eax>
+ * ....
+ *
+ * Expected output on screen:
+ *
+ * ....
+ * 12345678
+ * ....
+ */
 .macro VGA_PRINT_HEX_4 in=<%eax>
     LOCAL loop
     PUSH_EADX
@@ -696,14 +653,13 @@ loop:
     POP_EDAX
 .endm
 
-/*
-Dump memory.
-
-- s: starting address
-- n: number of bytes to dump
-
-TODO implement
-*/
+/* Dump memory.
+ *
+ * * s: starting address
+ * * n: number of bytes to dump
+ *
+ * TODO implement. This is just a stub.
+ */
 .macro VGA_PRINT_BYTES s, n=$16
     LOCAL end, loop, no_newline
     PUSH_ADX
@@ -762,10 +718,9 @@ end:
 .endm
 
 .macro REMAP_PIC_32
-    /*
-    Remap the PIC interrupts to start at 32.
-    TODO understand.
-    */
+    /* Remap the PIC interrupts to start at 32.
+     * TODO understand.
+     */
     OUTB $0x11, PORT_PIC_MASTER_CMD
     OUTB $0x11, PORT_PIC_SLAVE_CMD
     OUTB $0x20, PORT_PIC_MASTER_DATA
@@ -782,11 +737,10 @@ end:
 
 #define PIT_FREQ 0x1234DD
 
-/*
-Set the minimum possible PIT frequency = 0x1234DD / 0xFFFF =~ 18.2 Hz
-This is a human friendly frequency: you can see individual events,
-but you don't have to wait much for each one.
-*/
+/* Set the minimum possible PIT frequency = 0x1234DD / 0xFFFF =~ 18.2 Hz
+ * This is a human friendly frequency: you can see individual events,
+ * but you don't have to wait much for each one.
+ */
 .macro PIT_SET_MIN_FREQ
     push %eax
     mov $0xFF, %al
@@ -795,12 +749,11 @@ but you don't have to wait much for each one.
     pop %eax
 .endm
 
-/*
-We have to split the 2 ax bytes,
-as we can only communicate one byte at a time here.
-- freq: 16 bit compile time constant desired frequency.
-        Range: 19 - 0x1234DD.
-*/
+/* We have to split the 2 ax bytes,
+ * as we can only communicate one byte at a time here.
+ * - freq: 16 bit compile time constant desired frequency.
+ *         Range: 19 - 0x1234DD.
+ */
 .macro PIT_SET_FREQ freq
     push %eax
     mov $(PIT_FREQ / \freq), %ax
@@ -810,11 +763,10 @@ as we can only communicate one byte at a time here.
     pop %eax
 .endm
 
-/*
-Sleep for `ticks` ticks of the PIT at current frequency.
-PIT_SLEEP_HANDLER_UPDATE must be placed in the PIT handler for this to work.
-Currently only one can be used at a given time.
-*/
+/* Sleep for `ticks` ticks of the PIT at current frequency.
+ * PIT_SLEEP_HANDLER_UPDATE must be placed in the PIT handler for this to work.
+ * Currently only one can be used at a given time.
+ */
 .macro PIT_SLEEP_TICKS ticks
     LOCAL loop
     movb $1, pit_sleep_ticks_locked
@@ -825,9 +777,7 @@ loop:
     jne loop
 .endm
 
-/*
-Must be placed in the PIT handler for PIT_SLEEP_TICKS to work.
-*/
+/* Must be placed in the PIT handler for PIT_SLEEP_TICKS to work. */
 .macro PIT_SLEEP_TICKS_HANDLER_UPDATE
     LOCAL dont_unlock
     decl pit_sleep_ticks_count
@@ -844,14 +794,13 @@ pit_sleep_ticks_locked:
     .byte 0
 .endm
 
-/*
-Define the properties of the wave:
-
-- Channel: 0
-- access mode: lobyte/hibyte
-- operating mode: rate generator
-- BCD/binary: binary
-*/
+/* Define the properties of the wave:
+ *
+ * * Channel: 0
+ * * access mode: lobyte/hibyte
+ * * operating mode: rate generator
+ * * BCD/binary: binary
+ */
 .macro PIT_GENERATE_FREQUENCY
     OUTB $0b00110100, PORT_PIT_MODE
 .endm

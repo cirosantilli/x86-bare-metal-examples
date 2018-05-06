@@ -1,13 +1,4 @@
-/*
-# IDT 1
-
-Sanity check that we can also handle int 1 besides just int 0.
-
-Expected output: "int 1 handled"
-*/
-
 #include "common.h"
-
 BEGIN
     STAGE2
     CLEAR

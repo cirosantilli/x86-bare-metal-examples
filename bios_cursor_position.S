@@ -1,9 +1,3 @@
-/*
-Change the current cursor position.
-
-Expected output: "cb"
-*/
-
 #include "common.h"
 BEGIN
 CLEAR

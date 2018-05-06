@@ -1,9 +1,3 @@
-/*
-Example from: http://wiki.osdev.org/APM
-
-Is all of this really needed? Compare to apm_shutdown.S.
-*/
-
 #include "common.h"
 
 BEGIN

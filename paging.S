@@ -1,20 +1,3 @@
-/*
-# Paging
-
-Expected output:
-
-    00001234
-    00005678
-
-Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
-
-Keep the following Intel shorthands in mind:
-
-- PTE: Page table
-- PDE: Page directory
-- PDPTE: Page-directory-
-*/
-
 #include "common.h"
 
 BEGIN
@@ -34,18 +17,16 @@ BEGIN
 
     PAGING_ON
 
-    /*
-    THIS is what we've been working for!!!
-    Even though we mov to 0, the paging circuit reads that as physical address 0x1000,
-    so the canary value 0x1234 should be modified to 0x5678.
-    */
+    /* THIS is what we've been working for!!!
+     * Even though we mov to 0, the paging circuit reads that as physical address 0x1000,
+     * so the canary value 0x1234 should be modified to 0x5678.
+     **/
     movl $0x5678, 0
 
-    /*
-    Turn paging back off to prevent it from messing with us.
-    Remember that VGA does memory accesses, so if paging is still on,
-    we must identity map up to it, which we have, so this is not mandatory.
-    */
+    /* Turn paging back off to prevent it from messing with us.
+     * Remember that VGA does memory accesses, so if paging is still on,
+     * we must identity map up to it, which we have, so this is not mandatory.
+     * */
     PAGING_OFF
 
     /* Print the (hopefully) modified value 0x5678. */

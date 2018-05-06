@@ -15,10 +15,14 @@ break *0x7c00
 continue
 
 # Magic address. Add a:
-# mov %ax, 0x1234
-# to your program to break there.
+#
+#     mov %ax, 0x9000
+#
+# to your program to break there. Shortcut macro on common.h:
+#
+#     DBG
 awatch *0x9000
 commands
-silent
-printf "0x9000 awatch access debug break\n"
+    silent
+    printf "0x9000 awatch access debug break\n"
 end

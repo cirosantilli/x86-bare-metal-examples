@@ -1,6 +1,4 @@
 /*
-# Page fault
-
 Generate and handle a page fault.
 
 Expected output:

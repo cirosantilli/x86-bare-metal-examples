@@ -1,7 +1,7 @@
 /*
 # Protected mode
 
-Major changes from real moe:
+Major changes from real mode:
 
 -   BIOS cannot be used anymore. In particular, we must use VGA functions
     to get output.

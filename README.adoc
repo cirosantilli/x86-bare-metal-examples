@@ -174,8 +174,6 @@ link:bios_hello_world.S[]
 
 === No linker script
 
-link:no-linker-script/[]
-
 ....
 cd no-linker-lscript
 make run
@@ -197,7 +195,7 @@ https://en.wikipedia.org/wiki/BIOS
 
 http://wiki.osdev.org/BIOS
 
-The BIOS is one of the most well known firmwares in existence
+The BIOS is one of the most well known firmwares in existence.
 
 A firmware is a software a software that:
 
@@ -312,13 +310,59 @@ Running without image gives the UEFI shell, and a Linux kernel image booted fine
 
 == Coreboot
 
+TODO minimal examples.
+
 https://en.wikipedia.org/wiki/Coreboot
 
 https://www.coreboot.org
 
 Open source hippie freedom loving cross platform firmware that attempts to replace BIOS and UEFI for the greater good of mankind.
 
-TODO minimal example.
+== GRUB
+
+link:grub/[]
+
+== Multiboot
+
+https://en.wikipedia.org/wiki/Multiboot_Specification
+
+Standard created by GRUB for booting OSes.
+
+Multiboot files are an extension of ELF files with a special header.
+
+Advantages: GRUB does housekeeping magic for you:
+
+* you can store the OS as a regular file inside a filesystem
+* your program starts in 32-bit mode already, not 16 bit real mode
+* it gets the available memory ranges for you
+
+Disadvantages:
+
+* more boilerplate
+
+GRUB leaves the application into a well defined starting state.
+
+It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: <http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2>
+
+=== Multiboot examples
+
+QEMU supports multiboot natively <https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
+
+....
+cd multiboot/hello-world
+make
+qemu-system-x86_64 -kernel main.elf
+....
+
+where `main.elf` is the multiboot file we generated.
+
+Outcome: `hello world` shows on screen.
+
+Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
+
+....
+qemu-system-x86_64 -hda main.img
+....
 
 .. link:segment_registers.S[Segment registers]
 ... link:ss.S[SS]
@@ -342,9 +386,6 @@ TODO minimal example.
 .... link:idt_zero_divide.S[IDT zero divide]
 .... IDT PIT
 ... link:pit_protected.S[PIT protected]
-... Segmentation fault handler: memory bound, ring, RWX violations
-... link:paging.S[Paging]
-.... link:page_fault.S[Page fault]
 
 . Theory
 .. link:formats.md[Formats]
@@ -352,11 +393,18 @@ TODO minimal example.
 .. link:io.md[IO]
 .. link:ring.md[ring]
 .. link:pic.md[PIC]
-.. Libraries
-.. link:grub/[GRUB]
-... link:multiboot/[Multiboot]
+
+== Paging
+
+link:paging.S[]
+
+=== Page fault
+
+link:page_fault.S[]
 
 == Power
+
+http://wiki.osdev.org/Shutdown
 
 === Reboot
 
@@ -371,11 +419,26 @@ https://en.wikipedia.org/wiki/Advanced_Power_Management
 
 http://wiki.osdev.org/APM
 
-Older than ACPI and simpler.
+Older than <<acpi>> and simpler.
 
 By Microsoft in 1995. Spec seems to be in RTF format...
 
 Can't find the URL. A Google cache: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CB0QFjAAahUKEwj7qpLN_4XIAhWCVxoKHa_nAxY&url=http%3A%2F%2Fdownload.microsoft.com%2Fdownload%2F1%2F6%2F1%2F161ba512-40e2-4cc9-843a-923143f3456c%2FAPMV12.rtf&usg=AFQjCNHoCx8gHv-w08Dn_Aoy6Q3K3DLWRg&sig2=D_66xvI7Y2n1cvyB8d2Mmg
+
+=== ACPI
+
+TODO example
+
+ACPI https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface
+
+Newer and better.
+
+Now managed by the same group that manages UEFI.
+
+Spec:
+
+* current: http://uefi.org/specifications
+* old: http://www.uefi.org/acpi/specs
 
 == SMP
 
@@ -384,6 +447,8 @@ link:smp.S[]
 Symmetric multiprocessing.
 
 == x86 modes of operation
+
+TODO add examples of all.
 
 The x86 processor has a few modes, which have huge impact on how the processor works.
 
@@ -460,7 +525,8 @@ A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
 
 === VGA
 
-https://en.wikipedia.org/wiki/Video_Graphics_Array
+* https://en.wikipedia.org/wiki/Video_Graphics_Array
+* https://en.wikipedia.org/wiki/VGA-compatible_text_mode
 
 TODO: what is it exactly?
 

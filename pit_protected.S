@@ -1,6 +1,4 @@
 /*
-# PIT protected mode
-
 Expected output:
 
     00000020\n

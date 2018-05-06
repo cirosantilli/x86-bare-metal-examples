@@ -1,6 +1,4 @@
 /*
-# Paging
-
 Expected output:
 
     00001234
@@ -10,9 +8,9 @@ Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
 
 Keep the following Intel shorthands in mind:
 
-- PTE: Page table
-- PDE: Page directory
-- PDPTE: Page-directory-
+* PTE: Page table
+* PDE: Page directory
+* PDPTE: Page-directory-
 */
 
 #include "common.h"

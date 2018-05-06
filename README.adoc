@@ -1,0 +1,309 @@
+= x86 Bare Metal Examples
+:idprefix:
+:idseparator: -
+:sectanchors:
+:sectlinks:
+:sectnumlevels: 6
+:sectnums:
+:toc: macro
+:toclevels: 6
+:toc-title:
+
+Dozens of minimal operating systems to learn x86 system programming. Tested on Ubuntu 17.10 host. Userland cheat at: https://github.com/cirosantilli/x86-assembly-cheat
+
+toc::[]
+
+== Getting started
+
+Ubuntu:
+
+....
+./configure
+....
+
+Make all operating systems:
+
+....
+make
+....
+
+Each `.S` file on the top-level is an operating system!
+
+=== Getting started with an emulator
+
+Run the default OS on QEMU:
+
+....
+make run
+....
+
+Run a given OS:
+
+....
+make run RUN=min
+make run RUN=bios_one_char
+....
+
+Use Bochs instead of QEMU:
+
+....
+make bochs RUN=min
+....
+
+=== Getting started with real hardware
+
+Insert an USB, determine its device (`/dev/sdX`) with:
+
+....
+sudo lsblk
+sudo fdisk -l
+....
+
+Pick the `.img` file that you wan to run and:
+
+....
+sudo dd if=bios_hello_world.img of=/dev/sdX
+....
+
+Then:
+
+* insert the USB in a computer
+* during boot, hit some special hardware dependant key, usually F12, Esc
+* choose to boot from the USB
+
+When you are done, just hit the power button to shutdown.
+
+Tested on: ThinkPad T400.
+
+==== Getting started with the big image
+
+Create a `big.img` that contains all examples that can be booted from GRUB:
+
+....
+make big.img
+....
+
+Now if you do:
+
+....
+sudo dd if=big.img of=/dev/sdX
+....
+
+you can test several examples with a single USB burn, which is much faster.
+
+You can also try out the big image on QEMU for fun with:
+
+....
+qemu-system-i386 -hda big.img
+....
+
+You will also want to change the boot order to put the USB first from the F12 BIOS menu. This way you don't have to hit F12 like a madman every time.
+
+TODO: boot sectors that load STAGE2 are not working with the big image chainloader. TODO why?
+
+=== Getting started with Docker
+
+If you don't have an Ubuntu box, this is an easy alternative:
+
+....
+sudo docker run -it --net=host ubuntu:14.04 bash
+....
+
+Then proceed normally in the guest: install packages, and build:
+
+....
+apt-get update
+apt-get install git
+git clone https://github.com/cirosantilli/x86-bare-metal-examples
+cd x86-bare-metal-examples
+./configure
+make
+....
+
+To overcome the lack of GUI, we can use QEMU's VNC implementation instead of the default SDL, which is visible on the host due to `--net=host`:
+
+....
+qemu-system-i386 -hda main.img -vnc :0
+....
+
+and then on host:
+
+....
+sudo apt-get install vinagre
+vinagre localhost:5900
+....
+
+== About
+
+=== System vs userland
+
+This repository covers only things that can only be done from ring 0 (system) and not ring 3 (userland).
+
+Ring 3 is covered at: https://github.com/cirosantilli/x86-assembly-cheat
+
+An overview of rings 0 and 3 can be found at: https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
+
+=== One minimal concept per OS
+
+There are a few tutorials that explain how to make an operating system and give examples of increasing complexity with more and more functionality added.
+
+This is not one of them.
+
+The goal of this repository is to use the minimal setup possible to be able to observe _a single_ low-level programming concept for each minimal operating system we create.
+
+This is not meant provide a template from which you can write a real OS, but instead to illustrate how those low-level concepts work in isolation, so that you can use that knowledge to implement operating systems or drivers.
+
+Minimal examples are useful because it is easier to observe the requirements for a given concept to be observable.
+
+Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
+
+=== To C or not to C
+
+Using C or not is a hard choice.
+
+It does make it much easier to express higher level ideas, and gives portability.
+
+But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
+
+=== Linux is open source
+
+Always try looking into the Linux kernel to find how those CPU capabilities are used in a "real" OS.
+
+=== Pre-requisites
+
+OS dev is one of the most insanely hard programming tasks a person can undertake, and will push your knowledge of several domains to the limit.
+
+Knowing the following will help a lot:
+
+* userland x86 assembly: https://github.com/cirosantilli/assembly-cheat
+* compilation, linking and ELF format basics
+* GDB debugging
+
+While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
+
+== Examples
+
+[[printf]]
+=== Create a minimal image with printf
+
+link:printf/[]
+
+....
+cd printf/
+make run
+....
+
+Outcome: QEMU window opens up, prints a few boot messages, and hangs.
+
+Minimal boot sector example that does nothing, just halts immediately.
+
+Generated with `printf` byte by byte.
+
+You can't get more minimal than this.
+
+Also described at: https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
+
+=== min.S
+
+link:min.S[]
+
+Outcome: QEMU window opens up, prints a few boot messages, and hangs.
+
+=== No linker script
+
+link:no-ld-script/[]
+
+....
+cd no-ld-lscript
+make run
+....
+
+Outcome: `hello world` shows on screen, and the system halts.
+
+Hello world using the default `ld` script, not an explicit one set with `-T`. Uses:
+
+* `-tText`
+* `.org` inside each assembly file
+* `_start` must be present to avoid a warning, since the default linker script expects it
+
+Less stable, but more convenient for quick and dirty tests.
+
+== BIOS
+
+.. BIOS
+... link:bios_putc.S[putc]
+... link:bios_hello_world.S[hello world]
+.... link:nasm/[NASM]
+... link:bios_newline.S[newline]
+... link:bios_carriage_return.S[carriage return]
+... link:bios_cursor_position.S[cursor position]
+... link:bios_color.S[color]
+... link:bios_background.S[background]
+... link:bios_scroll.S[scroll]
+.... link:bios_clear_screen.S[clear screen]
+... link:bios_pixel.S[pixel]
+.... link:bios_pixel_line.S[pixel line]
+... link:bios_keyboard.S[keyboard]
+.... link:bios_keyboard_loop.S[keyboard loop]
+... link:bios_disk_load.S[disk load]
+.... link:bios_disk_load2.S[disk load 2]
+... link:bios_detect_memory.S[detect memory]
+... link:bios_tick_count.S[tick count]
+.. link:initial_state.S[Initial state]
+.. link:cpu.md[CPU]
+... link:segment_registers.S[Segment registers]
+.... link:ss.S[SS]
+.... link:cs.S[CS]
+... link:interrupt.S[Interrupt]
+.... link:interrupt1.S[int \$1]
+.... link:interrupt_zero_divide.S[Interrupt zero divide]
+.... link:interrupt_loop.S[Interrupt loop]
+... link:in.md[in]
+.... link:in_keyboard.S[in keyboard]
+.... link:rtc.S[RTC]
+.... link:pit.S[PIT]
+..... link:pit_once.S[PIT once]
+.... link:in_beep.S[in beep]
+.... link:in_beep_illinois.S[in beep_illinois]
+.... link:in_mouse.S[in mouse (TODO)]
+... link:protected_mode.S[Protected mode]
+.... link:segment_base.S[Segment base (TODO)]
+.... link:idt.S[IDT]
+..... link:idt1.S[IDT 1]
+..... link:idt_zero_divide.S[IDT zero divide]
+..... IDT PIT
+.... link:pit_protected.S[PIT protected]
+.... Segmentation fault handler: memory bound, ring, RWX violations
+.... link:paging.S[Paging]
+..... link:page_fault.S[Page fault]
+.. Power
+... link:reboot.S[reboot]
+... APM
+.... link:apm_shutdown.S[APM shutdown]
+.... link:apm_shutdown2.S[APM shutdown 2]
+.. SMP
+... link:smp.md[Theory]
+... link:smp.S[Example]
+.. Libraries
+... link:multiboot/[Multiboot]
+... link:grub/[GRUB]
+... TODO not working
+.... link:uefi/[UEFI]
+.. Misc
+... link:hajji/[hajji]
+. Theory
+.. link:modes-of-operation.md[Modes of operation]
+... link:segmentation.md[Segmentation]
+.. link:formats.md[Formats]
+... link:mbr.md[MBR]
+.. link:io.md[IO]
+... link:apm.md[APM]
+.. link:pic.md[PIC]
+.. link:debug.md[Debug]
+.. link:bibliography.md[Bibliography]
+. Tests
+.. link:test_print_bytes.S[PRINT_BYTES]
+.. link:test_pit_sleep.S[PRINT_BYTES]
+. link:LICENSE.md[LICENSE]
+. link:TODO.md[TODO]
+.. link:ring.md[ring]

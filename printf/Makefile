@@ -16,4 +16,4 @@ clean:
 	rm -f '$(MAIN)'
 
 run: $(MAIN)
-	qemu-system-i386 -hda '$(MAIN)'
+	qemu-system-i386 -drive file='$(MAIN)',format=raw

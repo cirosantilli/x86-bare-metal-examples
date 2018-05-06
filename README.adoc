@@ -342,11 +342,11 @@ Disadvantages:
 
 GRUB leaves the application into a well defined starting state.
 
-It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: <http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2>
+It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2
 
-=== Multiboot examples
+=== Multiboot hello world
 
-QEMU supports multiboot natively <https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
+QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
 
 ....
 cd multiboot/hello-world
@@ -361,8 +361,12 @@ Outcome: `hello world` shows on screen.
 Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
 
 ....
-qemu-system-x86_64 -hda main.img
+qemu-system-x86_64 -drive file=main.img,format=raw
 ....
+
+The `main.img` file can also be burned to a USB and run on real hardware.
+
+Example originally minimized from https://github.com/programble/bare-metal-tetris
 
 .. link:segment_registers.S[Segment registers]
 ... link:ss.S[SS]
@@ -442,13 +446,11 @@ Spec:
 
 == SMP
 
-link:smp.S[]
+Example: link:smp.S[]
 
 Symmetric multiprocessing.
 
 == x86 modes of operation
-
-TODO add examples of all.
 
 The x86 processor has a few modes, which have huge impact on how the processor works.
 
@@ -456,8 +458,8 @@ Covered on Intel Volume 3. Specially useful is the "Transitions Among the Proces
 
 The modes are:
 
+* Real
 * Protected
-* Real address
 * System management
 * IA-32e. Has two sub modes:
 ** Compatibility
@@ -467,11 +469,13 @@ The modes are:
 
 http://wiki.osdev.org/Real_Mode
 
-CPU starts here for backwards compatibility.
+The CPU starts in this mode after power up.
+
+All our <<bios>> examples are in real mode.
 
 It is possible to use 32-bit registers in this mode with the "Operand Size Override Prefix" `0x66`.
 
-TODO: is it possible to access memory above 1M like this:
+TODO is it possible to access memory above 1M like this:
 
 ....
 mov $1, 0xF0000000
@@ -480,7 +484,7 @@ mov $1, (%eax)
 
 http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode
 
-=== IA-32e
+=== IA-32e mode
 
 Wikipedia seems to call it _long mode_: https://en.wikipedia.org/wiki/Long_mode
 

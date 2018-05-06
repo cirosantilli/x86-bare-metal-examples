@@ -1,6 +1,6 @@
-# Hello world multiboot C
+= osdev multiboot example
 
-Originally from: <http://wiki.osdev.org/Bare_Bones>, should be a reasonable way to start a serious OS.
+Originally from: http://wiki.osdev.org/Bare_Bones, should be a reasonable way to start a serious OS.
 
 A hello world, with multiboot and a C interface.
 

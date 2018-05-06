@@ -1,7 +1,5 @@
 /*
-# SMP
-
-Expected output: "SMP started"
+Expected output: "SMP started" shows on screen.
 
 http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like/33651438#33651438
 */

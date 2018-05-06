@@ -1,3 +1,4 @@
+/* Outcome: show the string `hello world` and hang. */
 #include "common.h"
 BEGIN
     mov $msg, %si

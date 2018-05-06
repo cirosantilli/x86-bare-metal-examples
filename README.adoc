@@ -15,21 +15,16 @@ toc::[]
 
 == Getting started
 
-Ubuntu:
+First read this introduction: https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
+
+Then on Ubuntu:
 
 ....
 ./configure
-....
-
-Make all operating systems:
-
-....
 make
 ....
 
-Each `.S` file on the top-level is an operating system!
-
-=== Getting started with an emulator
+Each `.S` file on the top-level is an operating system! It gets compiled to a corresponding `.img` file.
 
 Run the default OS on QEMU:
 
@@ -149,76 +144,12 @@ TODO: detect if we are on 16 or 32 bit automatically from control registers. Now
 
 TODO: Take segmentation offsets into account: http://stackoverflow.com/questions/10354063/how-to-use-a-logical-address-in-gdb
 
-== About
-
-=== System vs userland
-
-This repository covers only things that can only be done from ring 0 (system) and not ring 3 (userland).
-
-Ring 3 is covered at: https://github.com/cirosantilli/x86-assembly-cheat
-
-An overview of rings 0 and 3 can be found at: https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
-
-=== One minimal concept per OS
-
-There are a few tutorials that explain how to make an operating system and give examples of increasing complexity with more and more functionality added.
-
-This is not one of them.
-
-The goal of this repository is to use the minimal setup possible to be able to observe _a single_ low-level programming concept for each minimal operating system we create.
-
-This is not meant provide a template from which you can write a real OS, but instead to illustrate how those low-level concepts work in isolation, so that you can use that knowledge to implement operating systems or drivers.
-
-Minimal examples are useful because it is easier to observe the requirements for a given concept to be observable.
-
-Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
-
-=== To C or not to C
-
-Using C or not is a hard choice.
-
-It does make it much easier to express higher level ideas, and gives portability.
-
-But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
-
-=== NASM
-
-....
-cd nasm/
-make
-make run RUN=bios_hello_world
-....
-
-While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
-
-When writing an OS in C, we are going to use GCC, which already uses GAS. So it's better to reduce the number of assemblers to one and stick to GAS only.
-
-Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
-
-On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
-
-=== Linux is open source
-
-Always try looking into the Linux kernel to find how those CPU capabilities are used in a "real" OS.
-
-=== Pre-requisites
-
-OS dev is one of the most insanely hard programming tasks a person can undertake, and will push your knowledge of several domains to the limit.
-
-Knowing the following will help a lot:
-
-* userland x86 assembly: https://github.com/cirosantilli/assembly-cheat
-* compilation, linking and ELF format basics
-* GDB debugging
-
-While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
-
 == Minimal examples
+
+These are the first ones you should look at.
 
 [[printf]]
 === Create a minimal image with printf
-
-https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
 
 ....
 cd printf/
@@ -233,11 +164,13 @@ Generated with `printf` byte by byte.
 
 You can't get more minimal than this.
 
-=== min.S
+=== Minimal GAS example
 
 link:min.S[]
 
-Outcome: QEMU window opens up, prints a few boot messages, and hangs.
+=== BIOS hello world
+
+link:bios_hello_world.S[]
 
 === No linker script
 
@@ -248,9 +181,9 @@ cd no-linker-lscript
 make run
 ....
 
-Outcome: `hello world` shows on screen, and the system halts.
+Outcome: show `hello world` and hang.
 
-Hello world using the default `ld` script, not an explicit one set with `-T`. Uses:
+Uses the default host `ld` script, not an explicit one set with `-T`. Uses:
 
 * `-tText`
 * `.org` inside each assembly file
@@ -292,7 +225,6 @@ Does any documentation or portability exist?
 === BIOS examples
 
 . link:bios_putc.S[]
-. link:bios_hello_world.S[]
 . link:bios_newline.S[]
 . link:bios_carriage_return.S[]
 . link:bios_cursor_position.S[]
@@ -308,6 +240,7 @@ Does any documentation or portability exist?
 .. link:bios_disk_load2.S[]
 . link:bios_detect_memory.S[]
 . link:bios_tick_count.S[]
+. link:bios_initial_state.S[]
 
 === Get BIOS information
 
@@ -387,47 +320,31 @@ Open source hippie freedom loving cross platform firmware that attempts to repla
 
 TODO minimal example.
 
-.. link:initial_state.S[Initial state]
-.. link:cpu.md[CPU]
-... link:segment_registers.S[Segment registers]
-.... link:ss.S[SS]
-.... link:cs.S[CS]
-... link:interrupt.S[Interrupt]
-.... link:interrupt1.S[int \$1]
-.... link:interrupt_zero_divide.S[Interrupt zero divide]
-.... link:interrupt_loop.S[Interrupt loop]
-... link:in.md[in]
-.... link:in_keyboard.S[in keyboard]
-.... link:rtc.S[RTC]
-.... link:pit.S[PIT]
-..... link:pit_once.S[PIT once]
-.... link:in_beep.S[in beep]
-.... link:in_beep_illinois.S[in beep_illinois]
-.... link:in_mouse.S[in mouse (TODO)]
-... link:protected_mode.S[Protected mode]
-.... link:segment_base.S[Segment base (TODO)]
-.... link:idt.S[IDT]
-..... link:idt1.S[IDT 1]
-..... link:idt_zero_divide.S[IDT zero divide]
-..... IDT PIT
-.... link:pit_protected.S[PIT protected]
-.... Segmentation fault handler: memory bound, ring, RWX violations
-.... link:paging.S[Paging]
-..... link:page_fault.S[Page fault]
-.. Power
-... link:reboot.S[reboot]
-
-... APM.adoc
-.... link:apm_shutdown.S[APM shutdown]
-.... link:apm_shutdown2.S[APM shutdown 2]
-.. SMP
-... link:smp.md[Theory]
-... link:smp.S[Example]
-.. Libraries
-... link:multiboot/[Multiboot]
-... link:grub/[GRUB]
-
-
+.. link:segment_registers.S[Segment registers]
+... link:ss.S[SS]
+... link:cs.S[CS]
+.. link:interrupt.S[Interrupt]
+... link:interrupt1.S[int \$1]
+... link:interrupt_zero_divide.S[Interrupt zero divide]
+... link:interrupt_loop.S[Interrupt loop]
+.. link:in.md[in]
+... link:in_keyboard.S[in keyboard]
+... link:rtc.S[RTC]
+... link:pit.S[PIT]
+.... link:pit_once.S[PIT once]
+... link:in_beep.S[in beep]
+... link:in_beep_illinois.S[in beep_illinois]
+... link:in_mouse.S[in mouse (TODO)]
+.. link:protected_mode.S[Protected mode]
+... link:segment_base.S[Segment base (TODO)]
+... link:idt.S[IDT]
+.... link:idt1.S[IDT 1]
+.... link:idt_zero_divide.S[IDT zero divide]
+.... IDT PIT
+... link:pit_protected.S[PIT protected]
+... Segmentation fault handler: memory bound, ring, RWX violations
+... link:paging.S[Paging]
+.... link:page_fault.S[Page fault]
 
 . Theory
 .. link:formats.md[Formats]
@@ -435,6 +352,36 @@ TODO minimal example.
 .. link:io.md[IO]
 .. link:ring.md[ring]
 .. link:pic.md[PIC]
+.. Libraries
+.. link:grub/[GRUB]
+... link:multiboot/[Multiboot]
+
+== Power
+
+=== Reboot
+
+link:reboot.S[]
+
+=== APM
+
+* link:apm_shutdown.S[]
+* link:apm_shutdown2.S[]
+
+https://en.wikipedia.org/wiki/Advanced_Power_Management
+
+http://wiki.osdev.org/APM
+
+Older than ACPI and simpler.
+
+By Microsoft in 1995. Spec seems to be in RTF format...
+
+Can't find the URL. A Google cache: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CB0QFjAAahUKEwj7qpLN_4XIAhWCVxoKHa_nAxY&url=http%3A%2F%2Fdownload.microsoft.com%2Fdownload%2F1%2F6%2F1%2F161ba512-40e2-4cc9-843a-923143f3456c%2FAPMV12.rtf&usg=AFQjCNHoCx8gHv-w08Dn_Aoy6Q3K3DLWRg&sig2=D_66xvI7Y2n1cvyB8d2Mmg
+
+== SMP
+
+link:smp.S[]
+
+Symmetric multiprocessing.
 
 == x86 modes of operation
 
@@ -450,37 +397,6 @@ The modes are:
 * IA-32e. Has two sub modes:
 ** Compatibility
 ** 64-bit
-
-== Video mode
-
-There are several video modes.
-
-Modes determine what interrupt functions can be used.
-
-There are 2 main types of modes:
-
-* text, where we operate character-wise
-* video, operate byte-wise
-
-Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
-
-The most common modes seem to be:
-
-* 0x01: 40x25 Text, 16 colors, 8 pages
-* 0x03: 80x25 Text, 16 colors, 8 pages
-* 0x13: 320x200 Graphics, 256 colors, 1 page
-
-You can add 128 to the modes to prevent them from clearing the screen.
-
-Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html
-
-A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
-
-=== VESA
-
-https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
-
-TODO use it.
 
 === Real mode
 
@@ -517,6 +433,47 @@ It appears that it is possible for user programs to modify that during execution
 
 http://stackoverflow.com/questions/27868394/switch-from-64-bit-long-mode-to-32-bit-compatibility-mode-on-x64
 
+== Video mode
+
+There are several video modes.
+
+Modes determine what interrupt functions can be used.
+
+There are 2 main types of modes:
+
+* text, where we operate character-wise
+* video, operate byte-wise
+
+Modes can be set with `int 0x10` and `AH = 0x00`, and get with `AH = 0x0F`
+
+The most common modes seem to be:
+
+* 0x01: 40x25 Text, 16 colors, 8 pages
+* 0x03: 80x25 Text, 16 colors, 8 pages
+* 0x13: 320x200 Graphics, 256 colors, 1 page
+
+You can add 128 to the modes to prevent them from clearing the screen.
+
+Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-int10h.html
+
+A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
+
+=== VGA
+
+https://en.wikipedia.org/wiki/Video_Graphics_Array
+
+TODO: what is it exactly?
+
+BIOS cannot be used when we move into protected mode, but we can use the VGA interface to get output out of our programs.
+
+Have a look at the macros prefixed with `VGA_` inside link:common.h[].
+
+=== VBE
+
+https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
+
+TODO use it.
+
 == Unit tests
 
 Tests for utilities defined in this repo, as opposed to x86 or external firmware concepts.
@@ -524,12 +481,72 @@ Tests for utilities defined in this repo, as opposed to x86 or external firmware
 * link:test_print_bytes.S[PRINT_BYTES]
 * link:test_pit_sleep.S[PIT_SLEEP]
 
-== Bibliography
+== About
 
-* https://github.com/cirosantilli/assembly-cheat Information about assembly in general.
-+
-README.md explain `make qemu`
-* http://stackoverflow.com/questions/22054578/run-a-program-without-an-operating-system
+=== System vs userland
+
+This repository covers only things that can only be done from ring 0 (system) and not ring 3 (userland).
+
+Ring 3 is covered at: https://github.com/cirosantilli/x86-assembly-cheat
+
+An overview of rings 0 and 3 can be found at: https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
+
+=== One minimal concept per OS
+
+There are a few tutorials that explain how to make an operating system and give examples of increasing complexity with more and more functionality added.
+
+This is not one of them.
+
+The goal of this repository is to use the minimal setup possible to be able to observe _a single_ low-level programming concept for each minimal operating system we create.
+
+This is not meant provide a template from which you can write a real OS, but instead to illustrate how those low-level concepts work in isolation, so that you can use that knowledge to implement operating systems or drivers.
+
+Minimal examples are useful because it is easier to observe the requirements for a given concept to be observable.
+
+Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
+
+=== To C or not to C
+
+Using C or not is a hard choice.
+
+It does make it much easier to express higher level ideas, and gives portability.
+
+But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
+
+=== NASM
+
+....
+cd nasm/
+make
+make run RUN=bios_hello_world
+....
+
+While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
+
+When writing an OS in C, we are going to use GCC, which already uses GAS. So it's better to reduce the number of assemblers to one and stick to GAS only.
+
+Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
+
+On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
+
+=== Linux is open source
+
+Always try looking into the Linux kernel to find how those CPU capabilities are used in a "real" OS.
+
+=== Pre-requisites
+
+OS dev is one of the most insanely hard programming tasks a person can undertake, and will push your knowledge of several domains to the limit.
+
+Knowing the following will help a lot:
+
+* userland x86 assembly: https://github.com/cirosantilli/assembly-cheat
+* compilation, linking and ELF format basics
+* GDB debugging
+
+While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
+
+
+== Bibliography
 
 === Small educational projects
 
@@ -553,6 +570,7 @@ The following did not work on my machine out of the box:
 
 === Tutorials
 
+* https://farid.hajji.org/en/blog/46-hello-world-on-the-bare-metal
 * https://arobenko.gitbooks.io/bare_metal_cpp/content/
 
 ==== Educational NIXes
@@ -638,6 +656,7 @@ Stuff here is too messy to put on the main README, needs cleanup:
 
 * link:TODO.adoc[]
 * link:segmentation.adoc[]
+* link:smp.adoc[]
 
 The other items in this section are mostly missing examples.
 

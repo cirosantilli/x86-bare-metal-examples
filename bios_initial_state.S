@@ -1,5 +1,5 @@
 /*
-# Initial state.
+# BIOD initial state.
 
 Check the initial state the firmware leaves us in.
 

@@ -1,7 +1,9 @@
 /*
 Change the current cursor position.
 
-Expected output: "cb"
+Expected output:
+
+    cb
 */
 
 #include "common.h"

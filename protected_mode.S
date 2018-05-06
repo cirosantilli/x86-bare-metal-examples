@@ -3,7 +3,8 @@
 
 Major changes from real moe:
 
--   BIOS cannot be used anymore
+-   BIOS cannot be used anymore. In particular, we must use VGA functions
+    to get output.
 
 -   GDT and segmentation take effect immediately so we *have*
     to deal with it now.

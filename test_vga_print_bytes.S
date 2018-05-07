@@ -1,8 +1,4 @@
-/*
-Test VGA_PRINT_BYTES
-
-TODO implement
-*/
+/* TODO implement the function and enable this test. */
 
 #include "common.h"
 BEGIN

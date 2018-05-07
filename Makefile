@@ -39,7 +39,7 @@ clean:
 	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: $(RUN_FILE)
-	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2
+	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2 -soundhw pcspk
 
 debug: $(RUN_FILE)
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &

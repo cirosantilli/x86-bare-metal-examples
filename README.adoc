@@ -685,83 +685,198 @@ Example originally minimized from https://github.com/programble/bare-metal-tetri
 ... link:interrupt_zero_divide.S[Interrupt zero divide]
 ... link:interrupt_loop.S[Interrupt loop]
 
-.. link:in.md[in]
-... link:in_keyboard.S[in keyboard]
-... link:rtc.S[RTC]
-... link:pit.S[PIT]
-.... link:pit_once.S[PIT once]
-... link:in_beep.S[in beep]
-... link:in_beep_illinois.S[in beep_illinois]
-... link:in_mouse.S[in mouse (TODO)]
-
 . Theory
 .. link:formats.md[Formats]
 ... link:mbr.md[MBR]
 .. link:pic.md[PIC]
 
-== Power
+== in and out instructions
 
-=== Shutdown
+x86 has dedicated instructions for certain IO operations: `in` and `out`.
 
-http://wiki.osdev.org/Shutdown
+These instructions take an IO address which identifies which hardware they will communicate to.
 
-=== Reboot
+The IO ports don't seem to be standardized, like everything else: http://stackoverflow.com/questions/14194798/is-there-a-specification-of-x86-i-o-port-assignment
 
-http://stackoverflow.com/questions/32682152/how-to-reboot-in-x86-assembly-from-16-bit-real-mode
-
-Infinite reboot loop on emulator!
+The Linux kernel wraps those instructions with the `inb` and `outb` family of instructions:
 
 ....
-./run reboot
+man inb
+man outb
 ....
 
-TODO why does it work?
+=== Memory mapped vs port mapped IO
 
-=== APM
+Not all instruction sets have dedicated instructions such as `in` and `out` for IO.
 
-Turn on and immediately shutdown the system closing QEMU:
+In ARM for example, everything is done by writing to magic memory addresses.
+
+The dedicated `in` and `out` approach is called "port mapped IO", and the approach of the magic addresses "memory mapp"
+
+From an interface point of view, I feel that memory mapped is more elegant: port IO simply creates a second addresses space.
+
+TODO: are there performance considerations when designing CPUs?
+
+http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
+
+=== PS/2 keyboard
 
 ....
-./run apm_shutdown
+./run ps2_keyboard
 ....
 
-Fancier version copied from http://wiki.osdev.org/APM (TODO why is that better):
+Whenever you press a key down or up, the keyboard hex scancode is printed to the screen.
+
+Uses the PS/2 keyboard controller on `in 60h`: http://wiki.osdev.org/%228042%22_PS/2_Controller
+
+The `in` always returns immediately with the last keyboard keycode: we then just poll for changes and print only the changes.
+
+Scancode tables: TODO: official specs?
+
+* https://en.wikipedia.org/wiki/Scancode#PC_compatibles
+* http://flint.cs.yale.edu/cs422/doc/art-of-asm/pdf/APNDXC.PDF
+
+TODO do this with the interrupt table instead of `in`.
+
+=== PS/2 mouse
+
+TODO
+
+* http://wiki.osdev.org/Mouse_Input
+* Random threads with source code, ah those OS devs:
+** https://forum.osdev.org/viewtopic.php?t=10247
+** https://forum.osdev.org/viewtopic.php?t=24277
+* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-mouse.html
+
+I am so going to make a pixel drawing program with this.
+
+=== RTC
+
+Real Time Clock:
+
+* http://wiki.osdev.org/RTC
+* http://wiki.osdev.org/CMOS
+* https://en.wikipedia.org/wiki/Real-time_clock
 
 ....
-./run apm_shutdown2
+./run rtc
 ....
 
-https://en.wikipedia.org/wiki/Advanced_Power_Management
+Gives wall date and time with precision of seconds, every second, e.g.:
 
-http://wiki.osdev.org/APM
+....
+00 01 02 03 04 10
+....
 
-Older than <<acpi>> and simpler.
+means:
 
-By Microsoft in 1995. Spec seems to be in RTF format...
+____
+3rd April 2010, 02 hours 01 minute and 00 seconds.
+____
 
-Can't find the URL. A Google cache: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CB0QFjAAahUKEwj7qpLN_4XIAhWCVxoKHa_nAxY&url=http%3A%2F%2Fdownload.microsoft.com%2Fdownload%2F1%2F6%2F1%2F161ba512-40e2-4cc9-843a-923143f3456c%2FAPMV12.rtf&usg=AFQjCNHoCx8gHv-w08Dn_Aoy6Q3K3DLWRg&sig2=D_66xvI7Y2n1cvyB8d2Mmg
+Uses `out 70h` and `in 71h` to query the hardware.
+
+This hardware must therefore use a separate battery to keep going when we turn off the computer or remove the laptop battery.
+
+We can control the initial value in QEMU with the option:
+
+....
+-rtc base='2010-04-03T02:01:00'
+....
+
+The RTC cannot give accuracy greater than seconds. For that, consider the <<pit>>, or the <<hpet>>.
 
 Bibliography:
 
-* http://wiki.osdev.org/Shutdown
-* http://stackoverflow.com/questions/21463908/x86-instructions-to-power-off-computer-in-real-mode
-* http://stackoverflow.com/questions/678458/shutdown-the-computer-using-assembly
-* http://stackoverflow.com/questions/3145569/how-to-power-down-the-computer-from-a-freestanding-environment
+* http://stackoverflow.com/questions/1465927/how-can-i-access-system-time-using-nasm
+* https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rtc.c#L121
 
-=== ACPI
+=== PIT
 
-TODO example
+Programmable Interval Timer:
 
-ACPI https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface
+* https://en.wikipedia.org/wiki/Programmable_interval_timer
+* http://wiki.osdev.org/PIT
+* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
+* http://kernelx.weebly.com/programmable-interval-timer.html
 
-Newer and better.
+Superseded by the <<hpet>>.
 
-Now managed by the same group that manages UEFI.
+Print `a\n` with the minimal frequency possible of `0x1234DD / 0xFFFF = 18.2 Hz`:
 
-Spec:
+....
+./run pit
+....
 
-* current: http://uefi.org/specifications
-* old: http://www.uefi.org/acpi/specs
+Make the PIT generate a single interrupt instead of a frequency:
+
+....
+./run pit_once
+....
+
+Outcome:
+
+....
+a
+....
+
+TODO I think this counts down from the value value in channel 0, and therefore allows to schedule a single event in the future.
+
+The PIT can generate periodic interrupts (or <<pc-speaker,sound>>!) with a given frequency to `IRQ0`, which on real mode maps to interrupt 8 by default.
+
+Major application: interrupt the running process to allow the OS to schedule processes.
+
+The PIT 3 channels that can generate 3 independent signals
+
+* channel 0 at port `40h`: generates interrupts
+* channel 1 at port `41h`: not to be used for some reason
+* channel 2 at port `42h`: linked to the speaker to generate sounds
+
+Port `43h` is used to control signal properties except frequency, which goes in the channel ports, for the 3 channels.
+
+=== PIT frequency
+
+We don't control the frequency of the PIT directly, which is fixed at `0x1234DD`.
+
+Instead, we control a frequency divisor. This is a classic type of discrete electronic circuit: https://en.wikipedia.org/wiki/Frequency_divider
+
+The magic frequency comes from historical reasons to reuse television hardware according to link:https://wiki.osdev.org/Programmable_Interval_Timer[], which in turn is likely influenced by some physical properties of crystal oscillators.
+
+The constant `1193181 == 0x1234DD` has 2 occurrences on Linux 4.16.
+
+==== HPET
+
+Newer <<pit>>.
+
+TODO example.
+
+* https://en.wikipedia.org/wiki/High_Precision_Event_Timer
+* https://wiki.osdev.org/HPET
+
+==== PC speaker
+
+http://wiki.osdev.org/PC_Speaker
+
+....
+./run pc_speaker
+....
+
+Outcome: produces a foul noisy noise using the PC speaker hardware on `out 61h`
+
+QEMU requires the option:
+
+....
+-soundhw pcspk
+....
+
+The beep just uses the <<pit>> Channel 2 to generate the frequency.
+
+Extracted from: https://github.com/torvalds/linux/blob/v4.2/arch/x86/realmode/rm/wakemain.c#L38 The kernel has a Morse code encoder using it!
+
+Bibliography:
+
+* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
+* http://fly.srk.fer.hr/GDM/articles/sndmus/speaker1.html
 
 == Modes of operation
 
@@ -836,7 +951,7 @@ ____
 
 === Legacy modes
 
-Term used and defined in the <<intel-manual>> Volume 3 Chapter 2:
+The term defined in the <<intel-manual>> Volume 3 Chapter 2:
 
 ____
 Real mode, protected mode, virtual 8086 mode, and system management mode. These are sometimes referred to as legacy modes.
@@ -1012,8 +1127,8 @@ Things get much more involved than in real mode: http://stackoverflow.com/questi
 
 TODO: cleanup and get working:
 
-* link:segment_base.S[]
 * link:segmentation.adoc[]
+* link:segment_base.S[]
 
 ==== IDT
 
@@ -1163,6 +1278,71 @@ https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
 
 TODO use it.
 
+== Power
+
+=== Shutdown
+
+http://wiki.osdev.org/Shutdown
+
+=== Reboot
+
+http://stackoverflow.com/questions/32682152/how-to-reboot-in-x86-assembly-from-16-bit-real-mode
+
+Infinite reboot loop on emulator!
+
+....
+./run reboot
+....
+
+TODO why does it work?
+
+=== APM
+
+Turn on and immediately shutdown the system closing QEMU:
+
+....
+./run apm_shutdown
+....
+
+Fancier version copied from http://wiki.osdev.org/APM (TODO why is that better):
+
+....
+./run apm_shutdown2
+....
+
+https://en.wikipedia.org/wiki/Advanced_Power_Management
+
+http://wiki.osdev.org/APM
+
+Older than <<acpi>> and simpler.
+
+By Microsoft in 1995. Spec seems to be in RTF format...
+
+Can't find the URL. A Google cache: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=0CB0QFjAAahUKEwj7qpLN_4XIAhWCVxoKHa_nAxY&url=http%3A%2F%2Fdownload.microsoft.com%2Fdownload%2F1%2F6%2F1%2F161ba512-40e2-4cc9-843a-923143f3456c%2FAPMV12.rtf&usg=AFQjCNHoCx8gHv-w08Dn_Aoy6Q3K3DLWRg&sig2=D_66xvI7Y2n1cvyB8d2Mmg
+
+Bibliography:
+
+* http://wiki.osdev.org/Shutdown
+* http://stackoverflow.com/questions/21463908/x86-instructions-to-power-off-computer-in-real-mode
+* http://stackoverflow.com/questions/678458/shutdown-the-computer-using-assembly
+* http://stackoverflow.com/questions/3145569/how-to-power-down-the-computer-from-a-freestanding-environment
+
+=== ACPI
+
+TODO example
+
+ACPI https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface
+
+Newer and better.
+
+Now managed by the same group that manages UEFI.
+
+Spec:
+
+* current: http://uefi.org/specifications
+* old: http://www.uefi.org/acpi/specs
+
+
 == Tests
 
 === Unit tests
@@ -1245,6 +1425,32 @@ When writing an OS in C, we are going to use GCC, which already uses GAS. So it'
 Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
 
 On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
+
+=== Macros vs functions
+
+Using macros for now on link:common.h[] instead of functions because it simplifies the linker script.
+
+But the downsides are severe:
+
+* no symbols to help debugging. TODO: I think there are assembly constructs for that.
+* impossible to step over method calls: you have to step into everything. TODO: `until`?
+* larger output, supposing I can get linker gc for unused functions working, see `--gc-section`, which is for now uncertain.
++
+If I can get this working, I'll definitely move to function calls.
++
+The problem is that if I don't, every image will need a stage 2 loader. That is not too serious though, it could be added to the `BEGIN`.
++
+It seems that `ld` can only remove sections, not individual symbols: http://stackoverflow.com/questions/6687630/c-c-gcc-ld-remove-unused-symbols With GCC we can use `-ffunction-sections -fdata-sections` to quickly generate a ton of sections, but I don't thing GAS supports that...
+
+==== Macro conventions
+
+Every "function-like macro" in link:common.h[] must maintain the state of general purpose registers.
+
+Flags are currently not maintained.
+
+`%sp` cannot be used to pass most arguments.
+
+We don't care about setting `%bp` properly at the moment.
 
 === Linux is open source
 
@@ -1378,6 +1584,7 @@ Stuff here is too messy or useless to put on the main README, either cleanup or 
 
 * link:TODO.adoc[]
 * link:intel-startup/[]
+* link:test_vga_print_bytes.S[]
 
 == LICENSE
 

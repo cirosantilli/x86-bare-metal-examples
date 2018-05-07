@@ -1,29 +1,3 @@
-/*
-# RTC
-
-Real time clock.
-
-Gives wall time with precision of seconds.
-
-Uses a separate battery to keep going.
-
-http://stackoverflow.com/questions/1465927/how-can-i-access-system-time-using-nasm
-
-http://wiki.osdev.org/RTC
-
-http://wiki.osdev.org/CMOS
-
-Kenrel 4.2 usage: https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rtc.c#L121
-
-## Milliseconds
-
-Not possible. Consider the PIT, or the HPET.
-
-## Time zone
-
-QEMU uses UTC.
-*/
-
 /* TODO what do those numbers mean? Where is this all documented? */
 .equ RTCaddress, 0x70
 .equ RTCdata, 0x71

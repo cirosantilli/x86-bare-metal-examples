@@ -728,13 +728,11 @@ Raspberry PI:
 
 == TODO
 
-Stuff here is too messy to put on the main README, needs cleanup:
+Stuff here is too messy to put on the main README, need either cleanup or a working example:
 
 * link:TODO.adoc[]
+* link:intel-startup/[]
 * link:segmentation.adoc[]
-* link:smp.adoc[]
-
-The other items in this section are mostly missing examples.
 
 == LICENSE
 

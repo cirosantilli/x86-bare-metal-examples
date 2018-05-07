@@ -17,7 +17,7 @@ toc::[]
 
 First read this introduction: https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545
 
-Then on Ubuntu:
+On Ubuntu:
 
 ....
 ./configure
@@ -179,7 +179,11 @@ cd no-linker-lscript
 make run
 ....
 
-Outcome: show `hello world` and hang.
+Outcome:
+
+....
+hello world
+....
 
 Uses the default host `ld` script, not an explicit one set with `-T`. Uses:
 
@@ -356,7 +360,11 @@ qemu-system-x86_64 -kernel main.elf
 
 where `main.elf` is the multiboot file we generated.
 
-Outcome: `hello world` shows on screen.
+Outcome:
+
+....
+hello world
+....
 
 Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
 
@@ -371,10 +379,12 @@ Example originally minimized from https://github.com/programble/bare-metal-tetri
 .. link:segment_registers.S[Segment registers]
 ... link:ss.S[SS]
 ... link:cs.S[CS]
+
 .. link:interrupt.S[Interrupt]
 ... link:interrupt1.S[int \$1]
 ... link:interrupt_zero_divide.S[Interrupt zero divide]
 ... link:interrupt_loop.S[Interrupt loop]
+
 .. link:in.md[in]
 ... link:in_keyboard.S[in keyboard]
 ... link:rtc.S[RTC]
@@ -383,32 +393,11 @@ Example originally minimized from https://github.com/programble/bare-metal-tetri
 ... link:in_beep.S[in beep]
 ... link:in_beep_illinois.S[in beep_illinois]
 ... link:in_mouse.S[in mouse (TODO)]
-.. link:protected_mode.S[Protected mode]
-... link:segment_base.S[Segment base (TODO)]
-... link:idt.S[IDT]
-.... link:idt1.S[IDT 1]
-.... link:idt_zero_divide.S[IDT zero divide]
-.... IDT PIT
-... link:pit_protected.S[PIT protected]
 
 . Theory
 .. link:formats.md[Formats]
 ... link:mbr.md[MBR]
 .. link:pic.md[PIC]
-
-== Protection rings
-
-https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
-
-== Paging
-
-link:paging.S[]
-
-Requires <<protected-mode>>.
-
-=== Page fault
-
-link:page_fault.S[]
 
 == Power
 
@@ -450,13 +439,7 @@ Spec:
 * current: http://uefi.org/specifications
 * old: http://www.uefi.org/acpi/specs
 
-== SMP
-
-link:smp.S[]
-
-Symmetric multiprocessing https://en.wikipedia.org/wiki/Symmetric_multiprocessing
-
-== x86 modes of operation
+== Modes of operation
 
 The x86 processor has a few modes, which have huge impact on how the processor works.
 
@@ -464,12 +447,68 @@ Covered on Intel Volume 3. Specially useful is the "Transitions Among the Proces
 
 The modes are:
 
-* Real
+* Real-address
 * Protected
 * System management
 * IA-32e. Has two sub modes:
 ** Compatibility
 ** 64-bit
+* Virtual-8086 Mode
+
+Transition tables:
+
+....
+(all modes)
+|
+| Reset
+|
+v
++---------------------+
+| Real address (PE=0) |
++---------------------+
+^
+|
+| PE
+|
+v
++------------------------+
+| Protected (PE=1, VM=0) |
++------------------------+
+^                   ^
+|                   |
+|                   | VM
+|                   |
+v                   v
++--------------+    +---------------------+
+| IA-32e       |    | Virtual-8086 (VM=1) |
++--------------+    +---------------------+
+....
+
+and:
+
+....
++------------------------+
+| System management mode |
++------------------------+
+|          ^
+|          |
+| RSM      | SMI#
+|          |
+v          |
+(All other modes)
+....
+
+The IA-32e transition is trickier, but clearly described on the <<intel-manual>> 9.8.5 Initializing IA-32e Mode:
+
+____
+Operating systems should follow this sequence to initialize IA-32e mode:
+
+1. Starting from protected mode, disable paging by setting `CR0.PG = 0`. Use the `MOV CR0` instruction to disable paging (the instruction must be located in an identity-mapped page).
+2. Enable physical-address extensions (PAE) by setting CR4.`PAE = 1`. Failure to enable PAE will result in a `#GP` fault when an attempt is made to initialize IA-32e mode.
+3. Load `CR3` with the physical base address of the Level 4 page map table (PML4).
+4. Enable IA-32e mode by setting `IA32_EFER.LME = 1`.
+5. Enable paging by setting `CR0.PG = 1`. This causes the processor to set the `IA32_EFER.LMA` bit to 1. The `MOV CR0` instruction that enables paging and the following instructions must be located in an identity-mapped page (until such time that a branch to non-identity mapped pages can be effected).
+____
 
 === Real mode
 
@@ -490,23 +529,103 @@ mov $1, (%eax)
 
 http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode
 
+=== Protected mode
+
+....
+make run RUN=protected_mode
+....
+
+Major changes from real mode:
+
+* BIOS cannot be used anymore. In particular, we must use VGA functions to get output
+* GDT and segmentation take effect immediately so we have to deal with it now
+* we have to encode instructions differently, thus a `.code32` is needed. Note that in 16-bit, 32-bit instructions were encodable, but with a prefix.
+
+On the Linux kernel, `arch/x86/include/asm/segment.h` contains a lot of action:
+
+- the user privilege level
+- the segment steup (kernel an user code and data segments)
+
+Bibliography:
+
+* http://stackoverflow.com/questions/28645439/how-do-i-enter-32-bit-protected-mode-in-nasm-assembly Initially adapted from this.
+* http://wiki.osdev.org/Journey_To_The_Protected_Land
+* http://wiki.osdev.org/Protected_Mode
+* https://github.com/chrisdew/xv6/blob/master/bootasm.S
+* https://thiscouldbebetter.wordpress.com/2011/03/17/entering-protected-mode-from-assembly/ FASM based. Did not word on first try, but looks real clean.
+* http://skelix.net/skelixos/tutorial02_en.html
+
+==== Segmentation
+
+TODO: cleanup and get working:
+
+* link:segment_base.S[]
+* link:segmentation.adoc[]
+
+==== IDT
+
+... link:idt.S[IDT]
+.... link:idt1.S[IDT 1]
+.... link:idt_zero_divide.S[IDT zero divide]
+.... IDT PIT
+... link:pit_protected.S[PIT protected]
+
+==== Protection rings
+
+https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
+
+==== SMP
+
+link:smp.S[]
+
+Symmetric multiprocessing https://en.wikipedia.org/wiki/Symmetric_multiprocessing
+
+==== Paging
+
+Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
+
+....
+make run RUN=paging
+....
+
+Outcome:
+
+....
+00001234
+00005678
+....
+
+Requires <<protected-mode>>.
+
+===== Page fault
+
+link:page_fault.S[]
+
 === IA-32e mode
 
-Wikipedia seems to call it _long mode_: https://en.wikipedia.org/wiki/Long_mode
+Wikipedia seems to call it long mode: https://en.wikipedia.org/wiki/Long_mode
 
-Contains two sub-modes: 64-bit and compatibility.
+Contains two sub-modes: <<64-bit-mode>> and <<compatibility-mode>>.
 
-64-bit is the major mode of operation, compatibility mode emulates IA-32. This is where systems run most of the time.
+This controlled by the `CS.L` bit of the segment descriptor.
 
-The other mode is legacy mode, which as the name implies, should not be used on new programs.
+It appears that it is possible for user programs to modify that during execution from userland: http://stackoverflow.com/questions/12716419/can-you-enter-x64-32-bit-long-compatibility-sub-mode-outside-of-kernel-mode
 
-==== Compatibility mode
+=== 64-bit mode
 
-Controlled by the `CS.L` bit of the segment descriptor.
+64-bit is the major mode of operation, and enables the full 64 bit instructions.
 
-It appears that it is possible for user programs to modify that during execution: http://stackoverflow.com/questions/12716419/can-you-enter-x64-32-bit-long-compatibility-sub-mode-outside-of-kernel-mode
+=== Compatibility mode
 
-http://stackoverflow.com/questions/27868394/switch-from-64-bit-long-mode-to-32-bit-compatibility-mode-on-x64
+Compatibility mode emulates IA-32 and allows to run 32 and 16 bit code.
+
+But 64 bit Linux and Windows don't seem to allow 16 bit code anymore?
+
+* http://stackoverflow.com/questions/27868394/switch-from-64-bit-long-mode-to-32-bit-compatibility-mode-on-x64
+* https://stackoverflow.com/questions/7829058/how-to-run-16-bit-code-on-32-bit-linux
+* https://superuser.com/questions/140953/why-cant-a-64-bit-os-run-a-16-bit-application
+
+Compatibility vs protected: https://stackoverflow.com/questions/20848412/modes-of-intel-64-cpu
 
 == Video mode
 
@@ -621,8 +740,13 @@ Knowing the following will help a lot:
 
 While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
 
-
 == Bibliography
+
+=== Intel manual
+
+We are interested mostly in the "Intel Manual Volume 3 System Programming Guide", where system programming basically means "OS stuff" or "bare metal" as opposed to userland present in the other manuals.
+
+This repository quotes by default the following revision: 325384-056US September 2015 https://web.archive.org/web/20151025081259/http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-system-programming-manual-325384.pdf
 
 === Small educational projects
 
@@ -732,7 +856,6 @@ Stuff here is too messy to put on the main README, need either cleanup or a work
 
 * link:TODO.adoc[]
 * link:intel-startup/[]
-* link:segmentation.adoc[]
 
 == LICENSE
 

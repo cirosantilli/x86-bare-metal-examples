@@ -680,10 +680,6 @@ The `main.img` file can also be burned to a USB and run on real hardware.
 
 Example originally minimized from https://github.com/programble/bare-metal-tetris
 
-.. link:segment_registers.S[Segment registers]
-... link:ss.S[SS]
-... link:cs.S[CS]
-
 .. link:interrupt.S[Interrupt]
 ... link:interrupt1.S[int \$1]
 ... link:interrupt_zero_divide.S[Interrupt zero divide]
@@ -771,7 +767,7 @@ Spec:
 
 The x86 processor has a few modes, which have huge impact on how the processor works.
 
-Covered on Intel Volume 3. Specially useful is the "Transitions Among the Processor's Operating Modes" diagram.
+Covered on the <<intel-manual>> Volume 3. Specially useful is the "Figure 2-3. Transitions Among the Processor’s Operating Modes" diagram.
 
 The modes are:
 
@@ -826,7 +822,7 @@ v          |
 (All other modes)
 ....
 
-The IA-32e transition is trickier, but clearly described on the <<intel-manual>> 9.8.5 Initializing IA-32e Mode:
+The IA-32e transition is trickier, but clearly described on the <<intel-manual>> Volume 3 - 9.8.5 Initializing IA-32e Mode:
 
 ____
 Operating systems should follow this sequence to initialize IA-32e mode:
@@ -837,6 +833,18 @@ Operating systems should follow this sequence to initialize IA-32e mode:
 4. Enable IA-32e mode by setting `IA32_EFER.LME = 1`.
 5. Enable paging by setting `CR0.PG = 1`. This causes the processor to set the `IA32_EFER.LMA` bit to 1. The `MOV CR0` instruction that enables paging and the following instructions must be located in an identity-mapped page (until such time that a branch to non-identity mapped pages can be effected).
 ____
+
+=== Legacy modes
+
+Term used and defined in the <<intel-manual>> Volume 3 Chapter 2:
+
+____
+Real mode, protected mode, virtual 8086 mode, and system management mode. These are sometimes referred to as legacy modes.
+____
+
+In other words: anything except IA-32e and System management mode.
+
+This further suggests that real, protected and virtual mode are not the main intended modes of operation.
 
 === Real mode
 
@@ -856,6 +864,117 @@ mov $1, (%eax)
 ....
 
 http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode
+
+==== Real mode segment registers
+
+....
+./run segment_registers
+....
+
+Outcome:
+
+....
+AAAAAA
+....
+
+We access the character `A` with segments in 6 different ways:
+
+* `ds`, with explicit and implicit segment syntax
+* `es`, `fs`, `gs`, `ss`
+
+Segment registers modify the addresses that instructions actually use as:
+
+....
+<segment> * 16 + <original-address>
+....
+
+This implies that:
+
+* 20 bits of memory (1MB) instead of the 16 bits (256kB) that normally fits into registers. E.g., to address:
++
+....
+0x84000
+....
++
+we can use:
++
+....
+0x8000  (segment)
+0x 4000 (address)
+-------
+0x84000
+....
+* most addresses can be encoded in multiple ways, e.g.:
++
+....
+0x100
+....
++
+can be encoded as either of:
++
+** segment = `0x10`, address = `0`
+** segment = `0`, address = `0x100`
+** segment = `0x1`, address = `0xF0`
+
+`fs` and `gs` are general purpose: they are not affected implicitly by any instructions. All others will be further exemplified.
+
+===== CS
+
+https://stackoverflow.com/questions/17777146/what-is-the-purpose-of-cs-and-ip-registers-in-intel-8086-assembly/33177253#33177253
+
+Affects the code address pointer:
+
+....
+./run cs
+....
+
+Outcome:
+
+....
+00
+01
+02
+....
+
+`CS` is set with the `ljmp` instruction, and we use it to skip `.skip` zero gaps in the code.
+
+===== SS
+
+....
+./run ss
+....
+
+Outcome:
+
+....
+0102
+....
+
+The second byte is 16 bytes after the first, and is accessed with `SP = 1`.
+
+`SS` affects instructions that use `SP` such as `PUSH` and `POP`: those will actually use `16 * SS + SP` as the actual address.
+
+===== ES
+
+TODO: this does seem to have special properties as used by string instructions.
+
+===== Segment register encoding
+
+....
+objdump -D -b binary -m i8086 segment_registers.img
+....
+
+shows that non `ds` encodings are achieved through a prefix:
+
+....
+20:   a0 63 7c                mov    0x7c63,%al
+34:   26 a0 63 7c             mov    %es:0x7c63,%al
+40:   64 a0 63 7c             mov    %fs:0x7c63,%al
+4c:   65 a0 63 7c             mov    %gs:0x7c63,%al
+58:   36 a0 63 7c             mov    %ss:0x7c63,%al
+....
+
+This makes `ds` the most efficient one for data access, and thus a good default.
 
 === Protected mode
 

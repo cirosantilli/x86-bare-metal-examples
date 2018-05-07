@@ -1,12 +1,3 @@
-/*
-Generate and handle a page fault.
-
-Expected output:
-
-    Page fault handled. Error code:
-    00000002
-*/
-
 #include "common.h"
 
 BEGIN

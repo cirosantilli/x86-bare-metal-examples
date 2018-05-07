@@ -1,7 +1,3 @@
-/*
-Draw a 45 degree line of pixels to the screen on 13h video mode.
-*/
-
 #include "common.h"
 BEGIN
     mov $0x0013, %ax

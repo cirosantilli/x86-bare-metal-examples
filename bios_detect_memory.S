@@ -1,38 +1,3 @@
-/*
-# Detect memory
-
-# int 15
-
-TODO Seems to be outputting trash :-)
-
-http://wiki.osdev.org/Detecting_Memory_%28x86%29
-
-Determine how much memory you've got, and how much of it is low memory.
-
-This is important in particular so that you can start your stack there
-when you enter protected mode, since the stack grows down.
-
-In 16-bit mode, it does not matter much,
-since most modern machines have all addressable memory there,
-but in 32-bit protected it does, as our emulator usually does not have all 4Gb.
-And of course, 64-bit RAM is currently larger than the total RAM in the world.
-
-`int 15` returns a list:
-each time you call it a new memory region is returned.
-
-The format is not too complicated, and documented at:
-http://wiki.osdev.org/Detecting_Memory_%28x86%29#Detecting_Upper_Memory
-
-- 8 bytes: base address of region.
-- 8 bytes: length of region.
-- 4 bytes: type or region. 1 for usable RAM.
-- 4 bytes: some ACPI stuff that no one uses?
-
-## Low memory
-
-TODO what is it?
-*/
-
 #include "common.h"
 BEGIN
     CLEAR

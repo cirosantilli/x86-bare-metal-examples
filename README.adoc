@@ -51,8 +51,16 @@ Extensions are ignored for perfect tab completion, so all the following are equi
 Use Bochs instead of QEMU:
 
 ....
-./run min bochs
+./run bios_hello_world bochs
 ....
+
+Then on the terminal start the simulation with:
+
+....
+c
+....
+
+https://stackoverflow.com/questions/6142925/how-can-i-use-bochs-to-run-assembly-code/32871939#32871939
 
 === Getting started with real hardware
 
@@ -77,7 +85,7 @@ Then:
 
 When you are done, just hit the power button to shutdown.
 
-Tested on: ThinkPad T400.
+See: <<test-hardware>>
 
 ==== Getting started with the big image
 
@@ -139,7 +147,11 @@ vinagre localhost:5900
 
 === GDB step debug
 
-TODO get it working nicely.
+TODO get it working nicely:
+
+....
+./run bios_hello_world debug
+....
 
 This will only cover specifics, you have to know GDB debugging already.
 
@@ -175,11 +187,25 @@ You can't get more minimal than this.
 
 === Minimal GAS example
 
-link:min.S[]
+....
+./run min
+....
+
+Outcome: QEMU window opens up, prints a few firmware messages, and hangs.
 
 === BIOS hello world
 
-link:bios_hello_world.S[]
+....
+./run bios_hello_world
+....
+
+Outcome:
+
+....
+hello world
+....
+
+shows after the firmware messages.
 
 === No linker script
 
@@ -225,40 +251,311 @@ If you are making a serious OS, use it as little as possible.
 
 Can only be used in real mode.
 
+BIOS functions are all accessed through the `int` instruction:
+
+....
+mov <function-id>, %ah
+int <interrupt-id>
+....
+
+Function arguments are stored in other registers.
+
+The interrupt IDs are traditionally in hex as:
+
+....
+10h
+....
+
+which is the same as `0x10`.
+
+Each `interrupt-id` groups multiple functions with similar functions, e.g. `10h` groups functions with video related functionality.
+
 === BIOS documentation
 
-Does any documentation or portability exist?
+Does any official documentation or standardization exist?
 
+* https://en.wikipedia.org/wiki/BIOS_interrupt_call#Interrupt_table
 * http://www.ctyme.com/intr/int.htm Ralf Brown's Interrupt List. Everyone says that this is the ultimate unofficial compilation.
 * https://en.wikipedia.org/wiki/INT_10H good quick summary
 * http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf says little about interrupts, I don't understand it's scope.
 
 === BIOS examples
 
-. link:bios_putc.S[]
-. link:bios_newline.S[]
-. link:bios_carriage_return.S[]
-. link:bios_cursor_position.S[]
-. link:bios_color.S[]
-. link:bios_background.S[]
-. link:bios_scroll.S[]
-.. link:bios_clear_screen.S[]
-. link:bios_pixel.S[]
-.. link:bios_pixel_line.S[]
-. link:bios_keyboard.S[]
-.. link:bios_keyboard_loop.S[]
-. link:bios_disk_load.S[]
-.. link:bios_disk_load2.S[]
-. link:bios_detect_memory.S[]
-. link:bios_tick_count.S[]
-. link:bios_initial_state.S[]
+Print a single `@` character:
 
-=== Get BIOS information
+....
+./run bios_putc
+....
+
+Print a newline with bios:
+
+....
+./run bios_newline
+....
+
+Outcome:
+
+....
+hello
+     world
+....
+
+Carriage returns are needed just like in old days:
+
+....
+./run bios_carriage_return
+....
+
+Outcome:
+
+....
+hello
+world
+....
+
+Change the current cursor position:
+
+....
+./run bios_cursor_position
+....
+
+Outcome:
+
+....
+cb
+....
+
+==== BIOS color
+
+Color codes: https://en.wikipedia.org/wiki/BIOS_color_attributes
+
+Write a character N times with given color:
+
+....
+./run bios_color
+....
+
+Outcome:
+
+....
+bcd
+....
+
+where:
+
+* `b` and `c` have red foreground, and green background
+* `d` has the default color (gray on black)
+
+Change the background color to red for the entire screen and print an `a` character:
+
+....
+./run bios_background
+....
+
+==== BIOS scroll
+
+Scroll the screen:
+
+....
+./run bios_scroll
+....
+
+Outcome:
+
+....
+a
+  c
+ GG
+   d
+....
+
+where `G` are empty green squares.
+
+How it works:
+
+Before scroll:
+
+....
+a
+ b
+  c
+   d
+....
+
+We then choose to act on the rectangle with corners (1, 1) and (2, 2) given by `cx` and `dx`:
+
+....
+a
+ XX
+ YY
+   d
+....
+
+and scroll that rectangle up by one line.
+
+`Y` is then filled with the fill color green
+
+===== BIOS clear screen
+
+Subset of scroll:
+
+....
+./run bios_clear_screen
+....
+
+Outcome:
+
+....
+b
+....
+
+on red foreground, and the entire screen in green background, without any initial SeaBIOS messages.
+
+==== BIOS draw pixel
+
+Make the pixel at position (1, 1) clear red color (0Ch) in <<video-mode-13h>>:
+
+....
+./run bios_pixel
+....
+
+You may have to look a bit hard to see it.
+
+Draw a line of such pixels:
+
+....
+./run bios_pixel_line
+....
+
+Advanced graphics!
+
+==== BIOS keyboard
+
+https://stackoverflow.com/questions/4113250/how-to-handle-keyboard-in-real-mode-through-bios-interrupts/32682518#32682518
+
+Get one character from the user via the keyboard, increment it by one, and print it to the screen, then halt:
+
+....
+./run bios_keyboard
+....
+
+Type a bunch of characters and see them appear on the screen:
+
+....
+./run bios_keyboard_loop
+....
+
+Do try `Ctrl-key` combinations.
+
+==== BIOS disk load
+
+Load a stage 2 from disk with `int 13h` and run it:
+
+....
+./run bios_disk_load
+....
+
+Outcome:
+
+....
+a
+....
+
+and this character was printed from stage 2.
+
+Load two sectors instead of just one:
+
+....
+./run bios_disk_load2
+....
+
+Outcome:
+
+....
+ab
+....
+
+where `a` was printed from code on the first block, and `b` from code on the second block.
+
+This shows that each sector is 512 bytes long.
+
+Grub 2.0 makes several calls to it under `grub-core/boot/i386/pc`.
+
+TODO: not working on Bochs: `BOUND_GdMa: fails bounds test`.
+
+But it does work on QEMU and <<thinkpad-t400>>.
+
+Bibliography:
+
+* https://en.wikipedia.org/wiki/INT_13H
+* http://wiki.osdev.org/ATA_in_x86_RealMode_%28BIOS%29
+* https://thiscouldbebetter.wordpress.com/2011/03/15/creating-a-bootable-program-in-assembly-language/
+* http://stackoverflow.com/questions/19381434/cannot-read-disk-sectors-in-assembly-language
+* http://stackoverflow.com/questions/15497842/read-a-sector-from-hard-drive-with-int-13h
+
+==== BIOS detect memory
+
+An yet failed TODO attempt at detecting how big our memory is with `int 15h`:
+
+....
+./run bios_detect_memory
+....
+
+Seems to output trash currently.
+
+http://wiki.osdev.org/Detecting_Memory_%28x86%29
+
+This is important in particular so that you can start your stack there when you enter protected mode, since the stack grows down.
+
+In 16-bit mode, it does not matter much, since most modern machines have all addressable memory there, but in 32-bit protected it does, as our emulator usually does not have all 4Gb. And of course, 64-bit RAM is currently larger than the total RAM in the world.
+
+`int 15` returns a list: each time you call it a new memory region is returned.
+
+The format is not too complicated, and documented at: http://wiki.osdev.org/Detecting_Memory_%28x86%29#Detecting_Upper_Memory
+
+* 8 bytes: base address of region.
+* 8 bytes: length of region.
+* 4 bytes: type or region. 1 for usable RAM.
+* 4 bytes: some ACPI stuff that no one uses?
+
+===== Low vs high memory
+
+TODO
+
+`int 15h` can detect low or high memory. How are they different?
+
+==== BIOS sleep
+
+Count to infinity, sleep one second between each count:
+
+....
+./run bios_sleep
+....
+
+https://stackoverflow.com/questions/9971405/how-to-display-a-number-on-the-screen-and-and-sleep-for-one-second-with-dos-x86/9973442#9973442
+
+Polls time counter that BIOS keeps up to date at `0x046C` with frequency 18.2Hz eighteen times.
+
+==== BIOS initial state
+
+Check the initial state the firmware leaves us in:
+
+....
+./run bios_initial_state
+....
+
+Prints the contents of several registers.
+
+`dx` seems to be like the only interesting regular register: the firmware stores the value of the current disk number to help with `int 15h` there. Thus it usually contains `0x80`.
+
+=== dmidecode
+
+Get BIOS information.
 
 * http://stackoverflow.com/questions/20604644/how-to-check-the-bios-version-or-name-in-linux-through-command-prompt
 * https://en.wikipedia.org/wiki/System_Management_BIOS SMBIOS
 
-On host:
+Try it on host:
 
 ....
 sudo dmidecode
@@ -296,8 +593,6 @@ UEFI offers a large API comparable to what most people would call an operating s
 ARM is considering an implementation https://wiki.linaro.org/ARM/UEFI
 
 === UEFI example
-
-link:uefi/[]
 
 ....
 cd uefi
@@ -552,8 +847,8 @@ Major changes from real mode:
 
 On the Linux kernel, `arch/x86/include/asm/segment.h` contains a lot of action:
 
-- the user privilege level
-- the segment steup (kernel an user code and data segments)
+* the user privilege level
+* the segment setup (kernel an user code and data segments)
 
 Bibliography:
 
@@ -563,6 +858,12 @@ Bibliography:
 * https://github.com/chrisdew/xv6/blob/master/bootasm.S
 * https://thiscouldbebetter.wordpress.com/2011/03/17/entering-protected-mode-from-assembly/ FASM based. Did not word on first try, but looks real clean.
 * http://skelix.net/skelixos/tutorial02_en.html
+
+==== Protected mode draw pixel
+
+TODO do it.
+
+Things get much more involved than in real mode: http://stackoverflow.com/questions/14419088/how-to-draw-a-pixel-on-the-screen-in-protected-mode-in-x86-assembly
 
 ==== Segmentation
 
@@ -661,6 +962,18 @@ Taken from: https://courses.engr.illinois.edu/ece390/books/labmanual/graphics-in
 
 A larger list: http://www.columbia.edu/~em36/wpdos/videomodes.txt
 
+See also: http://wiki.osdev.org/How_do_I_set_a_graphics_mode
+
+=== Video mode 13h
+
+https://en.wikipedia.org/wiki/Mode_13h
+
+Example at: <<bios-draw-pixel>>
+
+Video Mode `13h` has: 320 x 200 Graphics, 256 colors, 1 page.
+
+The color encoding is just an arbitrary palette that fits 1 byte, it is not split colors like R  R  R  G  G  G  B  B or anything mentioned at: https://en.wikipedia.org/wiki/8-bit_color. Related: http://stackoverflow.com/questions/14233437/convert-normal-256-color-to-mode-13h-version-color
+
 === VGA
 
 * https://en.wikipedia.org/wiki/Video_Graphics_Array
@@ -678,12 +991,22 @@ https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
 
 TODO use it.
 
-== Unit tests
+== Testing
+
+=== Unit tests
 
 Tests for utilities defined in this repo, as opposed to x86 or external firmware concepts.
 
 * link:test_print_bytes.S[PRINT_BYTES]
 * link:test_pit_sleep.S[PIT_SLEEP]
+
+=== Test hardware
+
+==== ThinkPad T400
+
+Most of this repo was originally tested on a link:https://www.cnet.com/products/lenovo-thinkpad-t400/specs/[ThinkPad T400].
+
+Unfortunately it broke and I threw it away, and I didn't write down the exact specs before doing so, notably the bootloader version.
 
 == About
 

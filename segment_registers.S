@@ -71,22 +71,20 @@ This makes `ds` the most efficient one for data access, and thus a good default.
 BEGIN
     CLEAR
 
-    /*
-    It is not possible to encode moving immediates
-    to segment registers: we must either:
-
-    - pass through a general register ax
-    - pop from the stack
-    */
+    /* It is not possible to encode moving immediates
+     * to segment registers: we must either:
+     *
+     * * pass through a general register ax
+     * * pop from the stack
+     */
     mov $1, %ax
     mov %ax, %ds
     mov %ds:msg, %al
     PUTC <%al>
 
-    /*
-    %ds is the default segment for GAS memory operations
-    if we don't write it explicitly.
-    */
+    /* %ds is the default segment for GAS memory operations
+     * if we don't write it explicitly.
+     */
     mov msg, %al
     PUTC <%al>
 

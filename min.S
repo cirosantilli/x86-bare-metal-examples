@@ -1,5 +1,3 @@
-/* Outcome: QEMU window opens up, prints a few boot messages and hangs. */
-
 /* Tell GAS to generate 16 bit code. */
 .code16
 

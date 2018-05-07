@@ -1,6 +1,6 @@
-/* Outcome: show the string `hello world` and hang. */
 #include "common.h"
 BEGIN
+    DBG
     mov $msg, %si
     mov $0x0e, %ah
 loop:

@@ -39,6 +39,10 @@ http://stackoverflow.com/questions/19776992/gas-altmacro-macro-with-a-percent-si
 
 /* Helpers */
 
+.macro DBG
+	mov %ax, 0x9000
+.endm
+
 /* Push registers ax, bx, cx and dx. Lightweight `pusha`. */
 .macro PUSH_ADX
     push %ax

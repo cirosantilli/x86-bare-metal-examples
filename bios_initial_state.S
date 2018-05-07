@@ -1,24 +1,3 @@
-/*
-# BIOD initial state.
-
-Check the initial state the firmware leaves us in.
-
-Could be done with GDB on the emulator, but this will also work on real hardware.
-
-## ax
-
-When I don't use ax to zero ds in the initialization,
-it has value 0x55AA, which is the magic bytes.
-
-Is that mandatory / does it have a function?
-
-## dx
-
-This looks like the only interesting regular register:
-the firmware stores the value of the current disk number (to help with int 0x15) there.
-Thus it usually contains 0x80.
-*/
-
 #include "common.h"
 
 .macro INITIAL_STORE x

@@ -29,20 +29,29 @@ Each `.S` file on the top-level is an operating system! It gets compiled to a co
 Run the default OS on QEMU:
 
 ....
-make run
+./run
 ....
 
 Run a given OS:
 
 ....
-make run RUN=min
-make run RUN=bios_one_char
+./run min
+./run bios_one_char
+....
+
+Extensions are ignored for perfect tab completion, so all the following are equivalent:
+
+....
+./run min
+./run min.
+./run min.S
+./run min.img
 ....
 
 Use Bochs instead of QEMU:
 
 ....
-make bochs RUN=min
+./run min bochs
 ....
 
 === Getting started with real hardware
@@ -532,7 +541,7 @@ http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registe
 === Protected mode
 
 ....
-make run RUN=protected_mode
+./run protected_mode
 ....
 
 Major changes from real mode:
@@ -585,7 +594,7 @@ Symmetric multiprocessing https://en.wikipedia.org/wiki/Symmetric_multiprocessin
 Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
 
 ....
-make run RUN=paging
+./run paging
 ....
 
 Outcome:
@@ -712,8 +721,7 @@ But in the end, it increases the complexity that one has to understand, so we've
 
 ....
 cd nasm/
-make
-make run RUN=bios_hello_world
+./run bios_hello_world
 ....
 
 While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.

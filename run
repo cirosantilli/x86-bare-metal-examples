@@ -1,0 +1,7 @@
+#!/bin/sh
+img="${1:-}"
+if [ -n "$img" ]; then
+  img="RUN=${img%.*}"
+fi
+type="${2:-run}"
+make "${type}" $img

@@ -1,5 +1,0 @@
-bios_disk_load.asm
-bios_hello_world.asm
-bios_one_char.asm
-protected_mode_so.asm
-protected_mode_thiscouldbebetter.asm

@@ -452,9 +452,9 @@ Spec:
 
 == SMP
 
-Example: link:smp.S[]
+link:smp.S[]
 
-Symmetric multiprocessing.
+Symmetric multiprocessing https://en.wikipedia.org/wiki/Symmetric_multiprocessing
 
 == x86 modes of operation
 

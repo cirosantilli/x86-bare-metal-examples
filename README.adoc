@@ -505,7 +505,7 @@ Seems to output trash currently.
 
 http://wiki.osdev.org/Detecting_Memory_%28x86%29
 
-This is important in particular so that you can start your stack there when you enter protected mode, since the stack grows down.
+This is important in particular so that you can start your stack there when you enter <<protected-mode>>, since the stack grows down.
 
 In 16-bit mode, it does not matter much, since most modern machines have all addressable memory there, but in 32-bit protected it does, as our emulator usually does not have all 4Gb. And of course, 64-bit RAM is currently larger than the total RAM in the world.
 
@@ -581,7 +581,7 @@ Covered on the <<intel-manual>> Volume 3. Specially useful is the "Figure 2-3. T
 
 The modes are:
 
-* Real-address
+* Real-address, usually known just as "real mode"
 * Protected
 * System management
 * IA-32e. Has two sub modes:
@@ -632,7 +632,7 @@ v          |
 (All other modes)
 ....
 
-The IA-32e transition is trickier, but clearly described on the <<intel-manual>> Volume 3 - 9.8.5 Initializing IA-32e Mode:
+The IA-32e transition is trickier, but clearly described on the <<intel-manual>> Volume 3 - 9.8.5 "Initializing IA-32e Mode":
 
 ____
 Operating systems should follow this sequence to initialize IA-32e mode:
@@ -646,7 +646,7 @@ ____
 
 === Legacy modes
 
-The term defined in the <<intel-manual>> Volume 3 Chapter 2:
+The term defined in the <<intel-manual>> Volume 3 - CHAPTER 2 "SYSTEM ARCHITECTURE OVERVIEW":
 
 ____
 Real mode, protected mode, virtual 8086 mode, and system management mode. These are sometimes referred to as legacy modes.
@@ -678,7 +678,7 @@ http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registe
 ==== Real mode segmentation
 
 ....
-./run segment_registers
+./run real_segmentation
 ....
 
 Outcome:
@@ -863,13 +863,15 @@ Fancy name for the handler: http://wiki.osdev.org/Interrupt_Service_Routines
 
 Interrupt vector table: https://wiki.osdev.org/IVT
 
-The real-mode in-memory table that stores the address for the handler for each interrupt.
+The real mode in-memory table that stores the address for the handler for each interrupt.
 
-In protected mode, the analogous structure is the <<idt>>.
+In <<protected-mode>>, the analogous structure is the <<idt>>.
 
-The base address is set in the interrupt descriptor table register (IDTR), and it defaults to address `0x0`.
+The base address is set in the interrupt descriptor table register (IDTR), which can be modified with the <<lidt>> instruction.
 
-The format is:
+The default address is `0x0`.
+
+The format of the table is:
 
 ....
 
@@ -891,7 +893,7 @@ A       |Code segment (2 bytes) |
 
 ====== lidt
 
-Set the value of the IDTR.
+Set the value of the IDTR, and therefore set the base address of the <<ivt>>:
 
 ....
 ./run lidt
@@ -927,24 +929,11 @@ Hello world:
 ./run protected_mode
 ....
 
-Uses <<vga>> since <<bios>> is not available in protected mode.
-
 Major changes from real mode:
 
-* BIOS cannot be used anymore. In particular, we must use VGA functions to get output
-* GDT and segmentation take effect immediately so we have to deal with it now
-* we have to encode instructions differently, thus a `.code32` is needed. Note that in 16-bit, 32-bit instructions were encodable, but with a prefix.
-
-The exact syntax seems to have no implementation... but NASM should be close:
-
-* http://computer-programming-forum.com/46-asm/6d9e8b7acea2d4cc.htm
-* http://coding.derkeiler.com/Archive/Assembler/alt.lang.asm/2005-12/msg00028.html
-* https://groups.google.com/forum/#!topic/comp.lang.asm.x86/9UZPQWwv-mQ> 1994 comp.lang.asm.x86 topic apparently by a famous guy: apparently by a famous guy: apparently by this famous guy: https://en.wikipedia.org/wiki/Randall_Hyde
-
-On the Linux kernel, `arch/x86/include/asm/segment.h` contains a lot of action:
-
-* the user privilege level
-* the segment setup (kernel an user code and data segments)
+* <<vga>> must be used for output since <<bios>> is not available in protected mode.
+* <<protected-mode-segmentation,segmentation>> takes effect immediately, so we have to set the <<gdt>> up
+* we have to encode instructions differently, thus a `.code32` is needed. 16-bit mode 32-bit instructions are encodable with a special prefix.
 
 Bibliography:
 
@@ -954,12 +943,13 @@ Bibliography:
 * https://github.com/chrisdew/xv6/blob/master/bootasm.S
 * https://thiscouldbebetter.wordpress.com/2011/03/17/entering-protected-mode-from-assembly/ FASM based. Did not word on first try, but looks real clean.
 * http://skelix.net/skelixos/tutorial02_en.html
+* Linux kernel v4.12 `arch/x86/include/asm/segment.h`
 
 ==== Intel protected mode example
 
 link:intel-protected/[]
 
-The <<intel-manual>> 9.10 INITIALIZATION AND MODE SWITCHING EXAMPLE does contain an official example of how to go into protected mode.
+The <<intel-manual>> Volume 3 - 9.10 "INITIALIZATION AND MODE SWITCHING EXAMPLE" does contain an official example of how to go into protected mode.
 
 However:
 
@@ -982,7 +972,7 @@ Things get much more involved than in real mode: http://stackoverflow.com/questi
 TODO: get working:
 
 ....
-./run segment_base
+./run segmentation
 ....
 
 Expected outcome:
@@ -1006,9 +996,37 @@ Without segment manipulation, the output would be just:
 
 TODO: cleanup and move into main README after we get the example working: link:segmentation.adoc[]
 
+===== Segmentation introduction
+
+First read the paging tutorial, and in particular: http://www.cirosantilli.com/x86-paging/#segmentation to get a feel for the type of register and data structure manipulation required to configure the CPU, and how segmentation compares to paging.
+
+Segmentation modifies every memory access of a given segment by:
+
+* adding an offset to it
+* limiting how big the segment is
+
+If an access is made at an offset larger than allowed an exception happens, which is like an interrupt, and gets handled by a previously registered handler.
+
+Segmentation could be used to implement virtual memory by assigning one segment per program:
+
+....
++-----------+--------+--------------------------+
+| Program 1 | Unused | Program 2                |
++-----------+--------+--------------------------+
+^           ^        ^                          ^
+|           |        |                          |
+Start1      End1     Start2                     End2
+....
+
+Besides address translation, the segmentation system also managed other features such as <<protection-rings>>. TODO: how are those done in 64-bit mode?
+
+In Linux 32-bit for example, only two segments are used at all times: one at ring 0 for the kernel, and one another at privilege 3 for all user processes.
+
 ===== Segment selector
 
-In protected mode, the segment registers `CS`, `DS`, `SS`, `ES`, `FS` and `GS` contain a data structure more complex than a simple address as in real mode:
+In protected mode, the segment registers `CS`, `DS`, `SS`, `ES`, `FS` and `GS` contain a data structure more complex than a simple address as in real mode, which contains a single number.
+
+This 2 byte data structure is called a _segment selector_:
 
 [options="header"]
 |===
@@ -1023,18 +1041,66 @@ In protected mode, the segment registers `CS`, `DS`, `SS`, `ES`, `FS` and `GS` c
 |1
 |Table Indicator (TI)
 a|
-* 0: global
-* 1: local
+* 0: global descriptor table
+* 1: local descriptor table
 
 |3
 |13
 |Index
-a|Index of the <<segment-descriptor>> to be used from the segment descriptor table
+a|Index of the <<segment-descriptor>> to be used from the descriptor table.
 |===
 
 Like in real mode, this data structure is loaded on the registers with a regular `mov` mnemonic instruction.
 
+Bibliography: <<intel-manual>> Volume 3 - 3.4.5 "Segment Descriptors".
+
+===== GDT
+
+Global descriptor table.
+
+An in-memory array of <<segment-descriptor>> data structures:
+
+The `Index` field of the <<segment-selector>> chooses which one of those segment descriptors is to be used.
+
+The base address is set with the `lgdt` instruction, which loads from memory a 6 byte structure:
+
+[options="header"]
+|===
+|Position (bytes) |Size (bytes) |Description
+
+|0
+|2
+|Number of entries in the table
+
+|2
+|4
+|Base address of the table
+|===
+
+Bibliography:
+
+* https://en.wikipedia.org/wiki/Global_Descriptor_Table
+* http://wiki.osdev.org/GDT
+
+====== Local descriptor table
+
+TODO vs global?
+
+====== Null segment selector
+
+<<intel-manual>> Volume 3 - 3.4.2 "Segment Selectors" says that we can't use the first entry of the GDT:
+
+____
+The first entry of the GDT is not used by the processor. A segment selector that points to this entry of the GDT (that is, a segment selector with an index of 0 and the TI flag set to 0) is used as a “null segment selector.” The processor does not generate an exception when a segment register (other than the CS or SS registers) is loaded with a null selector. It does, however, generate an exception when a segment register holding a null selector is used to access memory. A null selector can be used to initialize unused segment registers. Loading the CS or SS register with a null segment selector causes a general-protection exception (#GP) to be generated.
+____
+
 ===== Segment descriptor
+
+A data structure that is stored in the <<gdt>>.
+
+Clearly described on the <<intel-manual>> Volume 3 - 3.4.5 "Segment Descriptors" and in particular Figure 3-8 "Segment Descriptor".
+
+The Linux kernel v4.2 encodes it at: `arch/x86/include/asm/desc_defs.h` in `struct desc_struct`
 
 ===== Protection rings
 
@@ -1082,7 +1148,7 @@ Bibliography:
 * https://en.wikipedia.org/wiki/Interrupt_descriptor_table
 * http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
 
-The first 32 handlers are reserved by the processor and have predefined meanings, as specified in the <<intel-manual>> Table 3-3. "Intel 64 and IA-32 General Exceptions".
+The first 32 handlers are reserved by the processor and have predefined meanings, as specified in the <<intel-manual>> Volume 3 Table 3-3. "Intel 64 and IA-32 General Exceptions".
 
 In the Linux kernel, https://github.com/torvalds/linux/blob/v4.2/arch/x86/entry/entry_64.S sets them all up: each `idtentry divide_error` call sets up a new one.
 
@@ -1171,6 +1237,8 @@ Contains two sub-modes: <<64-bit-mode>> and <<compatibility-mode>>.
 This controlled by the `CS.L` bit of the segment descriptor.
 
 It appears that it is possible for user programs to modify that during execution from userland: http://stackoverflow.com/questions/12716419/can-you-enter-x64-32-bit-long-compatibility-sub-mode-outside-of-kernel-mode
+
+TODO vs <<protected-mode>>.
 
 === 64-bit mode
 
@@ -1573,8 +1641,7 @@ QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/ho
 
 ....
 cd multiboot/hello-world
-make
-qemu-system-x86_64 -kernel main.elf
+make run
 ....
 
 where `main.elf` is the multiboot file we generated.
@@ -1594,6 +1661,25 @@ qemu-system-x86_64 -drive file=main.img,format=raw
 The `main.img` file can also be burned to a USB and run on real hardware.
 
 Example originally minimized from https://github.com/programble/bare-metal-tetris
+
+=== osdev multiboot hello world
+
+We also track here the code from: link:http://wiki.osdev.org/Bare_Bones[]:
+
+....
+cd multiboot/osdev
+make run
+....
+
+Outcome:
+
+....
+hello world
+....
+
+This is interesting as it uses C as much as possible with some GAS where needed.
+
+This should serve as a decent basis for starting a pet OS. But please don't, there are enough out there already :-)
 
 == Tests
 

@@ -155,7 +155,7 @@ after_locals:
 /* Our GDT contains:
  *
  * * a null entry to fill the unusable entry 0:
- *   http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
+ * http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
  * * a code and data. Both are necessary, because:
  * +
  * --

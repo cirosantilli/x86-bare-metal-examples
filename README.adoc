@@ -179,11 +179,14 @@ make run
 
 Outcome: QEMU window opens up, prints a few boot messages, and hangs.
 
-Minimal boot sector example that does nothing, just halts immediately.
+Our program itself does not print anything to the screen itself, just makes the CPU halt.
 
-Generated with `printf` byte by byte.
+This example is generated with `printf` byte by byte: you can't get more minimal than this!
 
-You can't get more minimal than this.
+It basically consists of:
+
+* byte 0: a `hlt` instruction
+* bytes 510 and 511: mandatory magic bytes `0xAA55`, which are required for BIOS to consider our disk.
 
 === Minimal GAS example
 
@@ -206,6 +209,14 @@ hello world
 ....
 
 shows after the firmware messages.
+
+==== Linker script
+
+This hello world, and most of our OSes use the linker script link:linker.ld[].
+
+This critical file determines the memory layout of our assembly, take some time to read the comments in that file and familiarize yourself with it.
+
+The Linux kernel also uses linker scripts to setup its image memory layout, see for example: https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/setup.ld
 
 === No linker script
 
@@ -957,7 +968,7 @@ However:
 * TODO there is no known tool that can actually compile that syntax... although MASM should be close:
 ** http://computer-programming-forum.com/46-asm/6d9e8b7acea2d4cc.htm
 ** http://coding.derkeiler.com/Archive/Assembler/alt.lang.asm/2005-12/msg00028.html
-** https://groups.google.com/forum/#!topic/comp.lang.asm.x86/9UZPQWwv-mQ> 1994 comp.lang.asm.x86 topic
+** https://groups.google.com/forum/#!topic/comp.lang.asm.x86/9UZPQWwv-mQ 1994 comp.lang.asm.x86 topic
 
 How can those guys be in business? >:-)
 
@@ -1611,7 +1622,44 @@ Open source hippie freedom loving cross platform firmware that attempts to repla
 
 == GRUB
 
-link:grub/[]
+TODO link:grub/[]
+
+=== GRUB chainloader
+
+....
+cd grub/chainloader
+make run
+....
+
+Outcome: you are left in an interactive GRUB menu with two choices:
+
+* `hello-world`: go into a hello world OS
+* `self +1`: reload ourselves, and almost immediately reload GRUB and fall on the same menu as before
+
+This example illustrates the `chainloader` GRUB command, which just loads a boot sector and runs it: https://www.gnu.org/software/grub/manual/grub/html_node/chainloader.html
+
+This is what you need to boot systems like Windows which GRUB does not know anything about: just point to their partition and let them do the job.
+
+Both of the menu options are implemented with `chainloader`:
+
+* `hello-world`:
++
+Loads a given image file within the partition.
++
+After build, `grub-mkrescue` creates a few filesystems, and `grub/chainloader/iso/boot/main.img` is placed inside one of those filesystems.
++
+This illustrates GRUB's awesome ability to understand certain filesystem formats, and fetch files from them, thus allowing us to pick between multiple operating systems with a single filesystem.
++
+It is educational to open up the generated `grub/chainloader/main.img` with the techniques described at https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257 to observe that the third partition of the image is a VFAT filesystem, and that it contains the `boot/main.img` image as a regular file.
+* `self +1`: uses the syntax:
++
+....
+chainloader +1
+....
++
+which reloads the first sector of the current partition, and therefor ourselves.
+
+TODO: why does it fail for hybrid ISO images? http://superuser.com/questions/154134/grub-how-to-boot-into-iso-partition#comment1337357_154271
 
 == Multiboot
 
@@ -1637,11 +1685,16 @@ It seems that Linux does not implement Multiboot natively, but GRUB supports it 
 
 === Multiboot hello world
 
-QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
+QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281:
 
 ....
-cd multiboot/hello-world
-make run
+make -C multiboot/hello-world run
+....
+
+which actually runs:
+
+....
+qemu-system-i386 -kernel 'main.elf'
 ....
 
 where `main.elf` is the multiboot file we generated.
@@ -1662,13 +1715,14 @@ The `main.img` file can also be burned to a USB and run on real hardware.
 
 Example originally minimized from https://github.com/programble/bare-metal-tetris
 
+This example illustrates the `multiboot` GRUB command: https://www.gnu.org/software/grub/manual/grub/html_node/multiboot.html
+
 === osdev multiboot hello world
 
 We also track here the code from: link:http://wiki.osdev.org/Bare_Bones[]:
 
 ....
-cd multiboot/osdev
-make run
+make -C multiboot/osdev run
 ....
 
 Outcome:

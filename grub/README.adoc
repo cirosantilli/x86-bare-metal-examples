@@ -9,11 +9,6 @@
 :toclevels: 6
 :toc-title:
 
-....
-cd chainloader
-make run
-....
-
 toc::[]
 
 == Symlinks

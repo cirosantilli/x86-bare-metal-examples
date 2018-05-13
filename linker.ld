@@ -48,10 +48,3 @@ SECTIONS
         __end_align_4k = ALIGN(4k);
     }
 }
-
-/* The linux kernel 4.2 uses linker scripts like:
- *
- * * https://github.com/torvalds/linux/blob/v4.2/arch/x86/boot/setup.ld
- *
- * The kernel also uses the `.lds` extension for its scripts.
- */

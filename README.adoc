@@ -675,7 +675,7 @@ mov $1, (%eax)
 
 http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registers-instructions-in-real-mode
 
-==== Real mode segment registers
+==== Real mode segmentation
 
 ....
 ./run segment_registers
@@ -927,6 +927,8 @@ Hello world:
 ./run protected_mode
 ....
 
+Uses <<vga>> since <<bios>> is not available in protected mode.
+
 Major changes from real mode:
 
 * BIOS cannot be used anymore. In particular, we must use VGA functions to get output
@@ -975,12 +977,70 @@ TODO do it.
 
 Things get much more involved than in real mode: http://stackoverflow.com/questions/14419088/how-to-draw-a-pixel-on-the-screen-in-protected-mode-in-x86-assembly
 
-==== Segmentation
+==== Protected mode segmentation
 
-TODO: cleanup and get working:
+TODO: get working:
 
-* link:segmentation.adoc[]
-* link:segment_base.S[]
+....
+./run segment_base
+....
+
+Expected outcome:
+
+....
+x
+a
+b
+....
+
+Actual outcome:
+
+....
+x
+a
+....
+
+Example of the effect on a memory access of changing the segment base address.
+
+Without segment manipulation, the output would be just:
+
+TODO: cleanup and move into main README after we get the example working: link:segmentation.adoc[]
+
+===== Segment selector
+
+In protected mode, the segment registers `CS`, `DS`, `SS`, `ES`, `FS` and `GS` contain a data structure more complex than a simple address as in real mode:
+
+[options="header"]
+|===
+|Position (bits) |Size (bits) |Name |Description
+
+|0
+|2
+|Request Privilege Level (RPL)
+|Protection ring level, from 0 to 3.
+
+|2
+|1
+|Table Indicator (TI)
+a|
+* 0: global
+* 1: local
+
+|3
+|13
+|Index
+a|Index of the <<segment-descriptor>> to be used from the segment descriptor table
+|===
+
+Like in real mode, this data structure is loaded on the registers with a regular `mov` mnemonic instruction.
+
+===== Segment descriptor
+
+===== Protection rings
+
+https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
+
+TODO example. Jump to userspace, do something naughty, handler interrupt in kernel land.
 
 ==== IDT
 
@@ -1045,10 +1105,6 @@ Division by zero causes a Divide Error which Intel notes as `#DE`.
 It is then handled by IDT 0.
 
 DEs are not only for division by zero: they also happens on overflow. TODO example.
-
-==== Protection rings
-
-https://stackoverflow.com/questions/18717016/what-are-ring-0-and-ring-3-in-the-context-of-operating-systems/44483439#44483439
 
 ==== SMP
 
@@ -1364,7 +1420,7 @@ The color encoding is just an arbitrary palette that fits 1 byte, it is not spli
 
 TODO: what is it exactly?
 
-BIOS cannot be used when we move into protected mode, but we can use the VGA interface to get output out of our programs.
+BIOS cannot be used when we move into <<protected-mode>>, but we can use the VGA interface to get output out of our programs.
 
 Have a look at the macros prefixed with `VGA_` inside link:common.h[].
 

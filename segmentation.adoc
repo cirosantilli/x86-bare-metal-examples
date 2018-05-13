@@ -46,24 +46,6 @@ Each segment descriptor is identified and retrieved via a _segment selector_ str
 
 TODO vs global?
 
-=== Segment selector
-
-A segment selector is a 16 bit structure that identifies the current segment descriptor and the current privilege level.
-
-It has the following fields:
-
-* index: 13 bits to identify the Segment descriptor within the current table.
-+
-There can therefore be up to 2^13 segment descriptors on a table.
-+
-The current table is determined by the values of `gdtr` and `ldtr` registers and by the TI bit of the segment selector.
-* `RPL`: Request privilege level.
-+
-The privilege level of the code that will execute a Code segment.
-* `TI`: 1 bit table indicator. If set, indicates that this is a local descriptor table.
-+
-Otherwise, it is a global descriptor table.
-
 === Segment descriptor
 
 Segment descriptors are kept in RAM, and are used by the hardware to translate logic to linear addresses.
@@ -92,46 +74,6 @@ Compared to the privilege level of the Segment Selector to determine if users ha
 If set, indicates that the RAM of that segment contains important structures such as Local descriptor table.
 
 The current segment descriptor is determined by the current segment selector and the values of the `gdtr` and `ldtr` registers.
-
-=== Segment registers
-
-Segment registers contain segment selectors
-
-There are 6 segment registers.
-
-3 have special meanings:
-
-* CS: code segment
-* SS: TODO
-* DS: data segment
-
-And the other three don't and are free for programmer use.
-
-* ES
-* FG
-* GS
-
-Segment selectors can be put into those segment registers via `mov` instructions.
-
-Each segment selector has an associated read only register which contains the corresponding segment descriptor to that selector.
-
-Segment descriptors are pulled into dedicated processor registers automatically when a segment register changes value.
-
-This allows to read segment descriptors from RAM only once when segments change, and access them directly from the CPU the following times.
-
-TODO which of those segments are used at each time?
-
-=== Segment descriptor types
-
-TODO what is the difference between types?
-
-=== Example of address translation
-
-TODO very important. One example, two programs running. Logical to linear address translation.
-
-=== Linux
-
-TODO How Linux uses segments.
 
 === GDT
 
@@ -195,15 +137,6 @@ The problem with that is that each program must have one segment, so if we have 
 Paging gets around this by allowing discontinuous memory ranges of fixed size for each program.
 
 The format of the GDT is given at: http://wiki.osdev.org/Global_Descriptor_Table
-
-==== Effect on permissions
-
-Besides fixing segment sizes, the GDT also specifies permissions to the program that is running:
-
-* ring level: limits several things that can or not be done, in particular:
-** instructions: e.g. no in / out in ring 3
-** register access: e.g. cannot modify control registers like the GDTR in ring 3. Otherwise user programs could just escape restrictions by changing that!
-* executable, readable and writable bits: which operations can be done
 
 === GDTR
 

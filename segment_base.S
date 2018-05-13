@@ -1,13 +1,3 @@
-/*
-TODO get working. All tutorials I've seen so far just set it to 0 like real OSes :-(
-
-Example of the effect on a memory access of changing the segment base address .
-
-Expected output: "x\na\nb".
-
-Without segment manipulation, the output would be "a".
-*/
-
 #include "common.h"
 
 BEGIN
@@ -57,14 +47,14 @@ BEGIN
 
     /* TODO this sanity check is not printing "ab".
      * It fails, so we're not restoring the old state properly.
-     * Likely blows up because video memory going wrong.
+     * Maybe blows up because video memory going wrong?
      */
     VGA_PRINT_STRING $message
 
     mov %cl, output
     VGA_PRINT_STRING $output
 
-    jmp .
+    hlt
 
 message:
     .asciz "ab"

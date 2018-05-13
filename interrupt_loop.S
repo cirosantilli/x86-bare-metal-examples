@@ -1,6 +1,3 @@
-/*
-*/
-
 #include "common.h"
 BEGIN
     CLEAR
@@ -8,5 +5,4 @@ BEGIN
     mov %cs, 0x02
     int $0
 handler:
-    PUTC $'a
     int $0

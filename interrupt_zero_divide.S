@@ -1,7 +1,3 @@
-/*
-Same as doing an `int $0`.
-*/
-
 #include "common.h"
 BEGIN
     CLEAR
@@ -11,5 +7,14 @@ BEGIN
     div %ax
     hlt
 handler:
-    PUTC $'a
+    mov myvar, %ax
+    incw myvar
+    PRINT_WORD_HEX
+    PRINT_NEWLINE
     iret
+myvar:
+#if 1
+    .word 0x0000
+#else
+    .word 0x0090
+#endif

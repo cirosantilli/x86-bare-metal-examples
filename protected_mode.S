@@ -1,7 +1,4 @@
-/* Outcome: show "hello world". */
-
 #include "common.h"
-
 BEGIN
     CLEAR
     PROTECTED_MODE

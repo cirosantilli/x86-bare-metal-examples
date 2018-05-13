@@ -573,311 +573,6 @@ Open source x86 BIOS implementation.
 
 Default BIOS for QEMU and KVM.
 
-== UEFI
-
-https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
-
-Successor for <<bios>>.
-
-Made by Intel, mostly MIT open source, which likely implies that vendors will hack away closed source versions.
-
-link:https://mjg59.dreamwidth.org/10014.html[Matthew Garrett says] it is huge: larger than Linux without drivers.
-
-Since it is huge, it inevitably contains bugs. Garret says that Intel sometimes does not feel like updating the firmware with bugfixes.
-
-UEFI offers a large API comparable to what most people would call an operating system:
-
-* https://software.intel.com/en-us/articles/uefi-application mentions a POSIX C library port
-* https://lwn.net/Articles/641244/ mentions a Python interpreter port!
-
-ARM is considering an implementation https://wiki.linaro.org/ARM/UEFI
-
-=== UEFI example
-
-....
-cd uefi
-make run
-....
-
-TODO get a hello world program working:
-
-* http://www.rodsbooks.com/efi-programming/hello.html Best source so far: allowed me to compile the hello world! TODO: how to run it now on QEMU and real hardware?
-* https://fedoraproject.org/wiki/Using_UEFI_with_QEMU
-* https://wiki.ubuntu.com/UEFI/OVMF
-* https://github.com/tqh/efi-example
-
-Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: http://unix.stackexchange.com/a/228053/32558 , so we just need to generate the image.
-
-`ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download Included in-source for convenience, even though it is ugly.
-
-=== UEFI Bibliography
-
-* https://www.youtube.com/watch?v=V2aq5M3Q76U hardcore kernel dev Matthew Garrett saying how bad UEFI is
-* https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
-* http://wiki.osdev.org/UEFI
-
-== Coreboot
-
-TODO minimal examples.
-
-https://en.wikipedia.org/wiki/Coreboot
-
-https://www.coreboot.org
-
-Open source hippie freedom loving cross platform firmware that attempts to replace BIOS and UEFI for the greater good of mankind.
-
-== GRUB
-
-link:grub/[]
-
-== Multiboot
-
-https://en.wikipedia.org/wiki/Multiboot_Specification
-
-Standard created by GRUB for booting OSes.
-
-Multiboot files are an extension of ELF files with a special header.
-
-Advantages: GRUB does housekeeping magic for you:
-
-* you can store the OS as a regular file inside a filesystem
-* your program starts in 32-bit mode already, not 16 bit real mode
-* it gets the available memory ranges for you
-
-Disadvantages:
-
-* more boilerplate
-
-GRUB leaves the application into a well defined starting state.
-
-It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2
-
-=== Multiboot hello world
-
-QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
-
-....
-cd multiboot/hello-world
-make
-qemu-system-x86_64 -kernel main.elf
-....
-
-where `main.elf` is the multiboot file we generated.
-
-Outcome:
-
-....
-hello world
-....
-
-Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
-
-....
-qemu-system-x86_64 -drive file=main.img,format=raw
-....
-
-The `main.img` file can also be burned to a USB and run on real hardware.
-
-Example originally minimized from https://github.com/programble/bare-metal-tetris
-
-.. link:interrupt.S[Interrupt]
-... link:interrupt1.S[int \$1]
-... link:interrupt_zero_divide.S[Interrupt zero divide]
-... link:interrupt_loop.S[Interrupt loop]
-
-. Theory
-.. link:formats.md[Formats]
-... link:mbr.md[MBR]
-.. link:pic.md[PIC]
-
-== in and out instructions
-
-x86 has dedicated instructions for certain IO operations: `in` and `out`.
-
-These instructions take an IO address which identifies which hardware they will communicate to.
-
-The IO ports don't seem to be standardized, like everything else: http://stackoverflow.com/questions/14194798/is-there-a-specification-of-x86-i-o-port-assignment
-
-The Linux kernel wraps those instructions with the `inb` and `outb` family of instructions:
-
-....
-man inb
-man outb
-....
-
-=== Memory mapped vs port mapped IO
-
-Not all instruction sets have dedicated instructions such as `in` and `out` for IO.
-
-In ARM for example, everything is done by writing to magic memory addresses.
-
-The dedicated `in` and `out` approach is called "port mapped IO", and the approach of the magic addresses "memory mapp"
-
-From an interface point of view, I feel that memory mapped is more elegant: port IO simply creates a second addresses space.
-
-TODO: are there performance considerations when designing CPUs?
-
-http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
-
-=== PS/2 keyboard
-
-....
-./run ps2_keyboard
-....
-
-Whenever you press a key down or up, the keyboard hex scancode is printed to the screen.
-
-Uses the PS/2 keyboard controller on `in 60h`: http://wiki.osdev.org/%228042%22_PS/2_Controller
-
-The `in` always returns immediately with the last keyboard keycode: we then just poll for changes and print only the changes.
-
-Scancode tables: TODO: official specs?
-
-* https://en.wikipedia.org/wiki/Scancode#PC_compatibles
-* http://flint.cs.yale.edu/cs422/doc/art-of-asm/pdf/APNDXC.PDF
-
-TODO do this with the interrupt table instead of `in`.
-
-=== PS/2 mouse
-
-TODO
-
-* http://wiki.osdev.org/Mouse_Input
-* Random threads with source code, ah those OS devs:
-** https://forum.osdev.org/viewtopic.php?t=10247
-** https://forum.osdev.org/viewtopic.php?t=24277
-* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-mouse.html
-
-I am so going to make a pixel drawing program with this.
-
-=== RTC
-
-Real Time Clock:
-
-* http://wiki.osdev.org/RTC
-* http://wiki.osdev.org/CMOS
-* https://en.wikipedia.org/wiki/Real-time_clock
-
-....
-./run rtc
-....
-
-Gives wall date and time with precision of seconds, every second, e.g.:
-
-....
-00 01 02 03 04 10
-....
-
-means:
-
-____
-3rd April 2010, 02 hours 01 minute and 00 seconds.
-____
-
-Uses `out 70h` and `in 71h` to query the hardware.
-
-This hardware must therefore use a separate battery to keep going when we turn off the computer or remove the laptop battery.
-
-We can control the initial value in QEMU with the option:
-
-....
--rtc base='2010-04-03T02:01:00'
-....
-
-The RTC cannot give accuracy greater than seconds. For that, consider the <<pit>>, or the <<hpet>>.
-
-Bibliography:
-
-* http://stackoverflow.com/questions/1465927/how-can-i-access-system-time-using-nasm
-* https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rtc.c#L121
-
-=== PIT
-
-Programmable Interval Timer:
-
-* https://en.wikipedia.org/wiki/Programmable_interval_timer
-* http://wiki.osdev.org/PIT
-* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
-* http://kernelx.weebly.com/programmable-interval-timer.html
-
-Superseded by the <<hpet>>.
-
-Print `a\n` with the minimal frequency possible of `0x1234DD / 0xFFFF = 18.2 Hz`:
-
-....
-./run pit
-....
-
-Make the PIT generate a single interrupt instead of a frequency:
-
-....
-./run pit_once
-....
-
-Outcome:
-
-....
-a
-....
-
-TODO I think this counts down from the value value in channel 0, and therefore allows to schedule a single event in the future.
-
-The PIT can generate periodic interrupts (or <<pc-speaker,sound>>!) with a given frequency to `IRQ0`, which on real mode maps to interrupt 8 by default.
-
-Major application: interrupt the running process to allow the OS to schedule processes.
-
-The PIT 3 channels that can generate 3 independent signals
-
-* channel 0 at port `40h`: generates interrupts
-* channel 1 at port `41h`: not to be used for some reason
-* channel 2 at port `42h`: linked to the speaker to generate sounds
-
-Port `43h` is used to control signal properties except frequency, which goes in the channel ports, for the 3 channels.
-
-=== PIT frequency
-
-We don't control the frequency of the PIT directly, which is fixed at `0x1234DD`.
-
-Instead, we control a frequency divisor. This is a classic type of discrete electronic circuit: https://en.wikipedia.org/wiki/Frequency_divider
-
-The magic frequency comes from historical reasons to reuse television hardware according to link:https://wiki.osdev.org/Programmable_Interval_Timer[], which in turn is likely influenced by some physical properties of crystal oscillators.
-
-The constant `1193181 == 0x1234DD` has 2 occurrences on Linux 4.16.
-
-==== HPET
-
-Newer <<pit>>.
-
-TODO example.
-
-* https://en.wikipedia.org/wiki/High_Precision_Event_Timer
-* https://wiki.osdev.org/HPET
-
-==== PC speaker
-
-http://wiki.osdev.org/PC_Speaker
-
-....
-./run pc_speaker
-....
-
-Outcome: produces a foul noisy noise using the PC speaker hardware on `out 61h`
-
-QEMU requires the option:
-
-....
--soundhw pcspk
-....
-
-The beep just uses the <<pit>> Channel 2 to generate the frequency.
-
-Extracted from: https://github.com/torvalds/linux/blob/v4.2/arch/x86/realmode/rm/wakemain.c#L38 The kernel has a Morse code encoder using it!
-
-Bibliography:
-
-* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
-* http://fly.srk.fer.hr/GDM/articles/sndmus/speaker1.html
-
 == Modes of operation
 
 The x86 processor has a few modes, which have huge impact on how the processor works.
@@ -1091,7 +786,142 @@ shows that non `ds` encodings are achieved through a prefix:
 
 This makes `ds` the most efficient one for data access, and thus a good default.
 
+==== Interrupts
+
+....
+./run interrupt
+....
+
+Outcome:
+
+....
+ab
+....
+
+It works like this:
+
+* print `a` an interrupt handler `0`
+* jump back to main code
+* print `b`
+
+TODO: is STI not needed because this interrupt is not maskable?
+
+Same with interrupt handler `1`:
+
+....
+./run interrupt1
+....
+
+TODO understand: attempt to create an infinite loop that calls the interrupt from the handler:
+
+....
+./run interrupt_loop
+....
+
+QEMU exits with:
+
+....
+Trying to execute code outside RAM or ROM at 0x000a0000
+....
+
+Handle a division by zero:
+
+....
+./run interrupt_zero_divide
+....
+
+TODO understand:
+
+* expected outcome: prints values from 0 to `0xFFFF` in an infinite loop.
+* actual outcome: stops at `0081`
+
+Apparently when there is an exception, `iret` jumps back to the line that threw the exception itself, not the one after, which leads to the loop:
+
+* https://stackoverflow.com/questions/33029457/what-to-do-in-interrupt-handler-for-divide-by-zero
+* https://stackoverflow.com/questions/9151429/os-development-how-to-avoid-an-infinite-loop-after-an-exception-routine
+
+But then why does it stop at `0081`? And if we set the initial value to `0x0090`, it just runs once.
+
+===== int
+
+* long jumps to the CS : IP found in the corresponding interrupt vector.
+* pushes EFLAGS to let them be restored by iret?
+
+===== iret
+
+Jumps back to the next instruction to be executed before the interrupt came in.
+
+Restores EFLAGS and other registers TODO which?
+
+Vs `jmp`: http://stackoverflow.com/questions/10462884/must-iret-be-used-when-returning-from-an-interrupt
+
+===== Interrupt service routines
+
+Fancy name for the handler: http://wiki.osdev.org/Interrupt_Service_Routines
+
+===== IVT
+
+Interrupt vector table: https://wiki.osdev.org/IVT
+
+The real-mode in-memory table that stores the address for the handler for each interrupt.
+
+In protected mode, the analogous structure is the <<idt>>.
+
+The base address is set in the interrupt descriptor table register (IDTR), and it defaults to address `0x0`.
+
+The format is:
+
+....
+
+IDTR -> +-----------------------+
+0       |Address      (2 bytes) |
+2       |Code segment (2 bytes) |
+        +-----------------------+
+        +-----------------------+
+4 ----> |Address      (2 bytes) |
+6       |Code segment (2 bytes) |
+        +-----------------------+
+        +-----------------------+
+8 ----> |Address      (2 bytes) |
+A       |Code segment (2 bytes) |
+        +-----------------------+
+
+...     ...
+....
+
+====== lidt
+
+Set the value of the IDTR.
+
+....
+./run lidt
+./run lidt2
+./run lidt0
+....
+
+TODO not working.
+
+Expected outcome:
+
+....
+ab
+....
+
+Actual outcome: infinite reboot loop.
+
+Actual outcome if we comment out the `PUTC`:
+
+* `lidt`: still infinite reboot loop
+* `lidt2` and `lidt0`: halt apparently
+
+I think I understand that `lidt` takes as input a memory address, and the memory at that address must contain:
+
+* 2 bytes: total size of the IVT in bytes
+* 4 bytes: base address of the IVT. Higher byte is ignored in real mode, since addresses are not 4 bytes long.
+
 === Protected mode
+
+Hello world:
 
 ....
 ./run protected_mode
@@ -1102,6 +932,12 @@ Major changes from real mode:
 * BIOS cannot be used anymore. In particular, we must use VGA functions to get output
 * GDT and segmentation take effect immediately so we have to deal with it now
 * we have to encode instructions differently, thus a `.code32` is needed. Note that in 16-bit, 32-bit instructions were encodable, but with a prefix.
+
+The exact syntax seems to have no implementation... but NASM should be close:
+
+* http://computer-programming-forum.com/46-asm/6d9e8b7acea2d4cc.htm
+* http://coding.derkeiler.com/Archive/Assembler/alt.lang.asm/2005-12/msg00028.html
+* https://groups.google.com/forum/#!topic/comp.lang.asm.x86/9UZPQWwv-mQ> 1994 comp.lang.asm.x86 topic apparently by a famous guy: apparently by a famous guy: apparently by this famous guy: https://en.wikipedia.org/wiki/Randall_Hyde
 
 On the Linux kernel, `arch/x86/include/asm/segment.h` contains a lot of action:
 
@@ -1116,6 +952,22 @@ Bibliography:
 * https://github.com/chrisdew/xv6/blob/master/bootasm.S
 * https://thiscouldbebetter.wordpress.com/2011/03/17/entering-protected-mode-from-assembly/ FASM based. Did not word on first try, but looks real clean.
 * http://skelix.net/skelixos/tutorial02_en.html
+
+==== Intel protected mode example
+
+link:intel-protected/[]
+
+The <<intel-manual>> 9.10 INITIALIZATION AND MODE SWITCHING EXAMPLE does contain an official example of how to go into protected mode.
+
+However:
+
+* the code is inside the PDF, which breaks all the formatting, so we have copied it here to this repo
+* TODO there is no known tool that can actually compile that syntax... although MASM should be close:
+** http://computer-programming-forum.com/46-asm/6d9e8b7acea2d4cc.htm
+** http://coding.derkeiler.com/Archive/Assembler/alt.lang.asm/2005-12/msg00028.html
+** https://groups.google.com/forum/#!topic/comp.lang.asm.x86/9UZPQWwv-mQ> 1994 comp.lang.asm.x86 topic
+
+How can those guys be in business? >:-)
 
 ==== Protected mode draw pixel
 
@@ -1132,11 +984,67 @@ TODO: cleanup and get working:
 
 ==== IDT
 
-... link:idt.S[IDT]
-.... link:idt1.S[IDT 1]
-.... link:idt_zero_divide.S[IDT zero divide]
-.... IDT PIT
-... link:pit_protected.S[PIT protected]
+Interrupt descriptor table.
+
+Protected mode analogue to the <<ivt>>:
+
+....
+./run idt
+....
+
+outcome:
+
+....
+int 0 handled
+....
+
+Handle interrupt 1 instead of 0:
+
+....
+./run idt1
+....
+
+outcome:
+
+....
+int 1 handled
+....
+
+Print `00000020\n` at `18.2 Hz` with the <<pit>>:
+
+....
+./run pit_protected
+....
+
+Bibliography:
+
+* https://wiki.osdev.org/Interrupt_Descriptor_Table
+* https://en.wikipedia.org/wiki/Interrupt_descriptor_table
+* http://www.jamesmolloy.co.uk/tutorial_html/4.-The%20GDT%20and%20IDT.html
+
+The first 32 handlers are reserved by the processor and have predefined meanings, as specified in the <<intel-manual>> Table 3-3. "Intel 64 and IA-32 General Exceptions".
+
+In the Linux kernel, https://github.com/torvalds/linux/blob/v4.2/arch/x86/entry/entry_64.S sets them all up: each `idtentry divide_error` call sets up a new one.
+
+===== IDT divide by zero
+
+Handle a division by zero:
+
+....
+./run idt_zero_divide
+....
+
+Outcome:
+
+....
+division by zero handled
+....
+
+Division by zero causes a Divide Error which Intel notes as `#DE`.
+
+It is then handled by IDT 0.
+
+DEs are not only for division by zero: they also happens on overflow. TODO example.
 
 ==== Protection rings
 
@@ -1224,6 +1132,194 @@ But 64 bit Linux and Windows don't seem to allow 16 bit code anymore?
 
 Compatibility vs protected: https://stackoverflow.com/questions/20848412/modes-of-intel-64-cpu
 
+== in and out instructions
+
+x86 has dedicated instructions for certain IO operations: `in` and `out`.
+
+These instructions take an IO address which identifies which hardware they will communicate to.
+
+The IO ports don't seem to be standardized, like everything else: http://stackoverflow.com/questions/14194798/is-there-a-specification-of-x86-i-o-port-assignment
+
+The Linux kernel wraps those instructions with the `inb` and `outb` family of instructions:
+
+....
+man inb
+man outb
+....
+
+=== Memory mapped vs port mapped IO
+
+Not all instruction sets have dedicated instructions such as `in` and `out` for IO.
+
+In ARM for example, everything is done by writing to magic memory addresses.
+
+The dedicated `in` and `out` approach is called "port mapped IO", and the approach of the magic addresses "memory mapp"
+
+From an interface point of view, I feel that memory mapped is more elegant: port IO simply creates a second addresses space.
+
+TODO: are there performance considerations when designing CPUs?
+
+http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
+
+=== PS/2 keyboard
+
+....
+./run ps2_keyboard
+....
+
+Whenever you press a key down or up, the keyboard hex scancode is printed to the screen.
+
+Uses the PS/2 keyboard controller on `in 60h`: http://wiki.osdev.org/%228042%22_PS/2_Controller
+
+The `in` always returns immediately with the last keyboard keycode: we then just poll for changes and print only the changes.
+
+Scancode tables: TODO: official specs?
+
+* https://en.wikipedia.org/wiki/Scancode#PC_compatibles
+* http://flint.cs.yale.edu/cs422/doc/art-of-asm/pdf/APNDXC.PDF
+
+TODO do this with the interrupt table instead of `in`.
+
+=== PS/2 mouse
+
+TODO create an example:
+
+* http://wiki.osdev.org/Mouse_Input
+* Random threads with source code, ah those OS devs:
+** https://forum.osdev.org/viewtopic.php?t=10247
+** https://forum.osdev.org/viewtopic.php?t=24277
+* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-mouse.html
+
+I am so going to make a pixel drawing program with this.
+
+=== RTC
+
+Real Time Clock:
+
+* http://wiki.osdev.org/RTC
+* http://wiki.osdev.org/CMOS
+* https://en.wikipedia.org/wiki/Real-time_clock
+
+....
+./run rtc
+....
+
+Gives wall date and time with precision of seconds, every second, e.g.:
+
+....
+00 01 02 03 04 10
+....
+
+means:
+
+____
+3rd April 2010, 02 hours 01 minute and 00 seconds.
+____
+
+Uses `out 70h` and `in 71h` to query the hardware.
+
+This hardware must therefore use a separate battery to keep going when we turn off the computer or remove the laptop battery.
+
+We can control the initial value in QEMU with the option:
+
+....
+-rtc base='2010-04-03T02:01:00'
+....
+
+The RTC cannot give accuracy greater than seconds. For that, consider the <<pit>>, or the <<hpet>>.
+
+Bibliography:
+
+* http://stackoverflow.com/questions/1465927/how-can-i-access-system-time-using-nasm
+* https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rtc.c#L121
+
+=== PIT
+
+Programmable Interval Timer:
+
+* https://en.wikipedia.org/wiki/Programmable_interval_timer
+* http://wiki.osdev.org/PIT
+* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
+* http://kernelx.weebly.com/programmable-interval-timer.html
+
+Superseded by the <<hpet>>.
+
+Print `a\n` with the minimal frequency possible of `0x1234DD / 0xFFFF = 18.2 Hz`:
+
+....
+./run pit
+....
+
+Make the PIT generate a single interrupt instead of a frequency:
+
+....
+./run pit_once
+....
+
+Outcome:
+
+....
+a
+....
+
+TODO I think this counts down from the value value in channel 0, and therefore allows to schedule a single event in the future.
+
+The PIT can generate periodic interrupts (or <<pc-speaker,sound>>!) with a given frequency to `IRQ0`, which on real mode maps to interrupt 8 by default.
+
+Major application: interrupt the running process to allow the OS to schedule processes.
+
+The PIT 3 channels that can generate 3 independent signals
+
+* channel 0 at port `40h`: generates interrupts
+* channel 1 at port `41h`: not to be used for some reason
+* channel 2 at port `42h`: linked to the speaker to generate sounds
+
+Port `43h` is used to control signal properties except frequency, which goes in the channel ports, for the 3 channels.
+
+=== PIT frequency
+
+We don't control the frequency of the PIT directly, which is fixed at `0x1234DD`.
+
+Instead, we control a frequency divisor. This is a classic type of discrete electronic circuit: https://en.wikipedia.org/wiki/Frequency_divider
+
+The magic frequency comes from historical reasons to reuse television hardware according to link:https://wiki.osdev.org/Programmable_Interval_Timer[], which in turn is likely influenced by some physical properties of crystal oscillators.
+
+The constant `1193181 == 0x1234DD` has 2 occurrences on Linux 4.16.
+
+==== HPET
+
+Newer <<pit>>.
+
+TODO example.
+
+* https://en.wikipedia.org/wiki/High_Precision_Event_Timer
+* https://wiki.osdev.org/HPET
+
+==== PC speaker
+
+http://wiki.osdev.org/PC_Speaker
+
+....
+./run pc_speaker
+....
+
+Outcome: produces a foul noisy noise using the PC speaker hardware on `out 61h`
+
+QEMU requires the option:
+
+....
+-soundhw pcspk
+....
+
+The beep just uses the <<pit>> Channel 2 to generate the frequency.
+
+Extracted from: https://github.com/torvalds/linux/blob/v4.2/arch/x86/realmode/rm/wakemain.c#L38 The kernel has a Morse code encoder using it!
+
+Bibliography:
+
+* https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
+* http://fly.srk.fer.hr/GDM/articles/sndmus/speaker1.html
+
 == Video mode
 
 There are several video modes.
@@ -1271,12 +1367,6 @@ TODO: what is it exactly?
 BIOS cannot be used when we move into protected mode, but we can use the VGA interface to get output out of our programs.
 
 Have a look at the macros prefixed with `VGA_` inside link:common.h[].
-
-=== VBE
-
-https://en.wikipedia.org/wiki/VESA_BIOS_Extensions
-
-TODO use it.
 
 == Power
 
@@ -1342,12 +1432,120 @@ Spec:
 * current: http://uefi.org/specifications
 * old: http://www.uefi.org/acpi/specs
 
+== UEFI
+
+https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
+
+Successor for <<bios>>.
+
+Made by Intel, mostly MIT open source, which likely implies that vendors will hack away closed source versions.
+
+link:https://mjg59.dreamwidth.org/10014.html[Matthew Garrett says] it is huge: larger than Linux without drivers.
+
+Since it is huge, it inevitably contains bugs. Garret says that Intel sometimes does not feel like updating the firmware with bugfixes.
+
+UEFI offers a large API comparable to what most people would call an operating system:
+
+* https://software.intel.com/en-us/articles/uefi-application mentions a POSIX C library port
+* https://lwn.net/Articles/641244/ mentions a Python interpreter port!
+
+ARM is considering an implementation https://wiki.linaro.org/ARM/UEFI
+
+=== UEFI example
+
+....
+cd uefi
+make run
+....
+
+TODO get a hello world program working:
+
+* http://www.rodsbooks.com/efi-programming/hello.html Best source so far: allowed me to compile the hello world! TODO: how to run it now on QEMU and real hardware?
+* https://fedoraproject.org/wiki/Using_UEFI_with_QEMU
+* https://wiki.ubuntu.com/UEFI/OVMF
+* https://github.com/tqh/efi-example
+
+Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: http://unix.stackexchange.com/a/228053/32558 , so we just need to generate the image.
+
+`ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download Included in-source for convenience, even though it is ugly.
+
+=== UEFI Bibliography
+
+* https://www.youtube.com/watch?v=V2aq5M3Q76U hardcore kernel dev Matthew Garrett saying how bad UEFI is
+* https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface
+* http://wiki.osdev.org/UEFI
+
+== Coreboot
+
+TODO minimal examples.
+
+https://en.wikipedia.org/wiki/Coreboot
+
+https://www.coreboot.org
+
+Open source hippie freedom loving cross platform firmware that attempts to replace BIOS and UEFI for the greater good of mankind.
+
+== GRUB
+
+link:grub/[]
+
+== Multiboot
+
+https://en.wikipedia.org/wiki/Multiboot_Specification
+
+Standard created by GRUB for booting OSes.
+
+Multiboot files are an extension of ELF files with a special header.
+
+Advantages: GRUB does housekeeping magic for you:
+
+* you can store the OS as a regular file inside a filesystem
+* your program starts in 32-bit mode already, not 16 bit real mode
+* it gets the available memory ranges for you
+
+Disadvantages:
+
+* more boilerplate
+
+GRUB leaves the application into a well defined starting state.
+
+It seems that Linux does not implement Multiboot natively, but GRUB supports it as an exception: http://stackoverflow.com/questions/17909429/booting-a-non-multiboot-kernel-with-grub2
+
+=== Multiboot hello world
+
+QEMU supports multiboot natively https://stackoverflow.com/questions/25469396/how-to-use-qemu-properly-with-multi-boot-headers/32550281#32550281>:
+
+....
+cd multiboot/hello-world
+make
+qemu-system-x86_64 -kernel main.elf
+....
+
+where `main.elf` is the multiboot file we generated.
+
+Outcome:
+
+....
+hello world
+....
+
+Or you can use `grub-mkrescue` to make a multiboot file into a bootable ISO or disk:
+
+....
+qemu-system-x86_64 -drive file=main.img,format=raw
+....
+
+The `main.img` file can also be burned to a USB and run on real hardware.
+
+Example originally minimized from https://github.com/programble/bare-metal-tetris
 
 == Tests
 
 === Unit tests
 
 Tests for utilities defined in this repo, as opposed to x86 or external firmware concepts.
+
+TODO: implement: link:test_vga_print_bytes.S[]
 
 ==== PRINT_BYTES
 
@@ -1577,14 +1775,6 @@ Raspberry PI:
 
 * https://github.com/dwelch67/raspberrypi
 * https://github.com/BrianSidebotham/arm-tutorial-rpi
-
-== TODO
-
-Stuff here is too messy or useless to put on the main README, either cleanup or add a working example:
-
-* link:TODO.adoc[]
-* link:intel-startup/[]
-* link:test_vga_print_bytes.S[]
 
 == LICENSE
 

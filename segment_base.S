@@ -37,18 +37,16 @@ BEGIN
     xor $1, %al
     mov %al, (%edx)
 
-    /*
-    We must re-set ds because the segment descriptor is cached
-    and this updates it:
-    http://wiki.osdev.org/Descriptor_Cache
-    */
+    /* We must re-set ds because the segment descriptor is cached
+     * and this updates it:
+     * http://wiki.osdev.org/Descriptor_Cache
+     */
     mov $DATA_SEG, %ax
     mov %ax, %ds
 
-    /*
-    This is the only memory access we will make with
-    the modified segment, to minimize the effect on our IO.
-    */
+    /* This is the only memory access we will make with
+     * the modified segment, to minimize the effect on our IO.
+     */
     mov message, %cl
 
     /* Restore the old segment. */
@@ -57,11 +55,10 @@ BEGIN
     mov %bl, (%edx)
     mov %ax, %ds
 
-    /*
-    TODO this sanity check is not printing "ab".
-    It fails, so we're not restoring the old state properly.
-    Likely blows up because video memory going wrong.
-    */
+    /* TODO this sanity check is not printing "ab".
+     * It fails, so we're not restoring the old state properly.
+     * Likely blows up because video memory going wrong.
+     */
     VGA_PRINT_STRING $message
 
     mov %cl, output

@@ -1,5 +1,4 @@
 /* TODO implement the function and enable this test. */
-
 #include "common.h"
 BEGIN
     CLEAR

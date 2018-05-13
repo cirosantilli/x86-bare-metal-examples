@@ -131,7 +131,9 @@ TODO very important. One example, two programs running. Logical to linear addres
 
 === Linux
 
-TODO How Linux uses segments. ## GDT
+TODO How Linux uses segments.
+
+=== GDT
 
 Table in memory that gives properties of segment registers.
 

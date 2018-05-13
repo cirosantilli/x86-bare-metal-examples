@@ -173,8 +173,7 @@ These are the first ones you should look at.
 === Create a minimal image with printf
 
 ....
-cd printf/
-make run
+make -C printf run
 ....
 
 Outcome: QEMU window opens up, prints a few boot messages, and hangs.
@@ -221,8 +220,7 @@ The Linux kernel also uses linker scripts to setup its image memory layout, see 
 === No linker script
 
 ....
-cd no-linker-lscript
-make run
+make -C no-linker-script run
 ....
 
 Outcome:
@@ -1589,8 +1587,7 @@ ARM is considering an implementation https://wiki.linaro.org/ARM/UEFI
 === UEFI example
 
 ....
-cd uefi
-make run
+make -C uefi run
 ....
 
 TODO get a hello world program working:
@@ -1600,9 +1597,9 @@ TODO get a hello world program working:
 * https://wiki.ubuntu.com/UEFI/OVMF
 * https://github.com/tqh/efi-example
 
-Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: http://unix.stackexchange.com/a/228053/32558 , so we just need to generate the image.
+Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: link:http://unix.stackexchange.com/a/228053/32558[], so we just need to generate the image.
 
-`ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download Included in-source for convenience, even though it is ugly.
+The blob `uefi/ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download TODO: automate building it from source instead, get rid of the blob, and force push it away from history. It seems that they have moved to GitHub at last: https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF/e372aa54750838a7165b08bb02b105148e2c4190
 
 === UEFI Bibliography
 
@@ -1627,8 +1624,7 @@ TODO link:grub/[]
 === GRUB chainloader
 
 ....
-cd grub/chainloader
-make run
+make -C grub/chainloader run
 ....
 
 Outcome: you are left in an interactive GRUB menu with two choices:

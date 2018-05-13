@@ -1619,7 +1619,7 @@ Open source hippie freedom loving cross platform firmware that attempts to repla
 
 == GRUB
 
-TODO link:grub/[]
+link:grub/[] TODO cleanup and exemplify everything in that file. Some hosty stuff needs to go out maybe.
 
 === GRUB chainloader
 
@@ -1656,6 +1656,34 @@ chainloader +1
 which reloads the first sector of the current partition, and therefor ourselves.
 
 TODO: why does it fail for hybrid ISO images? http://superuser.com/questions/154134/grub-how-to-boot-into-iso-partition#comment1337357_154271
+
+=== GRUB linux
+
+TODO get working.
+
+OK, let's have some fun and do the real thing!
+
+....
+make -C grub/linux run
+....
+
+Outcome: GRUB menu with a single `Buildroot` entry. When you select it, a tiny pre-built Linux image boots from: https://github.com/cirosantilli/linux-kernel-module-cheat
+
+Actual outcome: after selecting the entry, nothing shows on the screen. Even if we fix this, we will then also need to provide a rootfs somehow: the `initrd` GRUB command would be a simple method, that repo can also generate initrd images: https://github.com/cirosantilli/linux-kernel-module-cheat/tree/c06476bfc821659a4731d49e808f45e8c509c5e1#initrd Maybe have look under Buildroot `boot/grub2` and copy what they are doing there.
+
+The GRUB command is of form:
+
+....
+linux /boot/bzImage root=/dev/sda1 console=tty1
+....
+
+so we see that the kernel boot parameters are passed right there, for example try to change the value of the `printk.time` parameter:
+
+....
+printk.time=y
+....
+
+and see how the dmesg times not get printed anymore.
 
 == Multiboot
 

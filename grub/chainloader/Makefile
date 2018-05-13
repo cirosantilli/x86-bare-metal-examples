@@ -10,4 +10,4 @@ clean:
 	rm -f iso/boot/*.img *.img
 
 run: main.img
-	qemu-system-i386 -hda '$<'
+	qemu-system-i386 -drive 'file=$<,format=raw'

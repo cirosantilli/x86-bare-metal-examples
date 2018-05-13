@@ -264,15 +264,6 @@ initrd /boot/initrd.img-3.13.0-29-generic
 boot
 ....
 
-=== grub.cfg
-
-TODO:
-
-* where is the format documented?
-* what is set? No relation to the Bash version: http://unix.stackexchange.com/questions/197578/linux-set-command-for-local-variables
-
-Stuff I've deduced for 2.0:
-
 ==== timeout
 
 No timeout on boot menu:

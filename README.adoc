@@ -1990,12 +1990,12 @@ For when we decide to port this tutorial:
 
 ARM:
 
-* https://github.com/bravegnu/gnu-eprog
-
-Raspberry PI:
-
-* https://github.com/dwelch67/raspberrypi
-* https://github.com/BrianSidebotham/arm-tutorial-rpi
+* Raspberry PI:
+** link:https://github.com/bztsrc/raspi3-tutorial[], getting started: https://raspberrypi.stackexchange.com/questions/34733/how-to-do-qemu-emulation-for-bare-metal-raspberry-pi-images/85135#85135
+** https://github.com/dwelch67/raspberrypi
+** https://github.com/BrianSidebotham/arm-tutorial-rpi
+* non Raspberry pi specific:
+** https://github.com/bravegnu/gnu-eprog
 
 == LICENSE
 

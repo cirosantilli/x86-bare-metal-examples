@@ -1887,6 +1887,18 @@ Knowing the following will help a lot:
 
 While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
 
+== TODO
+
+=== Serial UART
+
+* https://stackoverflow.com/questions/22571379/intel-galileo-bare-metal-uart
+* https://stackoverflow.com/questions/27594297/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall
+
+This would open up:
+
+* gem5 benchmarking and exploration, currently blocked on https://stackoverflow.com/questions/50364863/how-to-get-graphical-gui-output-and-user-touch-keyboard-mouse-input-in-a-ful/50364864#50364864
+* automated unit tests. Ha, like I'm gonna be that dilligent!
+
 == Bibliography
 
 === Intel manual

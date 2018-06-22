@@ -2011,6 +2011,8 @@ Bare metal ARM stuff:
 ** link:https://github.com/bztsrc/raspi3-tutorial[], getting started: https://raspberrypi.stackexchange.com/questions/34733/how-to-do-qemu-emulation-for-bare-metal-raspberry-pi-images/85135#85135
 ** https://github.com/dwelch67/raspberrypi
 ** https://github.com/BrianSidebotham/arm-tutorial-rpi
+* gem5:
+** https://github.com/tukl-msd/gem5.bare-metal bare metal UART example. Tested with: https://stackoverflow.com/questions/43682311/uart-communication-in-gem5-with-arm-bare-metal/50983650#50983650
 
 == LICENSE
 

@@ -1,9 +1,3 @@
-/*
-Test PIT_SLEEP_TICKS in protected mode.
-
-Expected output: `a\n` gets printed with frequency 2Hz.
-*/
-
 #include "common.h"
 BEGIN
     STAGE2

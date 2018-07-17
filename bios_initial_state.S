@@ -15,20 +15,18 @@
     PRINT_NEWLINE
 .endm
 
-/*
-Indispensable initialization.
-This initialization is a bit redundant with BEGIN,
-and does dirty some registers, but I haven't found a better option.
-*/
+/* Indispensable initialization.
+ * This initialization is a bit redundant with BEGIN,
+ * and does dirty some registers, but I haven't found a better option.
+ */
 .code16
     cli
     xor %ax, %ax
     mov %ax, %ds
 
-    /*
-    We want our data do be before STAGE2,
-    or it will get overwritten during the load.
-    */
+    /* We want our data do be before STAGE2,
+     * or it will get overwritten during the load.
+     */
     jmp after_data
 
     .irp reg, ax, bx, cx, dx, cs, ds, es, fs, gs, ss
@@ -47,10 +45,9 @@ after_data:
     mov %cr0, %eax
     mov %eax, cr0
 
-/*
-We delay a full BEGIN as late as possible
-to mess with less initial state.
-*/
+/* We delay a full BEGIN as late as possible
+ * to mess with less initial state.
+ */
 BEGIN
 
 STAGE2

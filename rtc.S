@@ -4,7 +4,6 @@
 
 #include "common.h"
 BEGIN
-
 update_in_progress:
     mov $10, %al
     out %al, $RTCaddress

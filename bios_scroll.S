@@ -13,10 +13,9 @@ mov $0x01, %al
  * Foreground is set as the new foreground color.
  */
 mov $0xA4, %bh
-/*
-CH,CL: row,column upper left corner (00:00)
-TODO what does that mean?
-*/
+/* CH,CL: row,column upper left corner (00:00)
+ * TODO what does that mean?
+ */
 mov $0x0101, %cx
 /* DH,DL: row,column lower right corner (24:79).
  * TODO what does it mean?

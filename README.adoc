@@ -190,15 +190,29 @@ It basically consists of:
 
 === Minimal GAS example
 
+Minimal example that just halts the CPU without using our mini-library link:common.h[]:
+
 ....
 ./run min
 ....
 
+Source: link:min.S[]
+
 Outcome: QEMU window opens up, prints a few firmware messages, and hangs.
+
+==== Infinite loop
+
+Go into an infinite loop instead of using `hlt`:
+
+....
+./run infinite_loop
+....
+
+The outcome if visibly the same, but TODO: it likely wastes more energy in real hardware?
 
 ==== Linker script
 
-This hello world, and most of our OSes use the linker script link:linker.ld[].
+This hello world, and most of our OSes use the linker script: link:linker.ld[]
 
 This critical file determines the memory layout of our assembly, take some time to read the comments in that file and familiarize yourself with it.
 
@@ -206,29 +220,26 @@ The Linux kernel also uses linker scripts to setup its image memory layout, see 
 
 === BIOS hello world
 
+Print `hello world` after the firmware messages:
+
 ....
 ./run bios_hello_world
 ....
 
-Outcome:
-
-....
-hello world
-....
-
-shows after the firmware messages.
+Source: link:bios_hello_world.S[]
 
 === No linker script
+
+Print `hello world` without using an explitic linker script:
 
 ....
 make -C no-linker-script run
 ....
 
-Outcome:
+Sources:
 
-....
-hello world
-....
+* link:no-linker-script/Makefile[]
+* link:no-linker-script/main.S[]
 
 Uses the default host `ld` script, not an explicit one set with `-T`. Uses:
 
@@ -236,13 +247,9 @@ Uses the default host `ld` script, not an explicit one set with `-T`. Uses:
 * `.org` inside each assembly file
 * `_start` must be present to avoid a warning, since the default linker script expects it
 
-Less stable, but more convenient for quick and dirty tests.
+This is a hack, it can be more convenient for quick and dirty tests, but just don't use it.
 
 == BIOS
-
-https://en.wikipedia.org/wiki/BIOS
-
-http://wiki.osdev.org/BIOS
 
 The BIOS is one of the most well known firmwares in existence.
 
@@ -280,6 +287,11 @@ which is the same as `0x10`.
 
 Each `interrupt-id` groups multiple functions with similar functions, e.g. `10h` groups functions with video related functionality.
 
+Bibliography:
+
+* https://en.wikipedia.org/wiki/BIOS
+* http://wiki.osdev.org/BIOS
+
 === BIOS documentation
 
 Does any official documentation or standardization exist?
@@ -297,11 +309,15 @@ Print a single `@` character:
 ./run bios_putc
 ....
 
-Print a newline with bios:
+Source: link:bios_putc.S[]
+
+Print a newline:
 
 ....
 ./run bios_newline
 ....
+
+Source: link:bios_newline.S[]
 
 Outcome:
 
@@ -316,6 +332,8 @@ Carriage returns are needed just like in old days:
 ./run bios_carriage_return
 ....
 
+Source: link:bios_carriage_return.S[]
+
 Outcome:
 
 ....
@@ -328,6 +346,8 @@ Change the current cursor position:
 ....
 ./run bios_cursor_position
 ....
+
+Source: link:bios_cursor_position.S[]
 
 Outcome:
 
@@ -344,6 +364,8 @@ Write a character N times with given color:
 ....
 ./run bios_color
 ....
+
+Source: link:bios_color.S[]
 
 Outcome:
 
@@ -362,6 +384,8 @@ Change the background color to red for the entire screen and print an `a` charac
 ./run bios_background
 ....
 
+Source: link:bios_background.S[]
+
 ==== BIOS scroll
 
 Scroll the screen:
@@ -369,6 +393,8 @@ Scroll the screen:
 ....
 ./run bios_scroll
 ....
+
+Source: link:bios_scroll.S[]
 
 Outcome:
 
@@ -413,6 +439,8 @@ Subset of scroll:
 ./run bios_clear_screen
 ....
 
+Source: link:bios_clear_screen.S[]
+
 Outcome:
 
 ....
@@ -429,6 +457,8 @@ Make the pixel at position (1, 1) clear red color (0Ch) in <<video-mode-13h>>:
 ./run bios_pixel
 ....
 
+Source: link:bios_pixel.S[]
+
 You may have to look a bit hard to see it.
 
 Draw a line of such pixels:
@@ -437,11 +467,11 @@ Draw a line of such pixels:
 ./run bios_pixel_line
 ....
 
+Source: link:bios_pixel_line.S[]
+
 Advanced graphics!
 
 ==== BIOS keyboard
-
-https://stackoverflow.com/questions/4113250/how-to-handle-keyboard-in-real-mode-through-bios-interrupts/32682518#32682518
 
 Get one character from the user via the keyboard, increment it by one, and print it to the screen, then halt:
 
@@ -449,13 +479,19 @@ Get one character from the user via the keyboard, increment it by one, and print
 ./run bios_keyboard
 ....
 
+Source: link:bios_keyboard.S[]
+
 Type a bunch of characters and see them appear on the screen:
 
 ....
 ./run bios_keyboard_loop
 ....
 
+Source: link:bios_keyboard_loop.S[]
+
 Do try `Ctrl-key` combinations.
+
+Bibliography: https://stackoverflow.com/questions/4113250/how-to-handle-keyboard-in-real-mode-through-bios-interrupts/32682518#32682518
 
 ==== BIOS disk load
 
@@ -465,19 +501,23 @@ Load a stage 2 from disk with `int 13h` and run it:
 ./run bios_disk_load
 ....
 
+Source: link:bios_disk_load.S[]
+
 Outcome:
 
 ....
 a
 ....
 
-and this character was printed from stage 2.
+This character was printed from stage 2.
 
 Load two sectors instead of just one:
 
 ....
 ./run bios_disk_load2
 ....
+
+Source: link:bios_disk_load2.S[]
 
 Outcome:
 
@@ -489,7 +529,7 @@ where `a` was printed from code on the first block, and `b` from code on the sec
 
 This shows that each sector is 512 bytes long.
 
-Grub 2.0 makes several calls to it under `grub-core/boot/i386/pc`.
+GRUB 2.0 makes several calls to it under `grub-core/boot/i386/pc`.
 
 TODO: not working on Bochs: `BOUND_GdMa: fails bounds test`.
 
@@ -505,15 +545,15 @@ Bibliography:
 
 ==== BIOS detect memory
 
-An yet failed TODO attempt at detecting how big our memory is with `int 15h`:
+TODO failed attempt at detecting how big our memory is with `int 15h`:
 
 ....
 ./run bios_detect_memory
 ....
 
-Seems to output trash currently.
+Source: link:bios_detect_memory.S[]
 
-http://wiki.osdev.org/Detecting_Memory_%28x86%29
+Seems to output trash currently.
 
 This is important in particular so that you can start your stack there when you enter <<protected-mode>>, since the stack grows down.
 
@@ -528,9 +568,11 @@ The format is not too complicated, and documented at: http://wiki.osdev.org/Dete
 * 4 bytes: type or region. 1 for usable RAM.
 * 4 bytes: some ACPI stuff that no one uses?
 
+Bibliography: http://wiki.osdev.org/Detecting_Memory_%28x86%29
+
 ===== Low vs high memory
 
-TODO
+TODO example.
 
 `int 15h` can detect low or high memory. How are they different?
 
@@ -542,30 +584,43 @@ Count to infinity, sleep one second between each count:
 ./run bios_sleep
 ....
 
-https://stackoverflow.com/questions/9971405/how-to-display-a-number-on-the-screen-and-and-sleep-for-one-second-with-dos-x86/9973442#9973442
+Source: link:bios_sleep.S[]
 
 Polls time counter that BIOS keeps up to date at `0x046C` with frequency 18.2Hz eighteen times.
 
+Bibliography: https://stackoverflow.com/questions/9971405/how-to-display-a-number-on-the-screen-and-and-sleep-for-one-second-with-dos-x86/9973442#9973442
+
 ==== BIOS initial state
 
-Check the initial state the firmware leaves us in:
+Check the initial state the firmware leaves us by printing the contents of several registers:
 
 ....
 ./run bios_initial_state
 ....
 
-Prints the contents of several registers.
+Source: link:bios_initial_state.S[]
+
+Outcome:
+
+....
+ax = 00 00
+bx = 00 00
+cx = 00 00
+dx = 80 00
+cs = 00 00
+ds = 00 00
+es = 00 00
+fs = 00 00
+gs = 00 00
+ss = 00 00
+cr0 = 53 FF 00 F0
+....
 
 `dx` seems to be like the only interesting regular register: the firmware stores the value of the current disk number to help with `int 15h` there. Thus it usually contains `0x80`.
 
 === dmidecode
 
-Get BIOS information.
-
-* http://stackoverflow.com/questions/20604644/how-to-check-the-bios-version-or-name-in-linux-through-command-prompt
-* https://en.wikipedia.org/wiki/System_Management_BIOS SMBIOS
-
-Try it on host:
+Get BIOS information. On host:
 
 ....
 sudo dmidecode
@@ -574,6 +629,11 @@ sudo dmidecode
 Standardized by: https://en.wikipedia.org/wiki/Distributed_Management_Task_Force
 
 TODO: how is it obtained at the low level?
+
+Bibliography:
+
+* http://stackoverflow.com/questions/20604644/how-to-check-the-bios-version-or-name-in-linux-through-command-prompt
+* https://en.wikipedia.org/wiki/System_Management_BIOS SMBIOS
 
 === SeaBIOS
 
@@ -691,6 +751,8 @@ http://stackoverflow.com/questions/6917503/is-it-possible-to-use-32-bits-registe
 ./run real_segmentation
 ....
 
+Source: link:real_segmentation.S[]
+
 Outcome:
 
 ....
@@ -748,6 +810,8 @@ Affects the code address pointer:
 ./run cs
 ....
 
+Source: link:cs.S[]
+
 Outcome:
 
 ....
@@ -763,6 +827,8 @@ Outcome:
 ....
 ./run ss
 ....
+
+Source: link:ss.S[]
 
 Outcome:
 
@@ -798,9 +864,13 @@ This makes `ds` the most efficient one for data access, and thus a good default.
 
 ==== Interrupts
 
+Create an interrupt handler and handle an interrupt:
+
 ....
 ./run interrupt
 ....
+
+Source: link:interrupt.S[]
 
 Outcome:
 
@@ -822,11 +892,15 @@ Same with interrupt handler `1`:
 ./run interrupt1
 ....
 
+Source: link:interrupt1.S[]
+
 TODO understand: attempt to create an infinite loop that calls the interrupt from the handler:
 
 ....
 ./run interrupt_loop
 ....
+
+Source: link:interrupt_loop.S[]
 
 QEMU exits with:
 
@@ -839,6 +913,8 @@ Handle a division by zero:
 ....
 ./run interrupt_zero_divide
 ....
+
+Source: link:interrupt_zero_divide.S[]
 
 TODO understand:
 
@@ -911,6 +987,12 @@ Set the value of the IDTR, and therefore set the base address of the <<ivt>>:
 ./run lidt0
 ....
 
+Sources:
+
+* link:lidt.S[]
+* link:lidt2.S[]
+* link:lidt0.S[]
+
 TODO not working.
 
 Expected outcome:
@@ -933,11 +1015,13 @@ I think I understand that `lidt` takes as input a memory address, and the memory
 
 === Protected mode
 
-Hello world:
+Print `hello world` in protected mode:
 
 ....
 ./run protected_mode
 ....
+
+Source: link:protected_mode.S[]
 
 Major changes from real mode:
 
@@ -957,7 +1041,7 @@ Bibliography:
 
 ==== Intel protected mode example
 
-link:intel-protected/[]
+Source: link:intel-protected/[]
 
 The <<intel-manual>> Volume 3 - 9.10 "INITIALIZATION AND MODE SWITCHING EXAMPLE" does contain an official example of how to go into protected mode.
 
@@ -984,6 +1068,8 @@ TODO: get working:
 ....
 ./run segmentation
 ....
+
+Source: link:segmentation.S[]
 
 Expected outcome:
 
@@ -1128,7 +1214,9 @@ Protected mode analogue to the <<ivt>>:
 ./run idt
 ....
 
-outcome:
+Source: link:idt.S[]
+
+Outcome:
 
 ....
 int 0 handled
@@ -1140,7 +1228,9 @@ Handle interrupt 1 instead of 0:
 ./run idt1
 ....
 
-outcome:
+Source: link:idt1.S[]
+
+Outcome:
 
 ....
 int 1 handled
@@ -1151,6 +1241,8 @@ Print `00000020\n` at `18.2 Hz` with the <<pit>>:
 ....
 ./run pit_protected
 ....
+
+Source: link:pit_protected.S[]
 
 Bibliography:
 
@@ -1170,6 +1262,8 @@ Handle a division by zero:
 ./run idt_zero_divide
 ....
 
+Source: link:idt_zero_divide.S[]
+
 Outcome:
 
 ....
@@ -1184,13 +1278,17 @@ DEs are not only for division by zero: they also happens on overflow. TODO examp
 
 ==== SMP
 
-http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like/33651438#33651438
+link:https://en.wikipedia.org/wiki/Symmetric_multiprocessing[Symmetric multiprocessing].
 
-Symmetric multiprocessing https://en.wikipedia.org/wiki/Symmetric_multiprocessing
+Verbose explanation: http://stackoverflow.com/questions/980999/what-does-multicore-assembly-language-look-like/33651438#33651438
+
+Start multiple processors and make them interact:
 
 ....
 ./run smp
 ....
+
+Source: link:smp.S[]
 
 Outcome:
 
@@ -1206,9 +1304,13 @@ Try commenting out waking up the second processor and see it not get printed.
 
 Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
 
+Change page tables and observe how that affects memory accesses:
+
 ....
 ./run paging
 ....
+
+Source: link:paging.S[]
 
 Outcome:
 
@@ -1228,6 +1330,8 @@ Generate and handle a page fault:
 ....
 ./run page_fault
 ....
+
+Source: link:page_fault.S[]
 
 Outcome:
 
@@ -1293,15 +1397,17 @@ From an interface point of view, I feel that memory mapped is more elegant: port
 
 TODO: are there performance considerations when designing CPUs?
 
-http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
+Bibliography: http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
 
 === PS/2 keyboard
+
+Whenever you press a key down or up, the keyboard hex scancode is printed to the screen:
 
 ....
 ./run ps2_keyboard
 ....
 
-Whenever you press a key down or up, the keyboard hex scancode is printed to the screen.
+Source: link:ps2_keyboard.S[]
 
 Uses the PS/2 keyboard controller on `in 60h`: http://wiki.osdev.org/%228042%22_PS/2_Controller
 
@@ -1312,7 +1418,7 @@ Scancode tables: TODO: official specs?
 * https://en.wikipedia.org/wiki/Scancode#PC_compatibles
 * http://flint.cs.yale.edu/cs422/doc/art-of-asm/pdf/APNDXC.PDF
 
-TODO do this with the interrupt table instead of `in`.
+TODO do this with the interrupt table instead of `in`. Failed attempt at: link:interrupt_keyboard.S[]
 
 === PS/2 mouse
 
@@ -1328,23 +1434,23 @@ I am so going to make a pixel drawing program with this.
 
 === RTC
 
-Real Time Clock:
+Real Time Clock: https://en.wikipedia.org/wiki/Real-time_clock
 
-* http://wiki.osdev.org/RTC
-* http://wiki.osdev.org/CMOS
-* https://en.wikipedia.org/wiki/Real-time_clock
+Get wall time with precision of seconds every second:
 
 ....
 ./run rtc
 ....
 
-Gives wall date and time with precision of seconds, every second, e.g.:
+Source: link:rtc.S[]
+
+Sample outcome:
 
 ....
 00 01 02 03 04 10
 ....
 
-means:
+which means:
 
 ____
 3rd April 2010, 02 hours 01 minute and 00 seconds.
@@ -1364,17 +1470,14 @@ The RTC cannot give accuracy greater than seconds. For that, consider the <<pit>
 
 Bibliography:
 
+* http://wiki.osdev.org/RTC
+* http://wiki.osdev.org/CMOS
 * http://stackoverflow.com/questions/1465927/how-can-i-access-system-time-using-nasm
 * https://github.com/torvalds/linux/blob/v4.2/arch/x86/kernel/rtc.c#L121
 
 === PIT
 
-Programmable Interval Timer:
-
-* https://en.wikipedia.org/wiki/Programmable_interval_timer
-* http://wiki.osdev.org/PIT
-* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
-* http://kernelx.weebly.com/programmable-interval-timer.html
+Programmable Interval Timer: https://en.wikipedia.org/wiki/Programmable_interval_timer
 
 Superseded by the <<hpet>>.
 
@@ -1384,11 +1487,15 @@ Print `a\n` with the minimal frequency possible of `0x1234DD / 0xFFFF = 18.2 Hz`
 ./run pit
 ....
 
+Source: link:pit.S[]
+
 Make the PIT generate a single interrupt instead of a frequency:
 
 ....
 ./run pit_once
 ....
+
+Source: link:pit_once.S[]
 
 Outcome:
 
@@ -1409,6 +1516,12 @@ The PIT 3 channels that can generate 3 independent signals
 * channel 2 at port `42h`: linked to the speaker to generate sounds
 
 Port `43h` is used to control signal properties except frequency, which goes in the channel ports, for the 3 channels.
+
+Bibliography:
+
+* http://wiki.osdev.org/PIT
+* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
+* http://kernelx.weebly.com/programmable-interval-timer.html
 
 ==== PIT frequency
 
@@ -1436,6 +1549,8 @@ http://wiki.osdev.org/PC_Speaker
 ....
 ./run pc_speaker
 ....
+
+Source: link:pc_speaker.S[]
 
 Outcome: produces a foul noisy noise using the PC speaker hardware on `out 61h`
 
@@ -1510,15 +1625,17 @@ http://wiki.osdev.org/Shutdown
 
 === Reboot
 
-http://stackoverflow.com/questions/32682152/how-to-reboot-in-x86-assembly-from-16-bit-real-mode
-
 Infinite reboot loop on emulator!
 
 ....
 ./run reboot
 ....
 
+Source: link:reboot.S[]
+
 TODO why does it work?
+
+Bibliography: http://stackoverflow.com/questions/32682152/how-to-reboot-in-x86-assembly-from-16-bit-real-mode
 
 === APM
 
@@ -1528,15 +1645,15 @@ Turn on and immediately shutdown the system closing QEMU:
 ./run apm_shutdown
 ....
 
+Source: link:apm_shutdown.S[]
+
 Fancier version copied from http://wiki.osdev.org/APM (TODO why is that better):
 
 ....
 ./run apm_shutdown2
 ....
 
-https://en.wikipedia.org/wiki/Advanced_Power_Management
-
-http://wiki.osdev.org/APM
+Source: link:apm_shutdown2.S[]
 
 Older than <<acpi>> and simpler.
 
@@ -1546,6 +1663,8 @@ Can't find the URL. A Google cache: https://www.google.com/url?sa=t&rct=j&q=&esr
 
 Bibliography:
 
+* https://en.wikipedia.org/wiki/Advanced_Power_Management
+* http://wiki.osdev.org/APM
 * http://wiki.osdev.org/Shutdown
 * http://stackoverflow.com/questions/21463908/x86-instructions-to-power-off-computer-in-real-mode
 * http://stackoverflow.com/questions/678458/shutdown-the-computer-using-assembly
@@ -1766,13 +1885,17 @@ This should serve as a decent basis for starting a pet OS. But please don't, the
 
 Tests for utilities defined in this repo, as opposed to x86 or external firmware concepts.
 
-TODO: implement: link:test_vga_print_bytes.S[]
+TODO: implement the function and enable this test: link:test_vga_print_bytes.S[]
 
 ==== PRINT_BYTES
+
+Print several bytes in human readable form:
 
 ....
 ./run test_print_bytes
 ....
+
+Source: link:test_print_bytes.S[]
 
 Outcome:
 
@@ -1784,11 +1907,21 @@ Outcome:
 
 ==== PIT_SLEEP_TICKS
 
+Print `a\n` with frequency 2Hz:
+
 ....
 ./run test_pit_sleep_ticks
 ....
 
-Outcome: print `a\n` with frequency 2Hz.
+Source: link:test_pit_sleep_ticks.S[]
+
+Same but in protected mode:
+
+....
+./run test_pit_sleep_protected
+....
+
+Source: link:test_pit_sleep_protected.S[]
 
 === Test hardware
 
@@ -1836,6 +1969,8 @@ But in the end, it increases the complexity that one has to understand, so we've
 cd nasm/
 ./run bios_hello_world
 ....
+
+Source: link:nasm/bios_hello_world.asm[]
 
 While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
 

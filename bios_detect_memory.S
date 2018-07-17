@@ -17,14 +17,13 @@ BEGIN
     PRINT_BYTES $output, <%ax>
     hlt
 
-/*
-This was copy pasted from:
-http://wiki.osdev.org/Detecting_Memory_%28x86%29#Getting_an_E820_Memory_Map
-
-use the INT 0x15, eax= 0xE820 BIOS function to get a memory map
-inputs: es:di -> destination buffer for 24 byte entries
-outputs: bp = entry count, trashes all registers except esi
-*/
+/* This was copy pasted from:
+ * http://wiki.osdev.org/Detecting_Memory_%28x86%29#Getting_an_E820_Memory_Map
+ *
+ * use the INT 0x15, eax= 0xE820 BIOS function to get a memory map
+ * inputs: es:di -> destination buffer for 24 byte entries
+ * outputs: bp = entry count, trashes all registers except esi
+ */
 do_e820:
         xorl %ebx,%ebx          # ebx must be 0 to start
         xorw %bp,%bp            # keep an entry count in bp

@@ -24,18 +24,17 @@ IDT_ENTRY
 IDT_END
 interrupt_handler:
     VGA_PRINT_STRING $message
-    /*
-    Mandatory because page faults push the error code to the stack.
-    If we don't do this, then the stack will be wrong for iret,
-    likely leading to a general fault exception:
-    http://stackoverflow.com/questions/10581224/why-does-iret-from-a-page-fault-handler-generate-interrupt-13-general-protectio/33398064#33398064
-    */
+    /* Mandatory because page faults push the error code to the stack.
+     *
+     * If we don't do this, then the stack will be wrong for iret,
+     * likely leading to a general fault exception:
+     * http://stackoverflow.com/questions/10581224/why-does-iret-from-a-page-fault-handler-generate-interrupt-13-general-protectio/33398064#33398064
+     */
     pop %eax
     VGA_PRINT_HEX_4 <%eax>
-    /*
-    Make the page present. because iret will return to before the mov,
-    and we'd get and infinite loop.
-    */
+    /* Make the page present. because iret will return to before the mov,
+     * and we'd get and infinite loop.
+     */
     orb $1, page_table
     iret
 message:

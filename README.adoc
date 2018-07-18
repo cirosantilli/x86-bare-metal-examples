@@ -1088,9 +1088,7 @@ a
 
 Example of the effect on a memory access of changing the segment base address.
 
-Without segment manipulation, the output would be just:
-
-TODO: cleanup and move into main README after we get the example working: link:segmentation.adoc[]
+Without segment manipulation, the output would be just: TODO
 
 ===== Segmentation introduction
 

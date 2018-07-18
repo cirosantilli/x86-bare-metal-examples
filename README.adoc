@@ -1617,10 +1617,6 @@ Have a look at the macros prefixed with `VGA_` inside link:common.h[].
 
 == Power
 
-=== Shutdown
-
-http://wiki.osdev.org/Shutdown
-
 === Reboot
 
 Infinite reboot loop on emulator!

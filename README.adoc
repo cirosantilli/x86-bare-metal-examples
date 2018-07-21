@@ -2127,21 +2127,7 @@ These are not meant as learning resources but rather as useful programs:
 
 === ARM
 
-Bare metal ARM stuff:
-
-* Generic:
-** https://stackoverflow.com/questions/38914019/how-to-make-bare-metal-arm-programs-and-run-them-on-qemu/50981397#50981397 generic QEMU question
-** link:https://github.com/freedomtan/aarch64-bare-metal-qemu/tree/2ae937a2b106b43bfca49eec49359b3e30eac1b1[]: `-M virt` UART bare metal hello world, nothing else, just works
-** https://github.com/bravegnu/gnu-eprog Not tested.
-** https://stackoverflow.com/questions/29837892/how-to-run-a-c-program-with-no-os-on-the-raspberry-pi/40063032#40063032 no QEMU restriction
-** https://github.com/cirosantilli/raspberry-pi-bare-metal-blinker minimal, but not very QEMU friendly however because hard to observe LED: https://raspberrypi.stackexchange.com/questions/56373/is-it-possible-to-get-the-state-of-the-leds-and-gpios-in-a-qemu-emulation-like-t
-* Raspberry PI:
-** https://raspberrypi.stackexchange.com/questions/34733/how-to-do-qemu-emulation-for-bare-metal-raspberry-pi-images/85135#85135 RPI3 specific
-** link:https://github.com/bztsrc/raspi3-tutorial[], getting started: https://raspberrypi.stackexchange.com/questions/34733/how-to-do-qemu-emulation-for-bare-metal-raspberry-pi-images/85135#85135
-** https://github.com/dwelch67/raspberrypi
-** https://github.com/BrianSidebotham/arm-tutorial-rpi
-* gem5:
-** https://github.com/tukl-msd/gem5.bare-metal bare metal UART example. Tested with: https://stackoverflow.com/questions/43682311/uart-communication-in-gem5-with-arm-bare-metal/50983650#50983650
+A list of ARM bare metal resources can be found at: https://github.com/cirosantilli/arm-assembly-cheat/tree/117f5d7d3458c028275ce112725f2e36f594f13c#bare-metal
 
 == LICENSE
 

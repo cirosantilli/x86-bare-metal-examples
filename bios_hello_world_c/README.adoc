@@ -1,0 +1,3 @@
+TODO not working.
+
+A single stage educational minimal C BIOS hello world example for: https://stackoverflow.com/questions/22054578/how-to-run-a-program-without-an-operating-system/32483545#32483545

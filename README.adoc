@@ -252,6 +252,14 @@ Source: link:c_hello_world[]
 
 Single stage, so still limited to 512 bytes of code + data!
 
+To disassemble the generated C code, try:
+
+....
+objdump -D -m i8086 main.elf
+....
+
+TODO: I see several `eax` references still, why?
+
 === No linker script
 
 Print `hello world` without using an explitic linker script:

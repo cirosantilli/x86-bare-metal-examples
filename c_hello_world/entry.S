@@ -2,5 +2,5 @@
 .text
 .global mystart
 mystart:
-    mov %sp, __stack_top
+    mov $__stack_top, %sp
     call main

@@ -165,6 +165,13 @@ TODO: detect if we are on 16 or 32 bit automatically from control registers. Now
 
 TODO: Take segmentation offsets into account: http://stackoverflow.com/questions/10354063/how-to-use-a-logical-address-in-gdb
 
+=== Build the documentation locally
+
+....
+make doc
+xdg-open README.html
+....
+
 == Minimal examples
 
 These are the first ones you should look at.
@@ -208,6 +215,8 @@ Go into an infinite loop instead of using `hlt`:
 ./run infinite_loop
 ....
 
+Source: link:infinite_loop.S[].
+
 The outcome if visibly the same, but TODO: it likely wastes more energy in real hardware?
 
 ==== Linker script
@@ -227,6 +236,21 @@ Print `hello world` after the firmware messages:
 ....
 
 Source: link:bios_hello_world.S[]
+
+==== C hello world
+
+TODO get working.
+
+Same output as <<bios-hello-world>>, but written in C:
+
+....
+cd c_hello_world
+./run
+....
+
+Source: link:c_hello_world[]
+
+Single stage, so still limited to 512 bytes of code + data!
 
 === No linker script
 

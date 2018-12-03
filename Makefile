@@ -1,6 +1,7 @@
 .POSIX:
 
 COMMON ?= common.h
+DOC_OUT = README.html
 LD ?= ld
 LINKER_SCRIPT ?= linker.ld
 # Use gcc so that the preprocessor will run first.
@@ -17,7 +18,7 @@ OUTS := $(sort $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(
 RUN_FILE := $(RUN)$(OUT_EXT)
 
 .PRECIOUS: %$(OBJ_EXT)
-.PHONY: all clean run
+.PHONY: all clean doc run
 
 all: $(OUTS)
 
@@ -36,7 +37,7 @@ all: $(OUTS)
 $(COMMON):
 
 clean:
-	rm -fr *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
+	rm -fr '$(DOC_OUT)' *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: $(RUN_FILE)
 	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2 -soundhw pcspk
@@ -72,3 +73,8 @@ big$(OUT_EXT): all
 	#printf "menuentry \"multiboot/hello-world\"  {\n   chainloader /boot/multiboot/hello-world.img\n}\n" >> '$(GRUB_DIR)/grub.cfg';\
 	#cp multiboot/hello-world/main.img '$(BOOT_DIR)/multiboot/hello-world.img'
 	grub-mkrescue -o '$@' '$(BIG_IMG_DIR)'
+
+doc: $(DOC_OUT)
+
+$(DOC_OUT): README.adoc
+	asciidoctor -o $@ -v $<

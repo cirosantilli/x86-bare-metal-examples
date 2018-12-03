@@ -6,4 +6,5 @@
 *.o
 *.so
 *.tmp
+/README.html
 tmp.S

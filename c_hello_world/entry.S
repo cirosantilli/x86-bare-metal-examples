@@ -1,6 +1,6 @@
+.code16
 .text
 .global mystart
 mystart:
-    mov %rsp, __stack_top
+    mov %sp, __stack_top
     call main
-    jmp .

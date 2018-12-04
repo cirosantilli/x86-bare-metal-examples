@@ -246,7 +246,7 @@ cd c_hello_world
 ./run
 ....
 
-Source: link:c_hello_world[]
+Source: link:c_hello_world/[]
 
 But keep in mind the following limitations and difficulties:
 

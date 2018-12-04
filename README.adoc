@@ -1730,6 +1730,8 @@ https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface
 
 Successor for <<bios>>.
 
+All <<test-hardware,laptops I tested BIOS with>> had UEFI, so UEFI must have a BIOS emulation mode for backwards compatibility: https://www.howtogeek.com/56958/htg-explains-how-uefi-will-replace-the-bios/
+
 Made by Intel, mostly MIT open source, which likely implies that vendors will hack away closed source versions.
 
 link:https://mjg59.dreamwidth.org/10014.html[Matthew Garrett says] it is huge: larger than Linux without drivers.
@@ -1966,9 +1968,15 @@ Source: link:test_pit_sleep_protected.S[]
 
 ==== ThinkPad T400
 
-Most of this repo was originally tested on a link:https://www.cnet.com/products/lenovo-thinkpad-t400/specs/[ThinkPad T400].
+Most of this repo was originally tested on a link:https://www.cnet.com/products/lenovo-thinkpad-t400/specs/[Lenovo ThinkPad T400].
 
 Unfortunately it broke and I threw it away, and I didn't write down the exact specs before doing so, notably the bootloader version.
+
+==== ThinkPad T430
+
+Then, when I moved to a new ThinkPad, I tested some of the examples on the link:https://www.cnet.com/products/lenovo-thinkpad-t400/specs/[Lenovo ThinkPad T430] I originally used to write this :-)
+
+Firmware: UEFI BIOS 1.16.
 
 == About
 

@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-draw-pixel */
+
 #include "common.h"
 BEGIN
     mov $0x0013, %ax

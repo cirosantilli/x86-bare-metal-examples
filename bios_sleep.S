@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-sleep */
+
 #include "common.h"
 BEGIN
     /* Must enable interrupts, since BIOS uses

@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-initial-state */
+
 #include "common.h"
 
 .macro INITIAL_STORE x

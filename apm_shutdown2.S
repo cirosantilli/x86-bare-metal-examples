@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#apm */
+
 #include "common.h"
 
 BEGIN

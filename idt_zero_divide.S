@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#idt-divide-by-zero */
+
 #include "common.h"
 BEGIN
     STAGE2

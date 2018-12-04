@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples# */
+
 /* Must be a multiple of 0x1000. */
 .equ STARTUP_CODE_ADDRESS, 0x1000
 .equ SPINLOCK_ADDRESS, 0x2000

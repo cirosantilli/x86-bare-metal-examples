@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-disk-load */
+
 #include "common.h"
 BEGIN
     CLEAR

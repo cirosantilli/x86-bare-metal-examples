@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#ps-2-keyboard */
+
 #include "common.h"
 BEGIN
     CLEAR

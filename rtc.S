@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples# */
+
 /* TODO what do those numbers mean? Where is this all documented? */
 .equ RTCaddress, 0x70
 .equ RTCdata, 0x71

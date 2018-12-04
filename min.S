@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#minimal-gas-example */
+
 /* Tell GAS to generate 16 bit code. */
 .code16
 

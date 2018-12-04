@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-clear-screen */
+
 #include "common.h"
 BEGIN
 

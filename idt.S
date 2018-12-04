@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#idt */
+
 #include "common.h"
 BEGIN
     STAGE2

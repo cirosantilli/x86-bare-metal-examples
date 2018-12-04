@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-hello-world */
+
 #include "common.h"
 BEGIN
     DBG

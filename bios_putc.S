@@ -1,3 +1,5 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#bios-examples */
+
 #include "common.h"
 BEGIN
 /* 40 == ASCII for '@'

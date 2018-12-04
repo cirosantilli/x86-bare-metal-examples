@@ -8,7 +8,9 @@ SECTIONS
     *(.data)
     *(.rodata)
     __bss_start = .;
+    /* COMMON vs BSS: https://stackoverflow.com/questions/16835716/bss-vs-common-what-goes-where */
     *(.bss)
+    *(COMMON)
     __bss_end = .;
   }
   /* https://stackoverflow.com/questions/53584666/why-does-gnu-ld-include-a-section-that-does-not-appear-in-the-linker-script */

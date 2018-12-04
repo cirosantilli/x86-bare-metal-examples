@@ -239,8 +239,6 @@ Source: link:bios_hello_world.S[]
 
 ==== C hello world
 
-TODO get working.
-
 Same output as <<bios-hello-world>>, but written in C:
 
 ....
@@ -250,7 +248,13 @@ cd c_hello_world
 
 Source: link:c_hello_world[]
 
-Single stage, so still limited to 512 bytes of code + data!
+But keep in mind the following limitations and difficulties:
+
+* single stage, so still limited to 512 bytes of code + data!
+* use use GCC's `-m` which does not produce "real" 16 bit code, but rather 32-bit code with `0x66` and `0x67` prefixes: https://wiki.osdev.org/X86-64_Instruction_Encoding#Legacy_Prefixes
+* setting up the initial state and the linker script is much harder and error prone than with assembly
+
+Therefore, for most applications, you will just want to use <<multiboot>> instead, which overcomes all of those problems.
 
 To disassemble the generated C code, try:
 
@@ -258,11 +262,20 @@ To disassemble the generated C code, try:
 objdump -D -m i8086 main.elf
 ....
 
-TODO: I see several `eax` references still, why?
+but note that it still contains references to 32-bit references, e.g.:
+
+....
+00007c17 <main>:
+    7c17:       66 55                   push   %ebp
+    7c19:       66 89 e5                mov    %esp,%ebp
+    7c1c:       66 83 ec 10             sub    $0x10,%esp
+....
+
+This is because those instructions are modified by the prefix `0x66`, which makes them behave like 32-bit.
 
 === No linker script
 
-Print `hello world` without using an explitic linker script:
+Print `hello world` without using an explicit linker script:
 
 ....
 make -C no-linker-script run

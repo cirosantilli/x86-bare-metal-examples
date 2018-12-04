@@ -2,5 +2,12 @@
 .text
 .global mystart
 mystart:
-    mov $__stack_top, %sp
+    ljmp $0, $.setcs
+.setcs:
+    xor %ax, %ax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %ss
+    mov $__stack_top, %esp
+    cld
     call main

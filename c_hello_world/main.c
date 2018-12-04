@@ -1,18 +1,11 @@
 void main(void) {
     int i;
-    char s[] = "hello world";
-    /* Add a bunch of debug prints to see if the control loop is correct. It is. */
-    __asm__ ("mov $0x0E40, %ax; int $0x10");
+    char s[] = {'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd'};
     for (i = 0; i < sizeof(s); ++i) {
-        __asm__ ("mov $0x0E41, %ax; int $0x10");
         __asm__ (
-            "mov %0, %%ax; int $0x10"
-            :
-            : "m" (s[i])
-            : "%ax"
+            "int $0x10" : : "a" ((0x0e << 8) | s[i])
         );
     }
-    __asm__ ("mov $0x0E40, %ax; int $0x10");
     while (1) {
         __asm__ ("hlt");
     };

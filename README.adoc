@@ -2174,6 +2174,7 @@ Not tested yet.
 +
 GAS based, no multiboot used.
 * https://github.com/littleosbook/littleosbook
+* https://github.com/cfenollosa/os-tutorial Include based.
 
 === Actually useful
 

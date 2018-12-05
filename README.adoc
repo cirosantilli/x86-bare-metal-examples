@@ -253,7 +253,7 @@ Source: link:c_hello_world/[]
 
 But keep in mind the following limitations and difficulties:
 
-* single stage, so still limited to 512 bytes of code + data! TODO: it should be easy to solve that with <<bios-disk-load>>, send a pull request :-)
+* single stage, so still limited to 512 bytes of code + data! TODO: it should be easy to solve that with <<bios-disk-load>>, send a pull request :-) Here is full example that we could also adapt: http://3zanders.co.uk/2017/10/18/writing-a-bootloader3
 * use use GCC's `-m` which does not produce "real" 16 bit code, but rather 32-bit code with `0x66` and `0x67` prefixes: https://wiki.osdev.org/X86-64_Instruction_Encoding#Legacy_Prefixes
 * setting up the initial state and the linker script is much harder and error prone than with assembly
 

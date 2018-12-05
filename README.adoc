@@ -2106,6 +2106,7 @@ Almost entirely in C `-nostdlib`, with very few inline `asm` commands, and a sma
 +
 Worked, but bad build system: not `Makefile` or `.gitignore`.
 * https://github.com/Overv/MineAssemble
+* https://github.com/nanochess/fbird Flappy bird in the 512-byte boot sector.
 
 The following did not work on my machine out of the box:
 

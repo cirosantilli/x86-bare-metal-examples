@@ -1993,7 +1993,7 @@ An overview of rings 0 and 3 can be found at: https://stackoverflow.com/question
 
 === One minimal concept per OS
 
-There are a few tutorials that explain how to make an operating system and give examples of increasing complexity with more and more functionality added.
+There are a few tutorials that explain how to make an operating system and give examples of increasing complexity with more and more functionality added: <<progressive-tutorials>>.
 
 This is not one of them.
 
@@ -2003,7 +2003,7 @@ This is not meant provide a template from which you can write a real OS, but ins
 
 Minimal examples are useful because it is easier to observe the requirements for a given concept to be observable.
 
-Another advantage is that it is easier to DRY up minimal examples (here done simply through `#include` and macros), which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
+Another advantage is that it is easier to DRY up minimal examples with macros or functions, which is much harder on progressive OS template tutorials, which tend to repeat big chunks of code between the examples.
 
 === To C or not to C
 
@@ -2011,24 +2011,9 @@ Using C or not is a hard choice.
 
 It does make it much easier to express higher level ideas, and gives portability.
 
-But in the end, it increases the complexity that one has to understand, so we've stayed away from it.
+However, it increases the complexity that one has to understand a bit, so I decided to stay away from it when I wrote this tutorial.
 
-=== NASM
-
-....
-cd nasm/
-./run bios_hello_world
-....
-
-Source: link:nasm/bios_hello_world.asm[]
-
-While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
-
-When writing an OS in C, we are going to use GCC, which already uses GAS. So it's better to reduce the number of assemblers to one and stick to GAS only.
-
-Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
-
-On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
+Maybe we should just rewrite everything in C based on <<c-hello-world>>.
 
 === Macros vs functions
 
@@ -2046,6 +2031,8 @@ The problem is that if I don't, every image will need a stage 2 loader. That is 
 +
 It seems that `ld` can only remove sections, not individual symbols: http://stackoverflow.com/questions/6687630/c-c-gcc-ld-remove-unused-symbols With GCC we can use `-ffunction-sections -fdata-sections` to quickly generate a ton of sections, but I don't thing GAS supports that...
 
+We should just rewrite the whole thing to use functions instead...
+
 ==== Macro conventions
 
 Every "function-like macro" in link:common.h[] must maintain the state of general purpose registers.
@@ -2055,6 +2042,23 @@ Flags are currently not maintained.
 `%sp` cannot be used to pass most arguments.
 
 We don't care about setting `%bp` properly at the moment.
+
+=== NASM
+
+....
+cd nasm/
+./run bios_hello_world
+....
+
+Source: link:nasm/bios_hello_world.asm[]
+
+While NASM is a bit more convenient than GAS to write a boot sector, I think it is just not worth it.
+
+When writing an OS in C, we are going to use GCC, which already uses GAS. So it's better to reduce the number of assemblers to one and stick to GAS only.
+
+Right now, this directory is not very DRY since NASM is secondary to me, so it contains mostly some copy / paste examples.
+
+On top of that, GAS also supports other architectures besides x86, so learning it is more useful in that sense.
 
 === Linux is open source
 
@@ -2142,27 +2146,55 @@ One complexity order above the minimal tutorials, one below actual kernels
 
 === Progressive tutorials
 
-* https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
-+
-Has one big source tree that goes up to multitasking and a stdlib. Kernel written C++ and stdlib in C. TODO 64-bit, ring 0 vs ring 3?
-* https://github.com/cfenollosa/os-tutorial Include based.
-+
-Starts with raw assembly, moves to C midway.
-+
-Raw stage-2 loader. No task scheduling yet, but the feature is... "scheduled" ;-)
-* http://www.jamesmolloy.co.uk/tutorial_html/index.html
-+
-Highly recommended.
-+
+==== jamesmolloy
+
+http://www.jamesmolloy.co.uk/tutorial_html/index.html
+
+The classic tutorial. Highly recommended.
+
 Multiboot based kernels of increasing complexity, one example builds on the last one. Non DRY as a result.
-+
+
 Cleaned up source code: https://github.com/cirosantilli/jamesmolloy-kernel-development-tutorials
-+
+
 Well known bugs: http://wiki.osdev.org/James_Molloy's_Tutorial_Known_Bugs That's what happens when you don't use GitHub.
-+
+
 Good tutorials, author seems to master the subject.
-+
+
 But he could learn more about version control and build automation: source code inside ugly tar.gz with output files.
+
+==== cfenollosa/os-tutorial
+
+https://github.com/cfenollosa/os-tutorial
+
+Ubuntu 18.04 usage: apply this patch https://github.com/cfenollosa/os-tutorial/pull/100 and then:
+
+....
+cd 23-fixes
+make run
+....
+
+Starts with raw assembly + inludes, moves to C midway.
+
+Raw stage-2 loader. No task scheduling yet, but the feature is... "scheduled" ;-)
+
+Explains how to use the QEMU GDB stub and automates it on makefile, kudos.
+
+Reviewed at: 7aff64740e1e3fba9a64c30c5cead0f88514eb62
+
+==== SamyPesse/How-to-Make-a-Computer-Operating-System
+
+https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
+
+Has one big source tree that goes up to multitasking and a stdlib. Kernel written C++ and stdlib in C. TODO 64-bit, ring 0 vs ring 3?
+
+Build failed on Ubunbu 18.04 with: https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System/issues/127 and I didn't bother to investigate.
+
+Does have a `lucid32` Vagrant file for the host, but lazy to try it out.
+
+Reviewed at: eb30f8802fac9f0f1c28d3a96bb3d402bdfc4687
+
+==== Other progressive tutorials
+
 * https://sourceforge.net/p/oszur11/code/ci/master/tree/
 +
 GitHub mirror: https://github.com/cirosantilli/oszur11-operating-system-examples

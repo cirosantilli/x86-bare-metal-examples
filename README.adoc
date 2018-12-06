@@ -2142,6 +2142,14 @@ One complexity order above the minimal tutorials, one below actual kernels
 
 === Progressive tutorials
 
+* https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
++
+Has one big source tree that goes up to multitasking and a stdlib. Kernel written C++ and stdlib in C. TODO 64-bit, ring 0 vs ring 3?
+* https://github.com/cfenollosa/os-tutorial Include based.
++
+Starts with raw assembly, moves to C midway.
++
+Raw stage-2 loader. No task scheduling yet, but the feature is... "scheduled" ;-)
 * http://www.jamesmolloy.co.uk/tutorial_html/index.html
 +
 Highly recommended.
@@ -2164,7 +2172,6 @@ Several examples of increasing complexity. Found at: http://stackoverflow.com/qu
 Just works, but examples are non-minimal, lots of code duplication and blobs. There must be around 20 El Torito blobs in that repo.
 +
 Multiboot based.
-* https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
 * http://www.brokenthorn.com/Resources/OSDevIndex.html
 * http://skelix.net/skelixos/index_en.html
 +
@@ -2174,7 +2181,6 @@ Not tested yet.
 +
 GAS based, no multiboot used.
 * https://github.com/littleosbook/littleosbook
-* https://github.com/cfenollosa/os-tutorial Include based.
 
 === Actually useful
 

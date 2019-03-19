@@ -1763,7 +1763,9 @@ TODO get a hello world program working:
 
 Running without image gives the UEFI shell, and a Linux kernel image booted fine with it: link:http://unix.stackexchange.com/a/228053/32558[], so we just need to generate the image.
 
-The blob `uefi/ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download TODO: automate building it from source instead, get rid of the blob, and force push it away from history. It seems that they have moved to GitHub at last: https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF/e372aa54750838a7165b08bb02b105148e2c4190
+The blob `uefi/ovmf.fd` IA32 r15214 was downloaded from: https://sourceforge.net/projects/edk2/files/OVMF/OVMF-IA32-r15214.zip/download TODO: automate building it from source instead, get rid of the blob, and force push it away from history. Working build setup sketch: https://github.com/cirosantilli/linux-cheat/blob/b1c3740519eff18a7707de981ee3afea2051ba10/ovmf.sh
+
+It seems that they have moved to GitHub at last: https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF/e372aa54750838a7165b08bb02b105148e2c4190
 
 === UEFI Bibliography
 

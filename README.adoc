@@ -691,6 +691,34 @@ Open source x86 BIOS implementation.
 
 Default BIOS for QEMU and KVM.
 
+== No BIOS
+
+Here we will collect some examples that do stuff without using the BIOS!
+
+These tend to be less portable, not sure they will work on real hardware. But they were verified in QEMU.
+
+=== No BIOS hello world
+
+....
+./run no_bios_hello_world
+....
+
+Source: link:no_bios_hello_world.S[]
+
+Outcome:
+
+....
+hello world
+....
+
+with red foreground and blue background shows on the top left of the cleared screen.
+
+This example uses the fact that BIOS maps video memory to address 0xB8000.
+
+We can then move 0xB800 to a segment register and use segment:offset addressing to access this memory.
+
+Then we can show characters by treating `0xB800:0000` as a `uint16_t` array, where low 8 bytes is the ASCII character, and the high 8 bytes is the color attribute of this character.
+
 == Modes of operation
 
 The x86 processor has a few modes, which have huge impact on how the processor works.

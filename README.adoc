@@ -695,7 +695,13 @@ Default BIOS for QEMU and KVM.
 
 Here we will collect some examples that do stuff without using the BIOS!
 
-These tend to be less portable, not sure they will work on real hardware. But they were verified in QEMU.
+These tend to be less portable, not sure they will work on real hardware.
+
+Also they might need to rely on undocumented features.
+
+But they were verified in QEMU.
+
+If you are serious about this, study <<coreboot>>.
 
 === No BIOS hello world
 
@@ -1431,6 +1437,16 @@ TODO vs <<protected-mode>>.
 === 64-bit mode
 
 64-bit is the major mode of operation, and enables the full 64 bit instructions.
+
+There are currently no examples in this repo because I was lazy to make them.
+
+As someone once brilliantly put it: https://twitter.com/garybernhardt/status/1106255947138125824
+
+____
+Watching an x86-64 CPU boot is like watching an amoeba slowly evolve into a dog.
+____
+
+The backward compatibility of x86 is mind boggling.
 
 === Compatibility mode
 
@@ -2215,7 +2231,7 @@ Reviewed at: 7aff64740e1e3fba9a64c30c5cead0f88514eb62
 
 https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System
 
-Has one big source tree that goes up to multitasking and a stdlib. Kernel written C++ and stdlib in C. TODO 64-bit, ring 0 vs ring 3?
+Has one big source tree that goes up to multitasking and a stdlib. Kernel written C++ and stdlib in C. TODO check: 64-bit, ring 0 vs ring 3? `git grep rax`  has no hits, so I'm guessing no 64-bit.
 
 Build failed on Ubunbu 18.04 with: https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System/issues/127 and I didn't bother to investigate.
 

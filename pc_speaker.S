@@ -1,4 +1,4 @@
-/* https://github.com/cirosantilli/x86-bare-metal-examples# */
+/* https://github.com/cirosantilli/x86-bare-metal-examples#pc-speaker */
 
 #include "common.h"
 

@@ -210,6 +210,16 @@ Source: link:min.S[]
 
 Outcome: QEMU window opens up, prints a few firmware messages, and hangs.
 
+Here is an equivalent example using our mini-library:
+
+....
+./run template
+....
+
+Source: link:template.S[]
+
+You can use that file as a quick template to start new tests.
+
 ==== Infinite loop
 
 Go into an infinite loop instead of using `hlt`:
@@ -1489,6 +1499,7 @@ TODO: are there performance considerations when designing CPUs?
 
 Bibliography: http://superuser.com/questions/703695/difference-between-port-mapped-and-memory-mapped-access
 
+[[ps2-keyboard]]
 === PS/2 keyboard
 
 Whenever you press a key down or up, the keyboard hex scancode is printed to the screen:

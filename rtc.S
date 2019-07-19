@@ -1,4 +1,4 @@
-/* https://github.com/cirosantilli/x86-bare-metal-examples# */
+/* https://github.com/cirosantilli/x86-bare-metal-examples#rct */
 
 /* TODO what do those numbers mean? Where is this all documented? */
 .equ RTCaddress, 0x70

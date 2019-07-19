@@ -1,4 +1,4 @@
-/* https://github.com/cirosantilli/x86-bare-metal-examples# */
+/* https://github.com/cirosantilli/x86-bare-metal-examples#smp */
 
 /* Must be a multiple of 0x1000. */
 .equ STARTUP_CODE_ADDRESS, 0x1000

@@ -2070,7 +2070,9 @@ It does make it much easier to express higher level ideas, and gives portability
 
 However, it increases the complexity that one has to understand a bit, so I decided to stay away from it when I wrote this tutorial.
 
-Maybe we should just rewrite everything in C based on <<c-hello-world>>.
+But I have since change my mind, and if I ever touch this again seriously, I would rewrite it in C based on <<c-hello-world>> and Newlib: https://electronics.stackexchange.com/questions/223929/c-standard-libraries-on-bare-metal/400077#400077
+
+If this is done, we this repo should then be merged into: https://github.com/cirosantilli/linux-kernel-module-cheat/tree/87e846fc1f9c57840e143513ebd69c638bd37aa8#baremetal-setup together with the ARM Newlib baremetal setups present there.
 
 === Macros vs functions
 

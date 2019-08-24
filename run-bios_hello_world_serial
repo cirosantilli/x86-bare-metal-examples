@@ -1,2 +1,0 @@
-make
-bochs -qf /dev/null 'ata0-master: type=disk, path="bios_hello_world_serial.img", mode=flat, cylinders='"$CYLINDERS"', heads=1, spt=1' 'boot: disk' 'display_library: x' 'megs: 128'   'com1: enabled=1, mode=file, dev=serial.out' 'vgaromimage: file=/dev/null'

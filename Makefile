@@ -12,11 +12,12 @@ OBJ_EXT ?= .o
 OUT_EXT ?= .img
 QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
+RUN_SERIAL ?= bios_hello_world_serial
 TMP_EXT ?= .tmp
 
 OUTS := $(sort $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT)))))
 RUN_FILE := $(RUN)$(OUT_EXT)
-
+RUN_FILE_SERIAL := $(RUN_SERIAL)$(OUT_EXT)
 .PRECIOUS: %$(OBJ_EXT)
 .PHONY: all clean doc run
 
@@ -56,6 +57,19 @@ bochs: $(RUN_FILE)
 		'boot: disk' \
 		'display_library: sdl' \
 		'megs: 128'
+
+bochs_serial: $(RUN_FILE_SERIAL)
+	# Supposes size is already multiples of 512.
+	# We force that with our linker script,
+	# and `grub-mkrescue` also seems to respect it as well.
+	CYLINDERS="$$(($$(stat -c '%s' '$(RUN_FILE_SERIAL)') / 512))" && \
+	bochs -qf /dev/null \
+		'ata0-master: type=disk, path="$(RUN_FILE_SERIAL)", mode=flat, cylinders='"$$CYLINDERS"', heads=1, spt=1' \
+		'boot: disk' \
+		'display_library: x' \
+		'megs: 128'\
+		'com1: enabled=1, mode=file, dev=serial.out'
+
 
 BIG_IMG_DIR := big_img$(TMP_EXT)
 BOOT_DIR := $(BIG_IMG_DIR)/boot

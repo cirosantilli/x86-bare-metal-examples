@@ -180,15 +180,21 @@ It should also be possible to run a GUI inside the container, but I haven't test
 
 === GDB step debug
 
-TODO get it working nicely:
+To GDB step debug the program, run it with:
 
 ....
 ./run bios_hello_world debug
 ....
 
-This will only cover specifics, you have to know GDB debugging already.
+This will leave you at the very first instruction executed by QEMU, which is the beginning of our `BEGIN` macro.
 
-How to have debug symbols: https://stackoverflow.com/questions/32955887/how-to-disassemble-16-bit-x86-boot-sector-code-in-gdb-with-x-i-pc-it-gets-tr/32960272#32960272 TODO implement here. Needs to point GDB to an ELF file in addition to the remote listen.
+You can then basically debug as you would a normal userland program, notably:
+
+* I then highly recommend that you use https://github.com/cyrus-and/gdb-dashboard[GDB Dashboard] to see what is going on.
+* `n` skips over macros
+* `ni` steps within macros. But you will need to enable the printing of assembly code on GDB Dashboard to see where you are at
+
+Debug symbols are obtained by first linking ELF files, and then using `objcopy` on them to generate the final image. We then pass the ELF files with the debug information to GDB:  https://stackoverflow.com/questions/32955887/how-to-disassemble-16-bit-x86-boot-sector-code-in-gdb-with-x-i-pc-it-gets-tr/32960272#32960272
 
 How to step over `int` calls: http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q
 
@@ -2104,6 +2110,38 @@ But I have since change my mind, and if I ever touch this again seriously, I wou
 
 If this is done, we this repo should then be merged into: https://github.com/cirosantilli/linux-kernel-module-cheat/tree/87e846fc1f9c57840e143513ebd69c638bd37aa8#baremetal-setup together with the ARM Newlib baremetal setups present there.
 
+=== Serial UART
+
+What the heck is a serial in the real world: https://unix.stackexchange.com/questions/307390/what-is-the-difference-between-ttys0-ttyusb0-and-ttyama0-in-linux/367882#367882
+
+Currently all text output is done the display, and that was a newbie design choice from before I knew the serial existed. The serial is just generally more minimal and elegant than the display, and should have been used instead.
+
+TODO: get working on QEMU, working on Bochs:
+
+....
+./run bios_hello_world_serial bochs
+cat bios_hello_world_serial.tmp.serial
+....
+
+The file content:
+
+....
+hello world
+....
+
+Source: link:bios_hello_world_serial.S[]
+
+Bibliography:
+
+* https://stackoverflow.com/questions/22571379/intel-galileo-bare-metal-uart
+* https://stackoverflow.com/questions/27594297/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall
+
+This would open up:
+
+* gem5 benchmarking and exploration, currently blocked on https://stackoverflow.com/questions/50364863/how-to-get-graphical-gui-output-and-user-touch-keyboard-mouse-input-in-a-ful/50364864#50364864
+* automated unit tests. Ha, like I'm gonna be that diligent!
+* easily working on ARM in a more uniform way
+
 === Macros vs functions
 
 Using macros for now on link:common.h[] instead of functions because it simplifies the linker script.
@@ -2164,35 +2202,6 @@ Knowing the following will help a lot:
 * GDB debugging
 
 While it is possible to learn those topics as you go along, and it is almost certain that you will end up learning more about them, we will not explain them here in detail.
-
-== TODO
-
-=== Serial UART
-
-TODO: get working on QEMU, working on Bochs:
-
-....
-./run bios_hello_world_serial bochs
-cat bios_hello_world_serial.tmp.serial
-....
-
-File content:
-
-....
-hello world
-....
-
-Source: link:bios_hello_world_serial.S[]
-
-Bibliography:
-
-* https://stackoverflow.com/questions/22571379/intel-galileo-bare-metal-uart
-* https://stackoverflow.com/questions/27594297/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall
-
-This would open up:
-
-* gem5 benchmarking and exploration, currently blocked on https://stackoverflow.com/questions/50364863/how-to-get-graphical-gui-output-and-user-touch-keyboard-mouse-input-in-a-ful/50364864#50364864
-* automated unit tests. Ha, like I'm gonna be that dilligent!
 
 == Bibliography
 

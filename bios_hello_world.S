@@ -2,7 +2,6 @@
 
 #include "common.h"
 BEGIN
-    DBG
     mov $msg, %si
     mov $0x0e, %ah
 loop:

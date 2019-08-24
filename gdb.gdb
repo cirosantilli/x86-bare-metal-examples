@@ -14,13 +14,7 @@ end
 break *0x7c00
 continue
 
-# Magic address. Add a:
-#
-#     mov %ax, 0x9000
-#
-# to your program to break there. Shortcut macro on common.h:
-#
-#     DBG
+# https://cirosantilli.com/x86-bare-metal-examples#gdb-step-debug
 awatch *0x9000
 commands
     silent

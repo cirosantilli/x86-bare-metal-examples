@@ -1,14 +1,17 @@
 #include "common.h"
 BEGIN
-    DBG
-   mov $0x00, %ah// Initialize COM port
-   mov $0xe3, %al// Initialization value
-   mov $0x00, %dx// Port number
-   int $0x14
-   mov $msg, %si
+    /* Initialize COM port. */
+    mov $0x00, %ah
+    /* Initialization value. */
+    mov $0xe3, %al
+    /* Port number. */
+    mov $0x00, %dx
+    int $0x14
+    mov $msg, %si
 loop:
     lodsb
-    mov $0x01, %ah//Send value 
+    /* Send value */
+    mov $0x01, %ah
     or %al, %al
     jz halt
     int $0x14
@@ -16,4 +19,4 @@ loop:
 halt:
     hlt
 msg:
-.asciz "hello World!\n"
+    .asciz "hello world\n"

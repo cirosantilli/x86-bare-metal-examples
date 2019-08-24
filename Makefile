@@ -55,6 +55,7 @@ bochs: $(RUN_FILE)
 	CYLINDERS="$$(($$(stat -c '%s' '$(RUN_FILE)') / 512))" && \
 	bochs -qf /dev/null \
 		'ata0-master: type=disk, path="$(RUN_FILE)", mode=flat, cylinders='"$$CYLINDERS"', heads=1, spt=1' \
+		'com1: enabled=1, mode=file, dev=$(RUN).tmp.serial' \
 		'boot: disk' \
 		'display_library: sdl2' \
 		'megs: 128'

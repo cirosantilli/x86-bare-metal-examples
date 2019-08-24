@@ -68,6 +68,11 @@ Then on the terminal start the simulation with:
 c
 ....
 
+To quit Bochs either:
+
+* press the poweroff button inside its GUI
+* Ctrl + C on terminal and the type `quit` and hit enter
+
 TODO: automate this step.
 
 Bibliography: https://stackoverflow.com/questions/6142925/how-can-i-use-bochs-to-run-assembly-code/32871939#32871939
@@ -2163,6 +2168,23 @@ While it is possible to learn those topics as you go along, and it is almost cer
 == TODO
 
 === Serial UART
+
+TODO: get working on QEMU, working on Bochs:
+
+....
+./run bios_hello_world_serial bochs
+cat bios_hello_world_serial.tmp.serial
+....
+
+File content:
+
+....
+hello world
+....
+
+Source: link:bios_hello_world_serial.S[]
+
+Bibliography:
 
 * https://stackoverflow.com/questions/22571379/intel-galileo-bare-metal-uart
 * https://stackoverflow.com/questions/27594297/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall

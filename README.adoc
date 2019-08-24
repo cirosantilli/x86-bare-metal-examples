@@ -57,6 +57,8 @@ Use Bochs instead of QEMU:
 ./run bios_hello_world bochs
 ....
 
+TODO broken on Ubuntu 19.04. Not sure I care: https://github.com/cirosantilli/x86-bare-metal-examples/issues/9
+
 Then on the terminal start the simulation with:
 
 ....

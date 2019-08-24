@@ -3,5 +3,11 @@ img="${1:-}"
 if [ -n "$img" ]; then
   img="RUN=${img%.*}"
 fi
-type="${2:-run}"
-make "${type}" $img
+shift
+if [ $# -ge 1 ]; then
+  type="$1"
+  shift
+else
+  type=run
+fi
+make RUN_ARGS="$*" "${type}" "${img}"

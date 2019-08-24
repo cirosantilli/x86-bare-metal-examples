@@ -12,6 +12,7 @@ OBJ_EXT ?= .o
 OUT_EXT ?= .img
 QEMU ?= qemu-system-i386
 RUN ?= bios_hello_world
+RUN_ARGS ?= -soundhw pcspk
 TMP_EXT ?= .tmp
 
 OUTS := $(sort $(foreach IN_EXT,$(NASM_EXT) $(GAS_EXT),$(patsubst %$(IN_EXT),%$(OUT_EXT),$(wildcard *$(IN_EXT)))))
@@ -40,7 +41,7 @@ clean:
 	rm -fr '$(DOC_OUT)' *$(OBJ_EXT) *$(OUT_EXT) *$(TMP_EXT)
 
 run: $(RUN_FILE)
-	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2 -soundhw pcspk
+	$(QEMU) -drive 'file=$(RUN_FILE),format=raw' -smp 2 $(RUN_ARGS)
 
 debug: $(RUN_FILE)
 	$(QEMU) -hda '$(RUN_FILE)' -S -s &

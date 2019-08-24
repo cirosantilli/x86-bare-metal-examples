@@ -159,7 +159,7 @@ make
 To overcome the lack of GUI, we can use QEMU's VNC implementation instead of the default SDL, which is visible on the host due to `--net=host`:
 
 ....
-qemu-system-i386 -hda bios_hello_world.img -vnc :0
+./run bios_hello_world run -vnc :0
 ....
 
 and then on host:
@@ -168,6 +168,10 @@ and then on host:
 sudo apt-get install vinagre
 vinagre localhost:5900
 ....
+
+TODO: get sound working from docker: <<pc-speaker>>: https://stackoverflow.com/questions/41083436/how-to-play-sound-in-a-docker-container
+
+It should also be possible to run a GUI inside the container, but I haven't tested: https://stackoverflow.com/questions/40658095/how-to-open-ubuntu-gui-inside-a-docker-image/57636624#57636624
 
 === GDB step debug
 

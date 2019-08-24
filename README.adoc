@@ -186,13 +186,52 @@ To GDB step debug the program, run it with:
 ./run bios_hello_world debug
 ....
 
-This will leave you at the very first instruction executed by QEMU, which is the beginning of our `BEGIN` macro.
+This will leave you at the very first instruction executed by our program, which is the beginning of our `BEGIN` macro.
+
+Note however that this is not the very first instruction QEMU executes: that will actually be BIOS setup code that runs before our program itself.
 
 You can then basically debug as you would a normal userland program, notably:
 
 * I then highly recommend that you use https://github.com/cyrus-and/gdb-dashboard[GDB Dashboard] to see what is going on.
 * `n` skips over macros
 * `ni` steps within macros. But you will need to enable the printing of assembly code on GDB Dashboard to see where you are at
+
+With this God-like GDB Dashboard setup, at 89cbe7be83f164927caebc9334bc42990e499cb1 I see a perfect program view such as:
+
+....
+ 1 /* https://github.com/cirosantilli/x86-bare-metal-examples#bios-hello-world */
+ 2
+ 3 #include "common.h"
+ 4 BEGIN
+ 5     mov $msg, %si
+ 6     mov $0x0e, %ah
+ 7 loop:
+ 8     lodsb
+ 9     or %al, %al
+10     jz halt
+11     int $0x10
+12     jmp loop
+─── Assembly ────────────────────────────────────────────────────────────────────────────
+0x00007c00 __start+0  cli
+0x00007c01 __start+1  ljmp   $0xc031,$0x7c06
+0x00007c08 __start+8  mov    %eax,%ds
+0x00007c0a __start+10 mov    %eax,%es
+0x00007c0c __start+12 mov    %eax,%fs
+0x00007c0e __start+14 mov    %eax,%gs
+0x00007c10 __start+16 mov    %eax,%ebp
+0x00007c12 __start+18 mov    %eax,%ss
+0x00007c14 __start+20 mov    %ebp,%esp
+─── Registers ───────────────────────────────────────────────────────────────────────────
+   eax 0x0000aa55    ecx 0x00000000    edx 0x00000080    ebx 0x00000000    esp 0x00006f04
+   ebp 0x00000000    esi 0x00000000    edi 0x00000000    eip 0x00007c00 eflags [ IF ]    
+    cs 0x00000000     ss 0x00000000     ds 0x00000000     es 0x00000000     fs 0x00000000
+    gs 0x00000000
+─── Stack ───────────────────────────────────────────────────────────────────────────────
+[0] from 0x00007c00 in __start+0 at bios_hello_world.S:4
+(no arguments)
+─────────────────────────────────────────────────────────────────────────────────────────
+>>>
+....
 
 Debug symbols are obtained by first linking ELF files, and then using `objcopy` on them to generate the final image. We then pass the ELF files with the debug information to GDB:  https://stackoverflow.com/questions/32955887/how-to-disassemble-16-bit-x86-boot-sector-code-in-gdb-with-x-i-pc-it-gets-tr/32960272#32960272
 

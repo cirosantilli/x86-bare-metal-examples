@@ -54,7 +54,7 @@ bochs: $(RUN_FILE)
 	bochs -qf /dev/null \
 		'ata0-master: type=disk, path="$(RUN_FILE)", mode=flat, cylinders='"$$CYLINDERS"', heads=1, spt=1' \
 		'boot: disk' \
-		'display_library: sdl' \
+		'display_library: sdl2' \
 		'megs: 128'
 
 BIG_IMG_DIR := big_img$(TMP_EXT)

@@ -38,9 +38,14 @@ Run the default OS on QEMU:
 Run a given OS:
 
 ....
-./run min
+./run bios_hello_world
 ./run bios_putc
 ....
+
+Examples described at:
+
+* <<bios-examples>>
+* <<bios-hello-world>>
 
 Extensions are ignored for perfect tab completion, so all the following are equivalent:
 
@@ -57,15 +62,15 @@ Use Bochs instead of QEMU:
 ./run bios_hello_world bochs
 ....
 
-TODO broken on Ubuntu 19.04. Not sure I care: https://github.com/cirosantilli/x86-bare-metal-examples/issues/9
-
 Then on the terminal start the simulation with:
 
 ....
 c
 ....
 
-https://stackoverflow.com/questions/6142925/how-can-i-use-bochs-to-run-assembly-code/32871939#32871939
+TODO: automate this step.
+
+Bibliography: https://stackoverflow.com/questions/6142925/how-can-i-use-bochs-to-run-assembly-code/32871939#32871939
 
 === Getting started with real hardware
 

@@ -13,10 +13,3 @@ end
 
 break *0x7c00
 continue
-
-# https://cirosantilli.com/x86-bare-metal-examples#gdb-step-debug
-awatch *0x9000
-commands
-    silent
-    printf "0x9000 awatch access debug break\n"
-end

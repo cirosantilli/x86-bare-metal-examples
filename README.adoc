@@ -9,7 +9,7 @@
 :toclevels: 6
 :toc-title:
 
-Dozens of minimal operating systems to learn x86 system programming. Tested on Ubuntu 17.10 host in QEMU 2.10 and <<test-hardware,real hardware>>. Userland cheat at: https://github.com/cirosantilli/linux-kernel-module-cheat#userland-assembly ARM baremetal setup at: https://github.com/cirosantilli/linux-kernel-module-cheat#baremetal-setup
+Dozens of minimal operating systems to learn x86 system programming. Tested on Ubuntu 18.04 host in QEMU 2.11 and <<test-hardware,real hardware>>. Userland cheat at: https://github.com/cirosantilli/linux-kernel-module-cheat#userland-assembly ARM baremetal setup at: https://github.com/cirosantilli/linux-kernel-module-cheat#baremetal-setup
 
 :logo: logo.jpg
 link:{logo}[image:{logo}[]]
@@ -125,27 +125,41 @@ TODO: boot sectors that load STAGE2 are not working with the big image chainload
 
 === Getting started with Docker
 
-If you don't have an Ubuntu box, this is an easy alternative:
+If you don't have an Ubuntu box, this is an easy alternative, for the first run:
 
 ....
-sudo docker run -it --net=host ubuntu:14.04 bash
+sudo docker run --interactive --tty --name xbme --net=host ubuntu:18.04 bash
+....
+
+and the following runs:
+
+....
+sudo docker start xbme
+sudo docker exec --interactive --tty xbme bash
+sudo docker stop xbme
+....
+
+and to nuke the container later on:
+
+....
+# sudo docker rm xbme
 ....
 
 Then proceed normally in the guest: install packages, and build:
 
 ....
-apt-get update
-apt-get install git
-git clone https://github.com/cirosantilli/x86-bare-metal-examples
-cd x86-bare-metal-examples
-./configure
+apt-get update && \
+apt-get install -y git && \
+git clone https://github.com/cirosantilli/x86-bare-metal-examples && \
+cd x86-bare-metal-examples && \
+./configure -y && \
 make
 ....
 
 To overcome the lack of GUI, we can use QEMU's VNC implementation instead of the default SDL, which is visible on the host due to `--net=host`:
 
 ....
-qemu-system-i386 -hda main.img -vnc :0
+qemu-system-i386 -hda bios_hello_world.img -vnc :0
 ....
 
 and then on host:

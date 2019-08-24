@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
-#
+
 # grub-pc-bin: without it, grub-mkrescue just fails, and you have no idea why!
 # We love you, GRUB.
 # https://superuser.com/questions/603051/grub-mkrescue-not-producing-bootable-image/973021#973021
 # https://github.com/cirosantilli/x86-bare-metal-examples/issues/5#issuecomment-377948357
 # https://wiki.osdev.org/Bare_Bones
-#
-sudo apt-get install \
+
+if [ $# -eq 1 ]; then
+  sudo=
+  y=-y
+else
+  sudo=sudo
+  y=
+fi
+$sudo apt-get install $y \
   bochs \
   bochs-sdl \
   build-essential \
+  gcc \
   gcc-multilib \
   gdb \
   gnu-efi \
-  grub \
   grub-pc-bin \
+  make \
   nasm \
   qemu \
   xorriso\

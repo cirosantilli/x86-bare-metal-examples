@@ -2116,17 +2116,22 @@ What the heck is a serial in the real world: https://unix.stackexchange.com/ques
 
 Currently all text output is done the display, and that was a newbie design choice from before I knew the serial existed. The serial is just generally more minimal and elegant than the display, and should have been used instead.
 
-TODO: get working on QEMU, working on Bochs:
+....
+./run bios_hello_world_serial
+cat bios_hello_world_serial.tmp.serial
+....
+
+On QEMU, we see the serial output on the host terminal:
+
+....
+hello world
+....
+
+and on Bochs we redirect it to a file:
 
 ....
 ./run bios_hello_world_serial bochs
 cat bios_hello_world_serial.tmp.serial
-....
-
-The file content:
-
-....
-hello world
 ....
 
 Source: link:bios_hello_world_serial.S[]
@@ -2140,7 +2145,7 @@ This would open up:
 
 * gem5 benchmarking and exploration, currently blocked on https://stackoverflow.com/questions/50364863/how-to-get-graphical-gui-output-and-user-touch-keyboard-mouse-input-in-a-ful/50364864#50364864
 * automated unit tests. Ha, like I'm gonna be that diligent!
-* easily working on ARM in a more uniform way
+* easily working on ARM in a more uniform way to prepare for the move in to https://github.com/cirosantilli/linux-kernel-module-cheat/tree/87e846fc1f9c57840e143513ebd69c638bd37aa8#baremetal-setup
 
 === Macros vs functions
 

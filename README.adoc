@@ -39,7 +39,7 @@ Run a given OS:
 
 ....
 ./run min
-./run bios_one_char
+./run bios_putc
 ....
 
 Extensions are ignored for perfect tab completion, so all the following are equivalent:

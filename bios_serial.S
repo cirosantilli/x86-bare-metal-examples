@@ -1,19 +1,23 @@
+/* https://github.com/cirosantilli/x86-bare-metal-examples#serial-uart */
+
 #include "common.h"
+
 BEGIN
-    /* Initialize COM port. */
+    /* Initialize the serial. */
     mov $0x00, %ah
     /* Initialization value. */
     mov $0xe3, %al
     /* Port number. */
     mov $0x00, %dx
     int $0x14
+
     mov $msg, %si
 loop:
     lodsb
-    /* Send value */
     mov $0x01, %ah
     or %al, %al
     jz halt
+    /* Send value in %al. */
     int $0x14
     jmp loop
 halt:

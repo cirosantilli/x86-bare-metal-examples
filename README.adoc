@@ -2156,8 +2156,8 @@ What the heck is a serial in the real world: https://unix.stackexchange.com/ques
 Currently all text output is done the display, and that was a newbie design choice from before I knew the serial existed. The serial is just generally more minimal and elegant than the display, and should have been used instead.
 
 ....
-./run bios_hello_world_serial
-cat bios_hello_world_serial.tmp.serial
+./run bios_serial
+cat bios_serial.tmp.serial
 ....
 
 On QEMU, we see the serial output on the host terminal:
@@ -2169,11 +2169,24 @@ hello world
 and on Bochs we redirect it to a file:
 
 ....
-./run bios_hello_world_serial bochs
-cat bios_hello_world_serial.tmp.serial
+./run bios_serial bochs
+cat bios_serial.tmp.serial
 ....
 
-Source: link:bios_hello_world_serial.S[]
+Source: link:bios_serial.S[]
+
+TODO: failed attempt without BIOS:
+
+....
+./run serial
+....
+
+Source: link:serial.S[]
+
+Like every other of those old hardwares, it is impossible to find its documentation, must be rotting on some IBM mainframe that is not connected to the internet, so we go for:
+
+* OSDev: https://wiki.osdev.org/Serial_Ports
+* Samy likely just copied OSDev that for his: https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System/blob/eb30f8802fac9f0f1c28d3a96bb3d402bdfc4687/src/kernel/modules/x86serial.cc#L38
 
 Bibliography:
 
@@ -2183,6 +2196,7 @@ Bibliography:
 This would open up:
 
 * gem5 benchmarking and exploration, currently blocked on https://stackoverflow.com/questions/50364863/how-to-get-graphical-gui-output-and-user-touch-keyboard-mouse-input-in-a-ful/50364864#50364864
+* the output stays persistently on the host terminal. So we can run QEMU without a GUI, immediatily shutdown the machine it at the end, and not have to close QEMU manually all the time.
 * automated unit tests. Ha, like I'm gonna be that diligent!
 * easily working on ARM in a more uniform way to prepare for the move in to https://github.com/cirosantilli/linux-kernel-module-cheat/tree/87e846fc1f9c57840e143513ebd69c638bd37aa8#baremetal-setup
 

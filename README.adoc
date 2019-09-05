@@ -2306,6 +2306,7 @@ One complexity order above the minimal tutorials, one below actual kernels
 * http://www.xinu.cs.purdue.edu/
 * https://pdos.csail.mit.edu/6.828/2014/xv6.html
 * https://en.wikipedia.org/wiki/MINIX, influenced Linux
+* https://github.com/SerenityOS/serenity
 
 ==== Educational non-NIXes
 

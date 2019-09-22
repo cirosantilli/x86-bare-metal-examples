@@ -100,7 +100,25 @@ Then:
 
 When you are done, just hit the power button to shutdown.
 
-See: <<test-hardware>>
+For example, on my T430  I see the following.
+
+After turning on, this is when I have to press Enter to enter the boot menu:
+
+image::https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_splash_screen.jpg/640px-Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_splash_screen.jpg[]
+
+Then, here I have to press F12 to select the USB as the boot device:
+
+image::https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_Startup_Interrupt_Menu.jpg/640px-Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_Startup_Interrupt_Menu.jpg[]
+
+From there, I can select the USB as the boot device like this:
+
+image::https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_Boot_Menu.jpg/640px-Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_Boot_Menu.jpg[]
+
+Alternatively, to change the boot order and choose the USB to have higher precedence so I don't have to manually select it every time, I would hit F1 on the "Startup Interrupt Menu" screen, and then navigate to:
+
+image::https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_boot_order_menu.jpg/640px-Lenovo_ThinkPad_T430_UEFI_BIOS_1.16_boot_order_menu.jpg[]
+
+See also: <<test-hardware>>
 
 ==== Getting started with the big image
 

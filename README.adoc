@@ -1714,7 +1714,7 @@ Port `43h` is used to control signal properties except frequency, which goes in 
 Bibliography:
 
 * http://wiki.osdev.org/PIT
-* https//en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
+* https://en.wikipedia.org/wiki/Intel_8253 that is the circuit ID for the PIT.
 * http://kernelx.weebly.com/programmable-interval-timer.html
 
 ==== PIT frequency

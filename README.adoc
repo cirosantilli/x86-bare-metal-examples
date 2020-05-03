@@ -1277,7 +1277,7 @@ Without segment manipulation, the output would be just: TODO
 
 ===== Segmentation introduction
 
-First read the paging tutorial, and in particular: http://www.cirosantilli.com/x86-paging/#segmentation to get a feel for the type of register and data structure manipulation required to configure the CPU, and how segmentation compares to paging.
+First read the paging tutorial, and in particular: https://cirosantilli.com/x86-paging#segmentation to get a feel for the type of register and data structure manipulation required to configure the CPU, and how segmentation compares to paging.
 
 Segmentation modifies every memory access of a given segment by:
 
@@ -1485,7 +1485,7 @@ Try commenting out waking up the second processor and see it not get printed.
 
 ==== Paging
 
-Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging/
+Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging
 
 Change page tables and observe how that affects memory accesses:
 

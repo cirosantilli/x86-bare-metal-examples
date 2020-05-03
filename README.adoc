@@ -1485,7 +1485,7 @@ Try commenting out waking up the second processor and see it not get printed.
 
 ==== Paging
 
-Verbose beginner's tutorial: http://www.cirosantilli.com/x86-paging
+Verbose beginner's tutorial: https://cirosantilli.com/x86-paging
 
 Change page tables and observe how that affects memory accesses:
 
@@ -2423,7 +2423,7 @@ A list of ARM bare metal resources can be found at: https://github.com/cirosanti
 
 == LICENSE
 
-Copyright Ciro Santilli http://www.cirosantilli.com/
+Copyright Ciro Santilli https://cirosantilli.com
 
 https://www.gnu.org/licenses/gpl-3.0.txt[GPL v3] for executable computer program usage.
 

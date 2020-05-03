@@ -1,4 +1,4 @@
-/* https://github.com/cirosantilli/x86-bare-metal-examples#paging.S */
+/* https://github.com/cirosantilli/x86-bare-metal-examples#paging */
 
 #include "common.h"
 
@@ -14,7 +14,11 @@ BEGIN
     /* Print the canary to make sure it is really there. */
     VGA_PRINT_HEX_4 0x1000
 
-    /* Make page 0 point to 4KiB. */
+    /* Make page 0 point to page 1 (i.e. address 0 point to address 4KiB)
+     * by setting bit 12 of the Page Table Entry structure to 1.
+     * Bit 12 is the lowest bit of the "Address of 4KB page frame" field.
+     * The directory for that page is set up at SETUP_PAGING_4M.
+     */
     orb $0x10, page_table + 1
 
     PAGING_ON

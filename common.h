@@ -212,8 +212,9 @@ protected_mode:
     mov %ebp, %esp
 .endm
 
-/* Setup a single page directory, which give us 2^10 * 2^12 == 4MiB
- * of identity memory starting at address 0.
+/* Setup the first Page Directory entry, which gives us a 4MB(2^10 * 2^12) memory region.
+ * The memory region starts at 0, and the virtual address and physical address are identical.
+ * 
  * The currently executing code is inside that range, or else we'd jump somewhere and die.
  */
 .equ page_directory, __end_align_4k
@@ -222,15 +223,14 @@ protected_mode:
     LOCAL page_setup_start page_setup_end
     PUSH_EADX
 
-    /* Page directory steup. */
-    /* Set the top 20 address bits. */
+    /* Page Directory setup. */
     mov $page_table, %eax
-    /* Zero out the 4 low flag bits of the second byte (top 20 are address). */
+    /* Clear the low 12 bits of the first Page Directory entry. */
     and $0xF000, %ax
-    mov %eax, page_directory
-    /* Set flags for the first byte. */
+    /* Set the P, R/W, U/S, and A bits of the first Page Directory entry. */
     mov $0b00100111, %al
-    mov %al, page_directory
+    /* Setup the first Page Directory entry. */
+    mov %eax, page_directory
 
     /* Page table setup. */
     mov $0, %eax
@@ -241,14 +241,15 @@ page_setup_start:
     /* Top 20 address bits. */
     mov %eax, %edx
     shl $12, %edx
-    /* Set flag bits 0-7. We only set to 1:
-     * * bit 0: Page present
-     * * bit 1: Page is writable.
+    /* For flag bits 0-7. We only set bit 0 and bit 1:
+     * - bit 0: Page present
+     * - bit 1: Page is writable.
      *  Might work without this as the permission also depends on CR0.WP.
      */
     mov $0b00000011, %dl
     /* Zero flag bits 8-11 */
     and $0xF0, %dh
+    /* Setup the PTE(Page Table Entry). */
     mov %edx, (%ebx)
     inc %eax
     add $4, %ebx

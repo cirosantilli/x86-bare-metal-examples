@@ -14,12 +14,15 @@ BEGIN
     /* Print the canary to make sure it is really there. */
     VGA_PRINT_HEX_4 0x1000
 
-    /* Make page 0 point to page 1 (i.e. address 0 point to address 4KiB)
-     * by setting bit 12 of the Page Table Entry structure to 1.
-     * Bit 12 is the lowest bit of the "Address of 4KB page frame" field.
-     * The directory for that page is set up at SETUP_PAGING_4M.
+    /* Make page 0 point to page frame 1(i.e. virtual address 0 points to physical address 4KB)
+     * by setting bit 12 of the Page Table Entry structure.
+     *
+     * At SETUP_PAGING_4M, page_table has been setup to
+     * point page frame 0(i.e. page 0 point to page frame 0).
+     * Bit 12 is the lowest bit of the "Address of 4KB page frame" field,
+     * By setting it, can relocate page 0 point to page frame 1.
      */
-    orb $0x10, page_table + 1
+    orw $0x1000, page_table
 
     PAGING_ON
 

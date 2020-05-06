@@ -224,6 +224,7 @@ protected_mode:
     PUSH_EADX
 
     /* Page Directory setup. */
+    /* Set the top 20 address bits. */
     mov $page_table, %eax
     /* Clear the low 12 bits of the first Page Directory entry. */
     and $0xF000, %ax

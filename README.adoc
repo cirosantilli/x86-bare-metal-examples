@@ -2311,6 +2311,7 @@ Almost entirely in C `-nostdlib`, with very few inline `asm` commands, and a sma
 * https://github.com/nanochess/fbird Flappy bird in the 512-byte boot sector.
 * https://github.com/Overv/MineAssemble Minecraft
 * https://github.com/tsoding/pinpog Pong / Breakout
+* https://github.com/io12/bootmine Minesweeper game in a 512-byte boot sector.
 
 === Tutorials
 

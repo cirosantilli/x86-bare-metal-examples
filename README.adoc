@@ -18,13 +18,7 @@ toc::[]
 
 == China
 
-Before <<getting-started>>, read this important pre-requisite: https://github.com/cirosantilli/china-dictatorship
-
-Because human rights is more important than profit and technology.
-
-image::https://raw.githubusercontent.com/cirosantilli/china-dictatorship-media/master/Hao_Haidong_kick.jpg[width=600]
-
-image::https://raw.githubusercontent.com/cirosantilli/china-dictatorship-media/master/Xi_sadomasochist.jpg[width=600]
+https://www.gov.cn[Something has been deleted.]
 
 == Getting started
 
